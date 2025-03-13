@@ -1,12 +1,8 @@
 import pandas as pd
-import logging
 import os
 from typing import Dict, Optional, List  
 from datetime import datetime
-
-# Initialize logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from utils.logger import logger
 
 class DataLoader:
     """
