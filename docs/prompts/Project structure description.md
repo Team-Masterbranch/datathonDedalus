@@ -12,35 +12,51 @@ Here is a project structure summary so far:
 
 # Project Structure
 
-/project-root
+/root
+│   .file
+│   main.py
+│   requirements.txt
 │
-├── /data                # Raw CSV files
-│   ├── pacientes.csv
-│   ├── condiciones.csv
-│   ├── alergias.csv
-│   ├── medicationes.csv
-│   ├── encuentros.csv
-│   └── procedimientos.csv
+├───core
+│   │   context_manager.py
+│   │   data_loader.py
+│   │   llm_handler.py
+│   │   query_parser.py
+│   │   viz_generator.py
+│   │
+│   └───__pycache__
+│           data_loader.cpython-311.pyc
 │
-├── /core
-│   ├── llm_handler.py     # LLM interface & prompts
-│   ├── data_loader.py     # Data merging/cleaning
-│   ├── query_parser.py    # NL → SQL-like filters
-│   ├── context_manager.py # Session state tracking
-│   └── viz_generator.py   # Charts/stats generation
+├───data
+│       alegias.csv
+│       condiciones.csv
+│       encuentros.csv
+│       medicationes.csv
+│       pacientes.csv
+│       procedimientos.csv
 │
-├── /utils
-│   ├── config.py          # API keys, paths
-│   ├── logger.py          # Logging setup
-│   └── validation.py      # Query sanitization
+├───interface
+│       cli.py
+│       webui.py
 │
-├── /interface
-│   ├── cli.py             # CLI with questionary
-│   └── webui.py           # Streamlit (optional)
+├───tests
+│   │   test_data_loader.py
+│   │   __init__.py
+│   │
+│   └───__pycache__
+│           test_data_loader.cpython-311.pyc
+│           __init__.cpython-311.pyc
 │
-├── tests/                 # Pytest unit tests
-├── requirements.txt       # Python dependencies
-└── main.py                # Launch script
+└───utils
+    │   config.py
+    │   logger.py
+    │   validation.py
+    │   __init__.py
+    │
+    └───__pycache__
+            logger.cpython-311.pyc
+            __init__.cpython-311.pyc
+
 
 # Dataset Specifications
 1. cohorte_pacientes.csv (Patients)
