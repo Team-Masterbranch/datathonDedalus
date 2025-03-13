@@ -15,12 +15,12 @@ Here is a project structure summary so far:
 /project-root
 │
 ├── /data                # Raw CSV files
-│   ├── cohorte_pacientes.csv
-│   ├── cohorte_condiciones.csv
-│   ├── cohorte_alergias.csv
-│   ├── cohorte_medicationes.csv
-│   ├── cohorte_encuentros.csv
-│   └── cohorte_procedimientos.csv
+│   ├── pacientes.csv
+│   ├── condiciones.csv
+│   ├── alergias.csv
+│   ├── medicationes.csv
+│   ├── encuentros.csv
+│   └── procedimientos.csv
 │
 ├── /core
 │   ├── llm_handler.py     # LLM interface & prompts
