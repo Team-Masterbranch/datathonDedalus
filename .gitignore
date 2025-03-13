@@ -1,1 +1,8 @@
-root/log/*.log
+root/logs/*.log
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
