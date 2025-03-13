@@ -1,10 +1,10 @@
+# main.py
 """Main entry point for the healthcare data analysis system."""
-
-from interface.cli import HealthcareCLI
+from core.application import Application
 
 def main():
-    cli = HealthcareCLI()
-    cli.cmdloop()
+    app = Application()
+    app.start()
 
 if __name__ == "__main__":
     main()

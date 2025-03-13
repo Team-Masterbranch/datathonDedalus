@@ -95,7 +95,31 @@ sequenceDiagram
 
 ## **Core Modules**
 
-### **1. `data_manager.py`**  
+### 1. Application Module (application.py)
+
+#### Overview
+The Application module serves as the service layer of the system, coordinating interactions between different components and implementing the main processing pipeline. It acts as an orchestrator that manages the flow of data and operations between various modules.
+
+#### Core Responsibilities
+- Coordinates the query processing pipeline
+- Manages component lifecycle and interactions
+- Provides high-level interface for the CLI and other potential interfaces
+- Handles cross-cutting concerns across modules
+
+#### Main Components
+- Query Processing Pipeline
+- Test Runner
+- Component Management
+
+#### Pipeline Flow
+1. Receives user query from interface
+2. Coordinates preprocessing via QueryPreprocessor
+3. Manages parsing through Parser
+4. Handles LLM interactions when needed
+5. (Future) Will coordinate with Context and Query Manager
+
+
+### 2. `data_manager.py`  
 **Responsibility**: Centralized data storage and state management.  
 **Methods**:  
 - `load_data()` - Loads CSV files into pandas DataFrames with preprocessing.  
@@ -106,7 +130,7 @@ sequenceDiagram
 
 ---
 
-### **2. `query_preprocessor.py`**  
+### **3. `query_preprocessor.py`**  
 **Responsibility**: Energy-efficient query handling through caching and regex parsing to minimize LLM calls.  
 **Methods**:  
 - `try_regex_parse(input: str) -> dict | None` - Attempts pattern matching using predefined medical regex rules  
@@ -115,7 +139,7 @@ sequenceDiagram
 
 ---
 
-### **3. `query_parser.py`**  
+### **4. `query_parser.py`**  
 **Responsibility**: Convert natural language to structured criteria.  
 **Methods**:  
 - `parse_query(user_input: str) -> dict` - Main NLU method using LLM.  
@@ -124,7 +148,7 @@ sequenceDiagram
 
 ---
 
-### **4. `query_manager.py`**  
+### **5. `query_manager.py`**  
 **Responsibility**: Execute filters and optimize queries.  
 **Methods**:  
 - `apply_filters(raw_data: dict, criteria: dict) -> pd.DataFrame` - Main filtering logic.  
@@ -133,7 +157,7 @@ sequenceDiagram
 
 ---
 
-### **5. `context_manager.py`**  
+### **6. `context_manager.py`**  
 **Responsibility**: Session state and iterative refinements.  
 **Properties**:  
 - `active_filters: dict` - Current filter criteria  
@@ -145,7 +169,7 @@ sequenceDiagram
 
 ---
 
-### **6. `llm_handler.py`**  
+### **7. `llm_handler.py`**  
 **Responsibility**: LLM interaction utilities.  
 **Methods**:  
 - `send_prompt(prompt: str) -> str` - Core LLM API call  
@@ -154,11 +178,7 @@ sequenceDiagram
 
 ---
 
-Here’s the **revised documentation** for `results_analyzer.py` with optimizations integrated:
-
----
-
-### **7. `results_analyzer.py`**  
+### **8. `results_analyzer.py`**  
 **Responsibility**: Generate insights from filtered data and optimize payloads for LLM processing to reduce computational costs.  
 **Methods**:  
 - `summarize_for_llm(filtered_df: pd.DataFrame) -> str`  
@@ -174,7 +194,7 @@ Here’s the **revised documentation** for `results_analyzer.py` with optimizati
 
 ---
 
-### **8. `visualizer.py`**  
+### **9. `visualizer.py`**  
 **Responsibility**: Data visualization generation.  
 **Methods**:  
 - `plot_age_distribution(df: pd.DataFrame) -> plotly.Figure`  
