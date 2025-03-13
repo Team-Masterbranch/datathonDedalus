@@ -10,7 +10,7 @@ We have access to a pre-trained LLM (Claude 3 Sonnet via Amazon Bedrock) to buil
 
 Here is a project structure summary so far:
 
-# Project Structure
+## Project Structure
 
 /root
 │   .file
@@ -19,16 +19,20 @@ Here is a project structure summary so far:
 │
 ├───core
 │   │   context_manager.py
-│   │   data_loader.py
+│   │   data_manager.py         # Renamed from data_loader.py
 │   │   llm_handler.py
+│   │   query_manager.py        # New
 │   │   query_parser.py
-│   │   viz_generator.py
+│   │   query_preprocessor.py
+│   │   results_analyzer.py     # New
+│   │   visualizer.py           # Replaces viz_generator.py
 │   │
 │   └───__pycache__
-│           data_loader.cpython-311.pyc
+│           context_manager.cpython-311.pyc
+│           data_manager.cpython-311.pyc
 │
 ├───data
-│       alegias.csv
+│       alergias.csv
 │       condiciones.csv
 │       encuentros.csv
 │       medicationes.csv
@@ -37,10 +41,11 @@ Here is a project structure summary so far:
 │
 ├───interface
 │       cli.py
-│       webui.py
+│       webui.py                # Future web interface
 │
 ├───tests
-│   │   test_data_loader.py
+│   │   test_data_loader.py     # Should be renamed to test_data_manager.py
+│   │   test_query_parser.py    # New (to be created)
 │   │   __init__.py
 │   │
 │   └───__pycache__
@@ -55,10 +60,158 @@ Here is a project structure summary so far:
     │
     └───__pycache__
             logger.cpython-311.pyc
+            validation.cpython-311.pyc
             __init__.cpython-311.pyc
 
 
-# Dataset Specifications
+## **Pipeline Workflow**  
+```mermaid
+sequenceDiagram
+  participant User
+  participant CLI
+  participant Preprocessor
+  participant Parser
+  participant LLM
+  participant Context
+  participant QM
+  participant DM
+
+  User->>CLI: "Show diabetics over 50"
+  CLI->>Preprocessor: Raw query
+  alt Cache Hit or Regex Match
+    Preprocessor-->>Parser: Structured criteria
+  else LLM Required
+    Preprocessor->>Parser: Pass through
+    Parser->>LLM: Get criteria
+    LLM-->>Parser: Response
+    Parser->>Preprocessor: Update cache
+  end
+  Parser->>Context: Store criteria
+  Context->>QM: Execute
+  QM->>DM: Fetch data
+  DM-->>QM: Filtered results
+  QM->>User: Display output
+```
+
+## **Core Modules**
+
+### **1. `data_manager.py`**  
+**Responsibility**: Centralized data storage and state management.  
+**Methods**:  
+- `load_data()` - Loads CSV files into pandas DataFrames with preprocessing.  
+- `get_raw_data() -> dict` - Returns raw DataFrames (pacientes, condiciones, etc.).  
+- `update_cohort(filtered_df: pd.DataFrame, filters: dict)` - Updates current filtered dataset.  
+- `get_current_cohort() -> pd.DataFrame` - Returns active patient cohort.  
+- `reset_filters()` - Restores raw datasets.  
+
+---
+
+### **2. `query_preprocessor.py`**  
+**Responsibility**: Energy-efficient query handling through caching and regex parsing to minimize LLM calls.  
+**Methods**:  
+- `try_regex_parse(input: str) -> dict | None` - Attempts pattern matching using predefined medical regex rules  
+- `check_cache(input: str) -> dict | None` - Searches cached queries with Levenshtein similarity matching  
+- `update_cache(input: str, result: dict)` - Updates cache with LRU eviction policy  
+
+---
+
+### **3. `query_parser.py`**  
+**Responsibility**: Convert natural language to structured criteria.  
+**Methods**:  
+- `parse_query(user_input: str) -> dict` - Main NLU method using LLM.  
+- `parse_refinement(user_input: str, context: dict) -> dict` - Handles partial queries ("and above 25").  
+- `validate_criteria(criteria: dict) -> bool` - Checks filter validity.  
+
+---
+
+### **4. `query_manager.py`**  
+**Responsibility**: Execute filters and optimize queries.  
+**Methods**:  
+- `apply_filters(raw_data: dict, criteria: dict) -> pd.DataFrame` - Main filtering logic.  
+- `_apply_temporal_filters(df: pd.DataFrame, date_ranges: dict)` - Date-based filtering.  
+- `_apply_geographic_filters(df: pd.DataFrame, coords: tuple)` - Distance calculations (future).  
+
+---
+
+### **5. `context_manager.py`**  
+**Responsibility**: Session state and iterative refinements.  
+**Properties**:  
+- `active_filters: dict` - Current filter criteria  
+- `query_history: list` - Stack of previous queries  
+**Methods**:  
+- `merge_criteria(new_criteria: dict) -> dict` - Combines filters  
+- `undo_last_action() -> dict` - Reverts to previous state  
+- `get_session_context() -> dict` - Returns full context  
+
+---
+
+### **6. `llm_handler.py`**  
+**Responsibility**: LLM interaction utilities.  
+**Methods**:  
+- `send_prompt(prompt: str) -> str` - Core LLM API call  
+- `build_analysis_prompt(stats: dict) -> str` - Formats data for summary generation  
+- `parse_json_response(response: str) -> dict` - Extracts structured data  
+
+---
+
+Here’s the **revised documentation** for `results_analyzer.py` with optimizations integrated:
+
+---
+
+### **7. `results_analyzer.py`**  
+**Responsibility**: Generate insights from filtered data and optimize payloads for LLM processing to reduce computational costs.  
+**Methods**:  
+- `summarize_for_llm(filtered_df: pd.DataFrame) -> str`  
+  Generates a token-efficient text summary (counts, averages, frequencies) for LLM analysis.  
+- `suggest_visualizations(stats: dict) -> list`  
+  Recommends chart types based on cohort metrics (e.g., age distribution → histogram).  
+- `prune_columns(df: pd.DataFrame) -> pd.DataFrame`  
+  Removes non-essential columns (e.g., SNOMED codes) to minimize data size.  
+- `calculate_metrics(df: pd.DataFrame) -> dict`  
+  Computes key metrics: age distribution, condition prevalence, gender ratios.  
+- `get_qualitative_sample(df: pd.DataFrame, sample_size=10) -> str`  
+  Returns a markdown-formatted sample of patients for qualitative LLM analysis.  
+
+---
+
+### **8. `visualizer.py`**  
+**Responsibility**: Data visualization generation.  
+**Methods**:  
+- `plot_age_distribution(df: pd.DataFrame) -> plotly.Figure`  
+- `generate_heatmap(df: pd.DataFrame, columns: list) -> plotly.Figure`  
+- `export_to_html(fig: plotly.Figure) -> str`  
+
+---
+
+## **Interface Modules**
+
+### **1. `interface/cli.py`**  
+**Responsibility**: Command-line interface handling.  
+**Methods**:  
+- `display_results(summary: str, fig: plotly.Figure)`  
+- `get_user_input() -> str`  
+- `show_filter_status(active_filters: dict)`  
+
+---
+
+## **Utility Modules**
+
+### **1. `utils/logger.py`**  
+**Responsibility**: Logging and error tracking.  
+**Methods**:  
+- `log_query(criteria: dict, result_count: int)`  
+- `log_error(error_type: str, message: str)`  
+- `get_logs() -> list`  
+
+### **2. `utils/config.py`**  
+**Properties**:  
+- `LLM_TEMPERATURE = 0.3`  
+- `MAX_TOKENS = 4096`  
+- `DATA_PATH = "./data"`  
+
+---
+
+## Dataset Specifications
 1. cohorte_pacientes.csv (Patients)
 Column (ES) English Type    Description
 PacienteID  PatientID   str Unique identifier
@@ -108,125 +261,3 @@ Fecha_inicio    StartDate   date    Procedure start
 Fecha_fin   EndDate date    Procedure end
 Codigo_SNOMED   SNOMEDCode  str e.g., 303893007 (Brain MRI)
 Descripcion Description str Procedure details
-
-# Pipeline
-sequenceDiagram
-  participant User
-  participant System
-
-  User->System: "Show me diabetic patients over 50 with recent ER visits"
-  System->LLM: Parse query + current context
-  LLM->System: Structured criteria & action type
-  System->Data: Apply filters
-  Data->System: Filtered cohort (12 patients)
-  System->LLM: Analyze results
-  LLM->System: Summary text + visualization suggestion
-  System->Viz: Generate age distribution chart
-  System->User: Final response (text + chart)
-
-
-# Core Module Specifications
-1. **llm_handler.py**
-This module acts as the interface between the application and the Claude 3 Sonnet LLM. It is responsible for:
-- Natural Language Understanding (NLU): 
-  - Parsing user queries in Spanish/English into structured filters (e.g., "Show diabetic patients over 50" → {"condition": "Diabetes", "age": [50, None]}).
-  - Handling medical terminology translation (e.g., "high blood pressure" → "Hypertension").
-
-- Response Generation:
-  - Generating natural language summaries of query results (e.g., "Found 12 patients with diabetes and hypertension").
-  - Suggesting relevant visualizations based on the data (e.g., "Would you like to see an age distribution chart?").
-
-- Prompt Engineering:
-  - Maintaining a system prompt that defines the LLM's role and capabilities.
-  - Formatting user queries with context (e.g., current filters, previous results) for coherent conversations.
-
-2. data_loader.py
-This module handles all data ingestion, preprocessing, and merging. Its responsibilities include:
-- Data Loading:
-  - Reading CSV files into Pandas DataFrames.
-  - Ensuring consistent column naming and data types across tables.
-
-- Data Cleaning:
-  - Handling missing values (e.g., setting Fecha_fin to 2025-12-31 for ongoing conditions).
-  - Standardizing date formats and ensuring temporal consistency.
-
-- Data Merging:
-  - Performing left joins on PacienteID to create a unified patient record.
-  - Preserving all patient records even if some tables lack matching entries.
-- Preprocessing:
-  - Creating derived fields (e.g., age groups, duration of conditions).
-  - Mapping SNOMED/ATC codes to human-readable descriptions.
-
-3. query_parser.py
-This module translates structured filters (from the LLM) into executable queries on the dataset. It provides:
-
-- Filter Application:
-  - Applying criteria like age ranges, gender, province, and condition presence to the dataset.
-  - Handling temporal filters (e.g., "Conditions active during 2020-2022").
-
-- Query Validation:
-  - Ensuring filters are valid (e.g., age ranges are numeric, dates are in the correct format).
-  - Providing fallback behavior for ambiguous or invalid queries.
-
-- Performance Optimization:
-  - Using vectorized Pandas operations for efficient filtering.
-  - Caching frequently used queries to reduce computation time.
-
-4. context_manager.py
-This module maintains the state of the conversation and user-defined filters. Its functionality includes:
-
-- Filter Management:
-  - Storing active filters (e.g., age, gender, conditions) in a stack for undo/redo functionality.
-  - Merging new filters with existing ones (e.g., adding "hypertension" to an existing "diabetes" filter).
-
-- Session State:
-  - Tracking the current cohort of patients being analyzed.
-  - Storing visualization preferences (e.g., default chart type).
-
-- Context Preservation:
-  - Maintaining a history of user interactions for coherent multi-turn conversations.
-  - Resetting context after a session timeout or explicit user request.
-
-5. viz_generator.py
-This module generates visualizations and statistical summaries of the data. It provides:
-
-- Chart Generation:
-  - Creating common visualizations like age/gender pyramids, medication timelines, and comorbidity networks.
-  - Supporting multiple chart types (e.g., bar charts, line charts, heatmaps) via Plotly/Matplotlib.
-
-- Statistical Summaries:
-  - Calculating cohort metrics (e.g., average age, condition prevalence).
-  - Generating frequency distributions for categorical variables (e.g., encounter types, provinces).
-
-- Customization:
-  - Allowing users to customize visualizations (e.g., color schemes, chart titles).
-  - Exporting charts as images or interactive HTML files.
-
-# Technical Specifications
-## LLM Configuration
-- Model: Claude 3 Sonnet via Amazon Bedrock
-- Temperature: 0.3 (for medical accuracy)
-- Max Tokens: 4096
-
-## Data Processing
-- Merge Strategy: Left joins preserving all patient records
-- Date Handling: Timezone-naive (assume local time)
-- Missing Data: Explicit Unknown category for empty fields
-
-## Query Capabilities
-- Temporal: "Conditions active during X period"
-- Geographic: "Patients within 50km of Málaga"
-- Clinical: "On medication X for >6 months"
-
-## Visualization Types
-- Demographic distributions (age/gender/province)
-- Medication timelines
-- Comorbidity networks
-- Encounter frequency heatmaps
-
-
-# Next Development Steps
-- Implement DataLoader with full table merging
-- Build basic CLI interface with filter display
-- Create SNOMED code mapping dictionary
-- Develop first visualization template (age/gender pyramid)
