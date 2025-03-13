@@ -109,6 +109,22 @@ Fecha_fin   EndDate date    Procedure end
 Codigo_SNOMED   SNOMEDCode  str e.g., 303893007 (Brain MRI)
 Descripcion Description str Procedure details
 
+# Pipeline
+sequenceDiagram
+  participant User
+  participant System
+
+  User->System: "Show me diabetic patients over 50 with recent ER visits"
+  System->LLM: Parse query + current context
+  LLM->System: Structured criteria & action type
+  System->Data: Apply filters
+  Data->System: Filtered cohort (12 patients)
+  System->LLM: Analyze results
+  LLM->System: Summary text + visualization suggestion
+  System->Viz: Generate age distribution chart
+  System->User: Final response (text + chart)
+
+
 # Core Module Specifications
 1. **llm_handler.py**
 This module acts as the interface between the application and the Claude 3 Sonnet LLM. It is responsible for:
