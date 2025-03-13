@@ -1,10 +1,10 @@
-"""Basic CLI interface for the healthcare data analysis system."""
-
+# interface/cli.py
 import cmd
-import os
-from utils.logger import logger
-import importlib
 import glob
+import os
+from core.query_preprocessor import QueryPreprocessor
+from core.parser import Parser
+from utils.logger import logger
 
 class HealthcareCLI(cmd.Cmd):
     intro = 'Welcome to the Healthcare Data Analysis System. Type help or ? to list commands.\n'
@@ -13,17 +13,19 @@ class HealthcareCLI(cmd.Cmd):
     def __init__(self):
         super().__init__()
         logger.info("Initializing CLI interface")
-        self.tests_dir = "tests"
+        self.preprocessor = QueryPreprocessor()
+        self.parser = Parser()
+        # Set tests directory relative to project root
+        self.tests_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tests')
+        logger.info(f"Tests directory set to: {self.tests_dir}")
 
     def do_exit(self, arg):
         """Exit the application."""
-        print("Goodbye!")
+        logger.info("Shutting down CLI")
         return True
 
     def do_test(self, arg):
-        """Run tests from the tests folder.
-        Usage: test [test_name]
-        If no test_name is provided, shows a list of available tests."""
+        """Run test suite."""
         # Get all test files
         test_files = glob.glob(os.path.join(self.tests_dir, "test_*.py"))
         test_names = [os.path.basename(f)[5:-3] for f in test_files]  # Remove 'test_' and '.py'
@@ -58,31 +60,52 @@ class HealthcareCLI(cmd.Cmd):
                 print("Invalid input - operation cancelled")
 
     def _list_tests(self, test_names):
-        """Helper method to display numbered list of tests."""
+        """Helper method to list available tests."""
         for i, name in enumerate(test_names, 1):
             print(f"{i}. {name}")
 
     def _run_test(self, test_name):
         """Helper method to run a specific test."""
+        logger.info(f"Running test: {test_name}")
         try:
-            logger.info(f"Running test: {test_name}")
-            module_name = f"tests.test_{test_name}"
-            test_module = importlib.import_module(module_name)
-            
-            # Find all test functions in the module
-            test_functions = [
-                func for func_name, func in vars(test_module).items()
-                if func_name.startswith('test_') and callable(func)
-            ]
-            
-            if test_functions:
-                print(f"Running {len(test_functions)} test(s) from {test_name}")
-                for test_func in test_functions:
-                    test_func()
-            else:
-                print(f"No test functions found in {module_name}")
-                
+            # Import and run the test module
+            __import__(f"tests.test_{test_name}")
+            logger.info(f"Test {test_name} completed")
         except Exception as e:
             logger.error(f"Error running test {test_name}: {e}")
             print(f"Error running test: {e}")
-    
+
+    def default(self, line):
+        """Handle any input that isn't a specific command as a query to the chatbot."""
+        try:
+            # First stage: Preprocessing
+            processed_query, needs_llm = self.preprocessor.process_query(line)
+            
+            # Second stage: Parsing
+            if needs_llm:
+                logger.info("Routing query to LLM processing")
+                structured_criteria = self.parser.process_with_llm(processed_query)
+                # Update preprocessor cache with LLM result
+                self.preprocessor.update_cache(line, structured_criteria)
+            else:
+                logger.info("Using preprocessor structured criteria")
+                structured_criteria = processed_query
+
+            # Continue pipeline with structured criteria...
+            # (Context, Query Manager, etc. will be added later)
+            
+        except Exception as e:
+            logger.error(f"Error processing query: {e}")
+            print(f"Error: {e}")
+
+    def emptyline(self):
+        """Do nothing on empty line."""
+        pass
+
+    def do_help(self, arg):
+        """List available commands."""
+        print("\nAvailable commands:")
+        print("  test    - Run test suite")
+        print("  exit    - Exit the application")
+        print("  help    - Show this help message")
+        print("\nAny other input will be treated as a query to the system.")
