@@ -5,6 +5,9 @@ import os
 from datetime import datetime
 from core.data_manager import DataManager
 
+if __name__ == '__main__':
+    pytest.main([__file__])
+
 @pytest.fixture
 def test_data_path(tmp_path):
     """Create temporary test data files."""
@@ -119,6 +122,7 @@ def test_schema_generation(data_manager):
     assert "Condicion" in schema
     assert "unique_values" in schema["Condicion"]
     assert isinstance(schema["Condicion"]["unique_values"], list)
+
 
 def test_schema_updates_with_filter(data_manager):
     """Test schema updates when cohort changes."""

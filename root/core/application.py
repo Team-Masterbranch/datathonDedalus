@@ -1,5 +1,8 @@
 # core/application.py
-from typing import Dict, Any
+import pytest
+import os
+import inspect
+from typing import Dict, Any, Optional, List
 from interface.cli import HealthcareCLI
 from core.query_preprocessor import QueryPreprocessor
 from core.parser import Parser
@@ -18,12 +21,8 @@ class Application:
         self.preprocessor = QueryPreprocessor()
         self.parser = Parser()
         self.llm_handler = LLMHandler()
-        
-        # Initialize DataManager first
         self.data_manager = DataManager('data')
-        # Pass DataManager to QueryManager
         self.query_manager = QueryManager(self.data_manager)
-        
         self.cli = HealthcareCLI(self)
         
     def start(self):
@@ -74,14 +73,95 @@ class Application:
             logger.error(f"Error processing query: {e}")
             raise
 
+    def get_available_tests(self) -> List[str]:
+        """
+        Get list of available test files.
+        
+        Returns:
+            List of test file names without .py extension
+        """
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        tests_dir = os.path.join(project_root, 'tests')
+        
+        if not os.path.exists(tests_dir):
+            logger.error(f"Tests directory not found at {tests_dir}")
+            return []
+            
+        test_files = [
+            f[5:-3] for f in os.listdir(tests_dir) 
+            if f.startswith('test_') and f.endswith('.py')
+        ]
+        return sorted(test_files)
 
-
-    def run_test(self, test_name: str) -> None:
-        """Run a specific test."""
-        logger.info(f"Running test: {test_name}")
+    def get_test_functions(self, test_file: str) -> List[str]:
+        """
+        Get list of test functions in a specific test file.
+        
+        Args:
+            test_file: Name of the test file without .py extension
+            
+        Returns:
+            List of test function names
+        """
         try:
-            __import__(f"tests.test_{test_name}")
-            logger.info(f"Test {test_name} completed")
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            test_path = os.path.join(project_root, 'tests', f'test_{test_file}.py')
+            
+            # Use ast module instead of importing
+            import ast
+            
+            with open(test_path, 'r') as file:
+                tree = ast.parse(file.read())
+                
+            test_functions = [
+                node.name for node in ast.walk(tree)
+                if isinstance(node, ast.FunctionDef) 
+                and node.name.startswith('test_')
+            ]
+            
+            return sorted(test_functions)
+                
         except Exception as e:
-            logger.error(f"Error running test {test_name}: {e}")
-            raise
+            logger.error(f"Error getting test functions: {e}")
+            return []
+
+
+    def run_tests(self, test_file: Optional[str] = None, test_function: Optional[str] = None) -> Dict[str, Any]:
+        try:
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            tests_dir = os.path.join(project_root, 'tests')
+
+            if not os.path.exists(tests_dir):
+                return {"success": False, "error": "Tests directory not found"}
+
+            test_args = ["-v", "-s"]  # Added -s flag here
+            
+            if test_file:
+                test_path = os.path.join(tests_dir, f"test_{test_file}.py")
+                if not os.path.exists(test_path):
+                    return {"success": False, "error": f"Test file not found: {test_file}"}
+                
+                if test_function:
+                    test_args.extend([test_path, f"-k {test_function}"])
+                else:
+                    test_args.append(test_path)
+            else:
+                test_args.append(tests_dir)
+
+            result = pytest.main(test_args)
+            
+            return {
+                "success": result == 0,
+                "exit_code": result,
+                "test_file": test_file,
+                "test_function": test_function
+            }
+
+        except Exception as e:
+            logger.error(f"Error running tests: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "test_file": test_file,
+                "test_function": test_function
+            }

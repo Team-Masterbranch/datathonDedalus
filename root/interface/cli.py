@@ -21,49 +21,69 @@ class HealthcareCLI(cmd.Cmd):
 
 
     def do_test(self, arg):
-        """Run test suite."""
-        test_files = glob.glob(os.path.join(self.tests_dir, "test_*.py"))
-        test_names = [os.path.basename(f)[5:-3] for f in test_files]
-
-        if not test_names:
-            print("No tests found in tests directory")
+        """
+        Run tests with interactive selection.
+        Usage: test [file_name] [test_name]
+        """
+        available_tests = self.app.get_available_tests()
+        
+        if not available_tests:
+            print("No test files found")
             return
 
-        if arg:
-            if arg in test_names:
-                self._run_test(arg)
-            else:
-                print(f"Test '{arg}' not found. Available tests:")
-                self._list_tests(test_names)
-        else:
-            print("Available tests:")
-            self._list_tests(test_names)
-            self._handle_test_selection(test_names)
-
-    def _list_tests(self, test_names):
-        for i, name in enumerate(test_names, 1):
-            print(f"{i}. {name}")
-
-    def _handle_test_selection(self, test_names):
-        try:
-            choice = input("Enter test number to run (or press Enter to cancel): ")
-            if not choice:
-                return
+        # If no arguments provided, show interactive selection
+        if not arg:
+            print("\nAvailable test files:")
+            for i, test in enumerate(available_tests, 1):
+                print(f"{i}. {test}")
+            print("0. Run all tests")
             
-            test_index = int(choice) - 1
-            if 0 <= test_index < len(test_names):
-                self._run_test(test_names[test_index])
-            else:
-                print("Invalid test number")
-        except ValueError:
-            print("Invalid input - operation cancelled")
+            try:
+                choice = input("\nSelect test file (0-{}): ".format(len(available_tests)))
+                if not choice.isdigit() or int(choice) > len(available_tests):
+                    print("Invalid selection")
+                    return
+                
+                choice = int(choice)
+                if choice == 0:
+                    test_file = None
+                    test_function = None
+                else:
+                    test_file = available_tests[choice - 1]
+                    
+                    # If a test file was selected, show test function selection
+                    if test_file:
+                        test_functions = self.app.get_test_functions(test_file)
+                        
+                        if test_functions:
+                            print("\nAvailable test functions:")
+                            for i, func in enumerate(test_functions, 1):
+                                print(f"{i}. {func}")
+                            print("0. Run all tests in file")
+                            
+                            func_choice = input("\nSelect test function (0-{}): ".format(len(test_functions)))
+                            if not func_choice.isdigit() or int(func_choice) > len(test_functions):
+                                print("Invalid selection")
+                                return
+                                
+                            func_choice = int(func_choice)
+                            test_function = test_functions[func_choice - 1] if func_choice > 0 else None
+                        else:
+                            print("No test functions found in file")
+                            return
+                            
+            except (ValueError, IndexError) as e:
+                print(f"Invalid selection: {e}")
+                return
+        
+        # Run selected tests
+        result = self.app.run_tests(test_file, test_function)
+        
+        if result["success"]:
+            print("\nTests completed successfully")
+        else:
+            print(f"\nTests failed: {result.get('error', 'Unknown error')}")
 
-    def _run_test(self, test_name):
-        try:
-            self.app.run_test(test_name)
-            print(f"Test {test_name} completed successfully")
-        except Exception as e:
-            print(f"Error running test: {e}")
 
     def default(self, line):
         """Handle any input that isn't a specific command as a query to the chatbot."""
