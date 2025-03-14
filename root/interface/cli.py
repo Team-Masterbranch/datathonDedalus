@@ -1,12 +1,12 @@
 # interface/cli.py
 import cmd
-import glob
+import asyncio
 import os
 from utils.logger import logger
 
 class HealthcareCLI(cmd.Cmd):
     intro = 'Welcome to the Healthcare Data Analysis System. Type help or ? to list commands.\n'
-    prompt = '(healthcare) '
+    prompt = '(Master Branch Bot) '
 
     def __init__(self, application):
         super().__init__()
@@ -18,7 +18,6 @@ class HealthcareCLI(cmd.Cmd):
         """Exit the application."""
         logger.info("Shutting down CLI")
         return True
-
 
     def do_test(self, arg):
         """
@@ -84,14 +83,15 @@ class HealthcareCLI(cmd.Cmd):
         else:
             print(f"\nTests failed: {result.get('error', 'Unknown error')}")
 
-
     def default(self, line):
         """Handle any input that isn't a specific command as a query to the chatbot."""
         try:
-            result = self.app.process_user_query(line)
+            # Change this line to properly await the coroutine
+            result = asyncio.run(self.app.process_user_query(line))
             print(result)
         except Exception as e:
             print(f"Error: {e}")
+
 
     def emptyline(self):
         """Do nothing on empty line."""
