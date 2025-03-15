@@ -226,3 +226,33 @@ class DataManager:
         self._current_cohort = self._full_dataset.copy()
         self._update_current_schema()
         return self._current_cohort
+
+
+    def save_current_cohort(self, filepath: str, index: bool = False) -> bool:
+        """
+        Save the current cohort to a CSV file.
+        
+        Args:
+            filepath: Path where to save the CSV file
+            index: Whether to save the DataFrame index (default False)
+            
+        Returns:
+            bool: True if save was successful, False otherwise
+        """
+        try:
+            if self._current_cohort is None:
+                logger.error("Cannot save: current cohort is None")
+                return False
+                
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
+            
+            # Save to CSV
+            self._current_cohort.to_csv(filepath, index=index)
+            logger.info(f"Successfully saved cohort to {filepath}")
+            logger.info(f"Saved {len(self._current_cohort)} records")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error saving cohort to CSV: {str(e)}")
+            return False
