@@ -5,5 +5,5 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.env
 .Python
-root/utils/config.py
