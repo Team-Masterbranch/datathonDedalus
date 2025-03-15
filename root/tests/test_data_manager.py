@@ -106,7 +106,7 @@ def test_reset_to_full(data_manager):
 
 def test_schema_generation(data_manager):
     """Test schema metadata generation."""
-    schema = data_manager.get_schema()
+    schema = data_manager.get_full_schema()
     
     # Check basic schema structure
     assert "Edad" in schema
@@ -126,7 +126,7 @@ def test_schema_generation(data_manager):
 
 def test_schema_updates_with_filter(data_manager):
     """Test schema updates when cohort changes."""
-    initial_schema = data_manager.get_schema()
+    initial_schema = data_manager.get_current_schema()
     initial_age_stats = {
         "min": initial_schema["Edad"]["min"],
         "max": initial_schema["Edad"]["max"]
@@ -134,7 +134,7 @@ def test_schema_updates_with_filter(data_manager):
     
     # Apply filter and check schema updates
     data_manager.apply_filter({"Edad": (">=", 50)})
-    updated_schema = data_manager.get_schema()
+    updated_schema = data_manager.get_current_schema()
     
     assert updated_schema["Edad"]["min"] >= 50
     assert updated_schema["Edad"]["min"] != initial_age_stats["min"]
