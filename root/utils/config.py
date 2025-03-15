@@ -38,3 +38,10 @@ CLI_INTRO = "Welcome to the Healthcare Data Analysis System. Type 'help' for com
 
 # Query Processing
 MAX_CACHE_SIZE = 1000  # Maximum number of cached queries
+
+# utils/config.py
+# Visualization settings
+CLI_CHART_WIDTH = 10
+CLI_CHART_HEIGHT = 6
+IMG_DPI = 300
+IMG_FORMAT = 'png'
