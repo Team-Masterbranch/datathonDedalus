@@ -7,6 +7,7 @@ from datetime import datetime
 from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
+from core.visualizer_request import VisualizerRequest, ChartType
 logger = setup_logger(__name__)
 
 class DataManager:
@@ -256,3 +257,86 @@ class DataManager:
         except Exception as e:
             logger.error(f"Error saving cohort to CSV: {str(e)}")
             return False
+
+
+    def validate_visualization_request(self, request: VisualizerRequest) -> bool:
+        """
+        Validate visualization request against current cohort schema.
+        
+        Args:
+            request: VisualizerRequest object to validate
+            
+        Returns:
+            bool: True if request is valid for current cohort
+        """
+        try:
+            if self._current_cohort is None:
+                logger.error("No current cohort available")
+                return False
+                
+            # Get available columns from current cohort
+            available_columns = list(self._current_cohort.columns)
+            
+            # Check if required columns are specified based on chart type
+            if request.chart_type == ChartType.BAR:
+                if not request.x_column:
+                    logger.error("Bar chart requires x_column")
+                    return False
+                    
+            elif request.chart_type == ChartType.PIE:
+                if not request.x_column:
+                    logger.error("Pie chart requires x_column")
+                    return False
+                    
+            elif request.chart_type == ChartType.SCATTER:
+                if not (request.x_column and request.y_column):
+                    logger.error("Scatter plot requires both x_column and y_column")
+                    return False
+                    
+            elif request.chart_type == ChartType.BOX:
+                if not (request.x_column and request.category_column):
+                    logger.error("Box plot requires both x_column and category_column")
+                    return False
+                    
+            elif request.chart_type == ChartType.HISTOGRAM:
+                if not request.x_column:
+                    logger.error("Histogram requires x_column")
+                    return False
+                    
+            elif request.chart_type == ChartType.LINE:
+                if not (request.x_column and request.y_column):
+                    logger.error("Line chart requires both x_column and y_column")
+                    return False
+
+            # If we have any columns specified, validate them
+            if request.x_column and request.x_column not in available_columns:
+                logger.error(f"Column not found: {request.x_column}")
+                return False
+                
+            if request.y_column and request.y_column not in available_columns:
+                logger.error(f"Column not found: {request.y_column}")
+                return False
+                
+            if request.category_column and request.category_column not in available_columns:
+                logger.error(f"Column not found: {request.category_column}")
+                return False
+
+            # Additional validation based on data types
+            schema = self._current_schema
+            
+            # Validate numeric columns for applicable chart types
+            if request.chart_type in [ChartType.BOX, ChartType.HISTOGRAM, ChartType.SCATTER]:
+                if request.x_column and 'float' not in schema[request.x_column]['dtype'] and 'int' not in schema[request.x_column]['dtype']:
+                    logger.error(f"Column {request.x_column} must be numeric for {request.chart_type.value} chart")
+                    return False
+                    
+                if request.y_column and 'float' not in schema[request.y_column]['dtype'] and 'int' not in schema[request.y_column]['dtype']:
+                    logger.error(f"Column {request.y_column} must be numeric for {request.chart_type.value} chart")
+                    return False
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error validating visualization request: {e}")
+            return False
+

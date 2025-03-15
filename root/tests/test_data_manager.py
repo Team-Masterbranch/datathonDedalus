@@ -4,6 +4,7 @@ import pandas as pd
 import os
 from datetime import datetime
 from core.data_manager import DataManager
+from core.visualizer_request import VisualizerRequest, ChartType
 from core.query import Query
 import tempfile
 
@@ -71,7 +72,6 @@ class TestDataManagerInitialization:
         assert schema['Fecha_inicio']['dtype'] in ['object', 'datetime64[ns]']
         assert schema['Genero']['dtype'] == 'object'
         assert schema['Peso']['dtype'] == 'float64'
-
 
 
 class TestQueryFiltering:
@@ -232,6 +232,168 @@ class TestDataExport:
         """Test saving to invalid path."""
         success = data_manager.save_current_cohort('')
         assert not success
+
+# tests/test_data_manager.py
+class TestVisualizationRequests:
+    """Test cases for visualization request validation."""
+
+    def test_valid_box_plot_request(self, data_manager):
+        """Test validation of a valid box plot request."""
+        request = VisualizerRequest(
+            chart_type=ChartType.BOX,
+            title="Age Distribution by Gender",
+            x_column="Edad",
+            category_column="Genero"
+        )
+        assert data_manager.validate_visualization_request(request)
+
+    def test_invalid_box_plot_numeric(self, data_manager):
+        """Test validation fails when using non-numeric column for box plot."""
+        request = VisualizerRequest(
+            chart_type=ChartType.BOX,
+            title="Invalid Box Plot",
+            x_column="Descripcion",  # Non-numeric column
+            category_column="Genero"
+        )
+        assert not data_manager.validate_visualization_request(request)
+
+    def test_valid_pie_chart_request(self, data_manager):
+        """Test validation of a valid pie chart request."""
+        request = VisualizerRequest(
+            chart_type=ChartType.PIE,
+            title="Disease Distribution",
+            x_column="Descripcion"
+        )
+        assert data_manager.validate_visualization_request(request)
+
+    def test_valid_scatter_plot_request(self, data_manager):
+        """Test validation of a valid scatter plot request."""
+        request = VisualizerRequest(
+            chart_type=ChartType.SCATTER,
+            title="Age vs Weight",
+            x_column="Edad",
+            y_column="Peso"
+        )
+        assert data_manager.validate_visualization_request(request)
+
+    def test_invalid_column_name(self, data_manager):
+        """Test validation fails with non-existent column."""
+        request = VisualizerRequest(
+            chart_type=ChartType.BAR,
+            title="Invalid Column Test",
+            x_column="NonExistentColumn",
+            y_column="Edad"
+        )
+        assert not data_manager.validate_visualization_request(request)
+
+    def test_missing_required_columns(self, data_manager):
+        """Test validation fails when required columns are missing."""
+        request = VisualizerRequest(
+            chart_type=ChartType.SCATTER,
+            title="Missing Columns Test",
+            x_column="Edad"  # Missing y_column for scatter plot
+        )
+        assert not data_manager.validate_visualization_request(request)
+
+    def test_validation_with_none_cohort(self, data_manager):
+        """Test validation fails when current cohort is None."""
+        data_manager._current_cohort = None
+        request = VisualizerRequest(
+            chart_type=ChartType.BAR,
+            title="Test with None Cohort",
+            x_column="Edad"
+        )
+        assert not data_manager.validate_visualization_request(request)
+
+    def test_histogram_numeric_validation(self, data_manager):
+        """Test validation of numeric column for histogram."""
+        request = VisualizerRequest(
+            chart_type=ChartType.HISTOGRAM,
+            title="Age Distribution",
+            x_column="Edad"
+        )
+        assert data_manager.validate_visualization_request(request)
+
+        # Test with non-numeric column
+        invalid_request = VisualizerRequest(
+            chart_type=ChartType.HISTOGRAM,
+            title="Invalid Histogram",
+            x_column="Descripcion"
+        )
+        assert not data_manager.validate_visualization_request(invalid_request)
+
+    def test_bar_chart_many_categories(self, data_manager):
+        """Test validation warning for bar chart with many categories."""
+        # Create many unique values matching the DataFrame length
+        num_rows = len(data_manager._current_cohort)
+        
+        # First modify the data to have many unique values
+        data_manager._current_cohort['ManyCategories'] = [f'Cat_{i}' for i in range(num_rows)]
+        data_manager._update_current_schema()
+
+        request = VisualizerRequest(
+            chart_type=ChartType.BAR,
+            title="Many Categories Test",
+            category_column="ManyCategories",
+            x_column="Edad"
+        )
+        # Should still validate but check logs for warning
+        assert data_manager.validate_visualization_request(request)
+
+    def test_multiple_column_validation(self, data_manager):
+        """Test validation with multiple columns specified."""
+        request = VisualizerRequest(
+            chart_type=ChartType.BOX,
+            title="Complex Box Plot",
+            x_column="Edad",
+            y_column="Peso",
+            category_column="Genero"
+        )
+        assert data_manager.validate_visualization_request(request)
+
+    def test_empty_request(self, data_manager):
+        """Test validation with minimal request information."""
+        request = VisualizerRequest(
+            chart_type=ChartType.BAR,
+            title="Empty Request"
+            # No columns specified
+        )
+        # Should fail validation because BAR chart requires x_column
+        assert not data_manager.validate_visualization_request(request)
+
+        # Test with other chart types as well
+        request_scatter = VisualizerRequest(
+            chart_type=ChartType.SCATTER,
+            title="Empty Scatter"
+        )
+        assert not data_manager.validate_visualization_request(request_scatter)
+
+        request_box = VisualizerRequest(
+            chart_type=ChartType.BOX,
+            title="Empty Box"
+        )
+        assert not data_manager.validate_visualization_request(request_box)
+
+
+    def test_validation_after_cohort_filter(self, data_manager):
+        """Test validation after applying cohort filter."""
+        # Apply a filter first
+        query = Query({
+            "field": "Genero",
+            "operation": "equals",
+            "value": "M"
+        })
+        data_manager.apply_filter(query)
+
+        # Then validate visualization request
+        request = VisualizerRequest(
+            chart_type=ChartType.BOX,
+            title="Filtered Cohort Plot",
+            x_column="Edad",
+            category_column="Descripcion"
+        )
+        assert data_manager.validate_visualization_request(request)
+
 
 if __name__ == '__main__':
     pytest.main([__file__])
