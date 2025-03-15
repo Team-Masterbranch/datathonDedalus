@@ -16,6 +16,9 @@ from utils.logger import setup_logger
 logger = setup_logger(__name__)
 from core.query_manager import QueryManager
 from core.data_manager import DataManager
+from core.result_analyzer import ResultAnalyzer
+from core.visualizer import Visualizer
+
 
 
 class Application:
@@ -31,6 +34,8 @@ class Application:
         self.data_manager = DataManager(DATA_DIR)
         self.query_manager = QueryManager(self.data_manager)
         self.cli = HealthcareCLI(self)
+        self.result_analyzer = ResultAnalyzer()
+        self.visualizer = Visualizer()
         
     def start(self):
         """Start the application and its interface."""
@@ -68,17 +73,36 @@ class Application:
             else:
                 structured_criteria = processed_query
 
-            # Execute query using QueryManager with cohort parameter
+            # Execute query using QueryManager
             result = await self.query_manager.execute_query(
                 structured_criteria, 
                 filter_current_cohort=filter_current_cohort
             )
+            
+            # Analyze results and generate visualizations
+            cohort_path, viz_requests = self.result_analyzer.analyze_cohort(self.data_manager)
+            
+            if cohort_path:
+                print(f"\nYour requested cohort is saved in file: {cohort_path}")
+                
+                # Generate visualizations
+                if viz_requests:
+                    viz_results = self.visualizer.create_visualizations(
+                        self.data_manager.get_current_cohort(),
+                        viz_requests
+                    )
+                    
+                    if viz_results:
+                        print("\nGenerated visualizations are saved in:")
+                        for path in viz_results:
+                            print(f"- {path}")
             
             return result
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
             raise
+
 
     def get_available_tests(self) -> List[str]:
         """

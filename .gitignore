@@ -8,3 +8,4 @@ __pycache__/
 .env
 .Python
 /root/data/img/*
+/root/data/cohort.csv
