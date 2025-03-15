@@ -3,10 +3,11 @@ import cmd
 import asyncio
 import os
 from utils.logger import logger
+from utils.config import CLI_PROMPT, CLI_INTRO
 
 class HealthcareCLI(cmd.Cmd):
-    intro = 'Welcome to the Healthcare Data Analysis System. Type help or ? to list commands.\n'
-    prompt = '(Master Branch Bot) '
+    intro = CLI_INTRO
+    prompt = CLI_PROMPT
 
     def __init__(self, application):
         super().__init__()

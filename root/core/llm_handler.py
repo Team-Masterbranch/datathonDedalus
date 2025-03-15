@@ -1,7 +1,13 @@
 # core/llm_handler.py
 from typing import Optional, Dict, Any
-import os
-from utils.config import LLM_API_KEY
+from utils.config import (
+    LLM_API_KEY,
+    LLM_DEFAULT_TEMPERATURE,
+    LLM_MAX_TOKENS,
+    LLM_TOP_P,
+    LLM_FREQUENCY_PENALTY,
+    LLM_PRESENCE_PENALTY
+)
 from utils.logger import logger
 from utils.logger import setup_logger
 logger = setup_logger(__name__)
@@ -19,13 +25,13 @@ class LLMHandler:
             logger.error("LLM API key not found in config")
             raise ValueError("LLM API key not configured")
         
-        # Default parameters for LLM queries
-        self.default_params = {
-            'temperature': 0.7,
-            'max_tokens': 150,
-            'top_p': 1.0,
-            'frequency_penalty': 0.0,
-            'presence_penalty': 0.0
+        # Configure LLM parameters
+        params = {
+            "temperature": LLM_DEFAULT_TEMPERATURE,
+            "max_tokens": LLM_MAX_TOKENS,
+            "top_p": LLM_TOP_P,
+            "frequency_penalty": LLM_FREQUENCY_PENALTY,
+             "presence_penalty": LLM_PRESENCE_PENALTY
         }
 
     async def process_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> str:

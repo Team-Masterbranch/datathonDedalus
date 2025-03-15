@@ -1,4 +1,9 @@
 # core/application.py
+from utils.config import (
+    DATA_DIR,
+    LOG_LEVEL,
+)
+
 import pytest
 import os
 from typing import Dict, Any, Optional, List
@@ -18,13 +23,12 @@ class Application:
     Application service layer that coordinates between different components.
     """
     def __init__(self):
+        logger.setLevel(LOG_LEVEL)
         logger.info("Initializing Application")
         self.preprocessor = QueryPreprocessor()
         self.parser = Parser()
         self.llm_handler = LLMHandler()
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        data_dir = os.path.join(base_dir, 'data')
-        self.data_manager = DataManager(data_dir)
+        self.data_manager = DataManager(DATA_DIR)
         self.query_manager = QueryManager(self.data_manager)
         self.cli = HealthcareCLI(self)
         
