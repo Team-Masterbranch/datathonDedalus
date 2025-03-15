@@ -140,27 +140,38 @@ class Application:
             if not os.path.exists(tests_dir):
                 return {"success": False, "error": "Tests directory not found"}
 
-            test_args = ["-v", "-s"]  # Added -s flag here
+            test_args = ["-v", "-s"]  # Verbose output and no capture
             
             if test_file:
+                # Remove .py extension if provided
+                test_file = test_file.replace('.py', '')
+                # Remove 'test_' prefix if provided
+                test_file = test_file[5:] if test_file.startswith('test_') else test_file
+                
                 test_path = os.path.join(tests_dir, f"test_{test_file}.py")
                 if not os.path.exists(test_path):
                     return {"success": False, "error": f"Test file not found: {test_file}"}
                 
                 if test_function:
-                    test_args.extend([test_path, f"-k {test_function}"])
+                    # Fix -k argument format
+                    test_args.extend([test_path, "-k", test_function])
                 else:
                     test_args.append(test_path)
             else:
                 test_args.append(tests_dir)
 
+            # Convert paths to strings and ensure proper formatting
+            test_args = [str(arg) for arg in test_args]
+            
+            logger.info(f"Running tests with args: {test_args}")
             result = pytest.main(test_args)
             
             return {
                 "success": result == 0,
                 "exit_code": result,
                 "test_file": test_file,
-                "test_function": test_function
+                "test_function": test_function,
+                "args_used": test_args
             }
 
         except Exception as e:
@@ -171,3 +182,4 @@ class Application:
                 "test_file": test_file,
                 "test_function": test_function
             }
+

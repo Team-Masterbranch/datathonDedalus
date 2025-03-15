@@ -1,11 +1,12 @@
 # core/data_manager.py
-from typing import Dict, Any, Tuple, Optional
+from typing import Dict, Any, Optional
 import pandas as pd
 import os
 import glob
 from datetime import datetime
 from utils.logger import logger
 from utils.logger import setup_logger
+from core.query import Query
 logger = setup_logger(__name__)
 
 class DataManager:
@@ -36,6 +37,7 @@ class DataManager:
             
         # Initialize full dataset schema
         self._update_full_schema()
+        self._update_current_schema()
         
     def load_csv_files(self) -> bool:
         """
@@ -67,6 +69,123 @@ class DataManager:
             logger.error(f"Error loading CSV files: {str(e)}")
             return False
 
+    def apply_filter(self, query: Query) -> Optional[pd.DataFrame]:
+        """
+        Apply filter based on Query object to current cohort.
+        
+        Args:
+            query: Query object containing filter criteria
+            
+        Returns:
+            Optional[pd.DataFrame]: Filtered DataFrame or None if error
+        """
+        try:
+            logger.info(f"Applying filter with query: {query}")
+            
+            if self._current_cohort is None:
+                logger.error("Cannot apply filter: current cohort is None")
+                return None
+                
+            logger.info(f"Current cohort shape: {self._current_cohort.shape}")
+            
+            # Get filter mask based on query
+            mask = self._apply_query_filter(query)
+            if mask is None:
+                return None
+                
+            # Apply filter mask to current cohort
+            self._current_cohort = self._current_cohort[mask]
+            logger.info(f"Filter applied successfully. New cohort shape: {self._current_cohort.shape}")
+            
+            # Update schema for filtered cohort
+            self._update_current_schema()
+            return self._current_cohort
+            
+        except Exception as e:
+            logger.error(f"Error applying filter: {str(e)}")
+            return None
+
+    def _apply_query_filter(self, query: Query) -> Optional[pd.Series]:
+        """
+        Create and apply filter mask based on Query object.
+        
+        Args:
+            query: Query object containing filter criteria
+            
+        Returns:
+            Optional[pd.Series]: Boolean mask for filtering or None if error
+        """
+        try:
+            criteria = query._query
+            operation = criteria.get('operation')
+            
+            # Handle logical operations (AND/OR)
+            if operation in ['and', 'or']:
+                return self._handle_logical_operation(criteria)
+                
+            # Handle comparison operations
+            return self._handle_comparison_operation(criteria)
+            
+        except Exception as e:
+            logger.error(f"Error creating query filter: {str(e)}")
+            return None
+
+    def _handle_logical_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
+        """Handle AND/OR operations."""
+        if 'criteria' not in criteria:
+            logger.error("Missing criteria for logical operation")
+            return None
+            
+        operation = criteria['operation']
+        masks = []
+        
+        for subcriteria in criteria['criteria']:
+            submask = self._handle_comparison_operation(subcriteria)
+            if submask is not None:
+                masks.append(submask)
+        
+        if not masks:
+            return None
+            
+        if operation == 'and':
+            return pd.concat(masks, axis=1).all(axis=1)
+        else:  # or
+            return pd.concat(masks, axis=1).any(axis=1)
+
+    def _handle_comparison_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
+        """Handle comparison operations (equals, greater_than, less_than, between)."""
+        field = criteria.get('field')
+        operation = criteria.get('operation')
+        value = criteria.get('value')
+        
+        if not all([field, operation]):
+            logger.error(f"Invalid criteria structure: {criteria}")
+            return None
+            
+        if field not in self._current_cohort.columns:
+            logger.error(f"Field {field} not found in dataset")
+            return None
+            
+        try:
+            if operation == 'equals':
+                return self._current_cohort[field] == value
+            elif operation == 'greater_than':
+                return self._current_cohort[field] > value
+            elif operation == 'less_than':
+                return self._current_cohort[field] < value
+            elif operation == 'between':
+                values = criteria.get('values', [])
+                if len(values) != 2:
+                    logger.error("Between operation requires exactly 2 values")
+                    return None
+                return (self._current_cohort[field] >= values[0]) & (self._current_cohort[field] <= values[1])
+            else:
+                logger.error(f"Unsupported operation: {operation}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Error in comparison operation: {str(e)}")
+            return None
 
     def _update_full_schema(self):
         """Update schema for the full dataset."""
@@ -79,15 +198,7 @@ class DataManager:
             self._current_schema = self._create_schema(self._current_cohort)
 
     def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
-        """
-        Create schema for given DataFrame.
-        
-        Args:
-            df: DataFrame to create schema for
-            
-        Returns:
-            Dict containing schema information
-        """
+        """Create schema for given DataFrame."""
         schema = {}
         for column in df.columns:
             schema[column] = {
@@ -96,84 +207,22 @@ class DataManager:
                 'missing_values': df[column].isnull().sum()
             }
         return schema
-    
+
     def get_full_schema(self) -> Dict[str, Dict]:
-        """
-        Get schema for the full dataset.
-        
-        Returns:
-            Dictionary containing schema information for the full dataset
-        """
+        """Get schema for the full dataset."""
         return self._full_schema
 
     def get_current_schema(self) -> Dict[str, Dict]:
-        """
-        Get schema for the current cohort.
-        
-        Returns:
-            Dictionary containing schema information for the current filtered cohort
-        """
+        """Get schema for the current cohort."""
         return self._current_schema
 
     def get_current_cohort(self) -> Optional[pd.DataFrame]:
-        """
-        Get the current filtered cohort.
-        
-        Returns:
-            Optional[pd.DataFrame]: The current filtered dataset or None if not available
-        """
+        """Get the current filtered cohort."""
         return self._current_cohort
-
 
     def reset_to_full(self):
         """Reset the current cohort to include all data."""
         logger.info("Resetting cohort to full dataset")
         self._current_cohort = self._full_dataset.copy()
-        self._update_current_schema()  # Update schema for new cohort
+        self._update_current_schema()
         return self._current_cohort
-
-    def apply_filter(self, criteria: Dict[str, Any]) -> Optional[pd.DataFrame]:
-        try:
-            logger.info(f"Applying filter with criteria: {criteria}")
-            
-            if self._current_cohort is None:
-                logger.error("Cannot apply filter: current cohort is None")
-                return None
-                
-            logger.info(f"Current cohort shape: {self._current_cohort.shape}")
-                
-            field = criteria.get('field')
-            operation = criteria.get('operation')
-            value = criteria.get('value')
-            
-            logger.info(f"Extracted field: {field}, operation: {operation}, value: {value}")
-            
-            if not all([field, operation, value]):
-                logger.error(f"Invalid filter criteria: {criteria}")
-                return None
-                
-            if field not in self._current_cohort.columns:
-                logger.error(f"Field {field} not found in dataset. Available columns: {list(self._current_cohort.columns)}")
-                return None
-                
-            # Apply the filter based on operation
-            logger.info(f"Applying {operation} operation on field {field} with value {value}")
-            
-            if operation == 'greater_than':
-                self._current_cohort = self._current_cohort[self._current_cohort[field] > value]
-            elif operation == 'less_than':
-                self._current_cohort = self._current_cohort[self._current_cohort[field] < value]
-            elif operation == 'equals':
-                self._current_cohort = self._current_cohort[self._current_cohort[field] == value]
-            else:
-                logger.error(f"Unsupported operation: {operation}")
-                return None
-                
-            logger.info(f"Filter applied successfully. New cohort shape: {self._current_cohort.shape}")
-            self._update_current_schema()
-            return self._current_cohort
-            
-        except Exception as e:
-            logger.error(f"Error applying filter: {str(e)}")
-            return None
-

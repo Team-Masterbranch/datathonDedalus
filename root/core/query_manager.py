@@ -1,7 +1,8 @@
 # core/query_manager.py
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import pandas as pd
 from core.data_manager import DataManager
+from core.query import Query
 from utils.logger import logger
 from utils.logger import setup_logger
 logger = setup_logger(__name__)
@@ -14,16 +15,16 @@ class QueryManager:
     def __init__(self, data_manager: DataManager):
         logger.info("Initializing Query Manager")
         self.data_manager = data_manager
-        self.last_query: Dict[str, Any] = {}
+        self.last_query: Optional[Query] = None
 
     async def execute_query(self, 
-                        structured_criteria: Dict[str, Any], 
+                        query: Query, 
                         filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
-        Execute a query based on structured criteria.
+        Execute a query based on Query object.
         
         Args:
-            structured_criteria: Dictionary containing parsed query parameters
+            query: Query object containing filter criteria
             filter_current_cohort: If True, apply filter to current cohort,
                                 if False, reset cohort before applying filter
         
@@ -31,11 +32,17 @@ class QueryManager:
             Dict containing query results and metadata
         """
         logger.info(f"Executing query with filter_current_cohort={filter_current_cohort}")
-        logger.debug(f"Query criteria: {structured_criteria}")
+        logger.debug(f"Query criteria: {query._query}")
 
         try:
+            # Validate query against schema
+            schema = self.data_manager.get_current_schema()
+            
+            if not query.validate(schema):
+                raise QueryExecutionError("Invalid query structure or field types")
+
             # Store query for reference
-            self.last_query = structured_criteria
+            self.last_query = query
 
             # Get starting DataFrame
             if not filter_current_cohort:
@@ -43,13 +50,14 @@ class QueryManager:
                 self.data_manager.reset_to_full()
             
             # Apply filter and get results
-            filtered_df = self.data_manager.apply_filter(structured_criteria)
+            filtered_df = self.data_manager.apply_filter(query)
             if filtered_df is None:
-                raise ValueError("Filter operation returned None")
+                raise QueryExecutionError("Filter operation returned None")
             
             # Prepare result metadata
             result = {
-                "criteria": structured_criteria,
+                "criteria": query._query,
+                "human_readable": str(query),
                 "row_count": len(filtered_df),
                 "filtered_from": len(self.data_manager.get_current_cohort()),
                 "columns": list(filtered_df.columns),
@@ -63,9 +71,16 @@ class QueryManager:
             logger.error(f"Error executing query: {e}")
             raise QueryExecutionError(f"Query execution failed: {str(e)}")
 
-    def get_last_query(self) -> Dict[str, Any]:
-        """Get the criteria from the last executed query."""
+
+    def get_last_query(self) -> Optional[Query]:
+        """Get the Query object from the last executed query."""
         return self.last_query
+
+    def get_last_query_description(self) -> str:
+        """Get human readable description of the last executed query."""
+        if self.last_query is None:
+            return "No query executed yet"
+        return str(self.last_query)
 
     def get_current_cohort_size(self) -> int:
         """Get the size of the current cohort."""

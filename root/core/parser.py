@@ -2,6 +2,7 @@
 from typing import Optional, Dict, Any
 from utils.logger import logger
 from utils.logger import setup_logger
+from core.query import Query
 logger = setup_logger(__name__)
 
 class Parser:
@@ -9,35 +10,44 @@ class Parser:
     Parser module that handles:
     1. Receiving preprocessed queries
     2. Interacting with LLM when needed
-    3. Converting responses to structured criteria
+    3. Converting responses to Query objects
     4. Updating preprocessor cache
     """
 
     def __init__(self):
         logger.info("Initializing Parser")
 
-    def process_with_llm(self, query: str) -> str:
+    def process_with_llm(self, query: str) -> Query:
         """
-        Process query through LLM to get structured criteria.
+        Process query through LLM to get structured Query object.
         
         Args:
             query: Raw or preprocessed query string
             
         Returns:
-            str: Structured criteria for the Query Manager
+            Query: Structured Query object for the Query Manager
+            
+        Raises:
+            ValueError: If LLM response cannot be converted to valid Query
         """
         logger.info(f"Processing query with LLM: {query}")
         
-        # Stub for LLM interaction
+        # Get structured criteria from LLM
         structured_criteria = self._get_llm_response(query)
         
         # Validate and format the response
         formatted_criteria = self._format_criteria(structured_criteria)
         
-        logger.info(f"Generated structured criteria: {formatted_criteria}")
-        return formatted_criteria
+        # Create Query object
+        try:
+            query_obj = Query(formatted_criteria)
+            logger.info(f"Generated Query object: {query_obj}")
+            return query_obj
+        except Exception as e:
+            logger.error(f"Failed to create Query object: {e}")
+            raise ValueError(f"Invalid query structure from LLM: {e}")
 
-    def _get_llm_response(self, query: str) -> str:
+    def _get_llm_response(self, query: str) -> Dict[str, Any]:
         """
         Stub method for LLM interaction that returns meaningful mock criteria.
         Will be replaced with actual LLM call later.
@@ -46,7 +56,7 @@ class Parser:
             query: User query string
             
         Returns:
-            str: JSON-formatted filtering criteria
+            dict: Query structure for creating Query object
         """
         logger.info("Getting LLM response")
         
@@ -54,14 +64,24 @@ class Parser:
         if "edad" in query.lower():
             return {
                 "field": "Edad",
-                "operation": "between",
-                "values": [30, 50]
+                "operation": "greater_than",
+                "value": 40
             }
         elif "condicion" in query.lower():
             return {
-                "field": "Condicion",
-                "operation": "equals",
-                "value": "Diabetes"
+                "operation": "or",
+                "criteria": [
+                    {
+                        "field": "Descripcion",
+                        "operation": "equals",
+                        "value": "Diabetes tipo 2"
+                    },
+                    {
+                        "field": "Descripcion",
+                        "operation": "equals",
+                        "value": "Hipertensión"
+                    }
+                ]
             }
         elif "and" in query.lower():
             return {
@@ -73,9 +93,9 @@ class Parser:
                         "value": 40
                     },
                     {
-                        "field": "Condicion",
+                        "field": "Descripcion",
                         "operation": "equals",
-                        "value": "Hipertension"
+                        "value": "Diabetes tipo 2"
                     }
                 ]
             }
@@ -87,7 +107,7 @@ class Parser:
                 "value": 70
             }
 
-    def _format_criteria(self, llm_response: dict) -> dict:
+    def _format_criteria(self, llm_response: Dict[str, Any]) -> Dict[str, Any]:
         """
         Format and validate LLM response into proper criteria structure.
         
@@ -96,14 +116,18 @@ class Parser:
             
         Returns:
             dict: Formatted and validated criteria
+            
+        Raises:
+            ValueError: If criteria structure is invalid
         """
         logger.info("Formatting LLM response into criteria")
         
-        # Here we could add validation logic
-        # For now, just return the criteria as is
+        if not self.validate_criteria(llm_response):
+            raise ValueError(f"Invalid criteria structure: {llm_response}")
+            
         return llm_response
 
-    def validate_criteria(self, criteria: dict) -> bool:
+    def validate_criteria(self, criteria: Dict[str, Any]) -> bool:
         """
         Validate if criteria is properly structured.
         

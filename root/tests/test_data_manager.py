@@ -1,167 +1,233 @@
 # tests/test_data_manager.py
 import pytest
 import pandas as pd
+import os
 from core.data_manager import DataManager
+from core.query import Query
+import tempfile
 
 @pytest.fixture
-def test_data_path(tmp_path):
-    """Create test data with realistic healthcare data structure."""
-    data_dir = tmp_path / "test_data"
-    data_dir.mkdir()
-    
-    # Create conditions test data
-    conditions_data = pd.DataFrame({
-        'PacienteID': [1, 1, 2, 2],
-        'Fecha_inicio': ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01'],
-        'Fecha_fin': ['2024-01-01', '2024-02-01', '2024-03-01', '2024-04-01'],
-        'Codigo_SNOMED': ['C0011849', 'C0020538', 'C0038356', 'C0027651'],
-        'Descripcion': ['Hipertensión', 'Diabetes tipo 2', 'Asma', 'Migraña']
+def sample_data():
+    """Create sample data for testing."""
+    return pd.DataFrame({
+        'PacienteID': range(1, 11),
+        'Edad': [25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
+        'Descripcion': ['Diabetes tipo 2', 'Hipertensión', 'Diabetes tipo 2', 
+                       'Asma', 'Hipertensión', 'Diabetes tipo 2', 'Asma', 
+                       'Hipertensión', 'Diabetes tipo 2', 'Asma'],
+        'Fecha_inicio': pd.date_range(start='2023-01-01', periods=10)
     })
-    
-    # Create allergies test data
-    allergies_data = pd.DataFrame({
-        'PacienteID': [1, 1, 2, 2],
-        'Fecha_diagnostico': ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01'],
-        'Codigo_SNOMED': ['91936005', '91933007', '91931005', '300913006'],
-        'Descripcion': ['Alergia al polen', 'Alergia a frutos secos', 
-                       'Alergia a la leche', 'Alergia a la penicilina']
-    })
-    
-    # Save test files
-    conditions_data.to_csv(data_dir / "condiciones.csv", index=False)
-    allergies_data.to_csv(data_dir / "alergias.csv", index=False)
-    
-    return str(data_dir)
 
 @pytest.fixture
-def data_manager(test_data_path):
-    """Create DataManager instance with test data."""
-    return DataManager(test_data_path)
+def temp_data_dir(sample_data):
+    """Create temporary directory with sample CSV data."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        sample_data.to_csv(os.path.join(tmpdir, 'test_data.csv'), index=False)
+        yield tmpdir
 
-def test_load_csv_files(data_manager):
-    """Test initial data loading."""
-    assert data_manager._full_dataset is not None
-    assert data_manager._current_cohort is not None
-    assert len(data_manager._full_dataset) > 0
-    assert len(data_manager._current_cohort) > 0
+@pytest.fixture
+def data_manager(temp_data_dir):
+    """Create DataManager instance with sample data."""
+    return DataManager(temp_data_dir)
 
-def test_apply_equals_filter(data_manager):
-    """Test applying equals filter condition."""
-    filter_criteria = {
-        "field": "Descripcion",
-        "operation": "equals",
-        "value": "Diabetes tipo 2"
-    }
-    
-    data_manager.apply_filter(filter_criteria)
-    filtered = data_manager._current_cohort
-    
-    assert filtered is not None
-    assert len(filtered) > 0
-    assert all(row['Descripcion'] == "Diabetes tipo 2" for _, row in filtered.iterrows())
+class TestDataManagerInitialization:
+    def test_initialization(self, data_manager, sample_data):
+        """Test basic initialization of DataManager."""
+        assert data_manager._full_dataset is not None
+        assert data_manager._current_cohort is not None
+        assert len(data_manager._full_schema) > 0
+        assert len(data_manager._current_schema) > 0
+        assert data_manager._current_cohort.shape == sample_data.shape
 
-def test_apply_greater_than_filter(data_manager):
-    """Test applying greater than filter."""
-    filter_criteria = {
-        "field": "PacienteID",
-        "operation": "greater_than",
-        "value": 1
-    }
-    
-    data_manager.apply_filter(filter_criteria)
-    filtered = data_manager._current_cohort
-    
-    assert filtered is not None
-    assert len(filtered) > 0
-    assert all(row['PacienteID'] > 1 for _, row in filtered.iterrows())
+    def test_invalid_data_path(self):
+        """Test initialization with invalid data path."""
+        with pytest.raises(ValueError, match="Failed to load data files"):
+            DataManager("invalid/path")
 
-def test_apply_less_than_filter(data_manager):
-    """Test applying less than filter."""
-    filter_criteria = {
-        "field": "PacienteID",
-        "operation": "less_than",
-        "value": 2
-    }
-    
-    data_manager.apply_filter(filter_criteria)
-    filtered = data_manager._current_cohort
-    
-    assert filtered is not None
-    assert len(filtered) > 0
-    assert all(row['PacienteID'] < 2 for _, row in filtered.iterrows())
+    def test_schema_creation(self, data_manager):
+        """Test schema creation."""
+        schema = data_manager.get_full_schema()
+        expected_columns = {'PacienteID', 'Edad', 'Descripcion', 'Fecha_inicio'}
+        assert set(schema.keys()) == expected_columns
+        assert all(key in schema['Edad'] for key in ['dtype', 'unique_values', 'missing_values'])
 
-def test_apply_date_filter(data_manager):
-    """Test applying date filters."""
-    filter_criteria = {
-        "field": "Fecha_inicio",
-        "operation": "greater_than",
-        "value": "2023-02-01"
-    }
-    
-    data_manager.apply_filter(filter_criteria)
-    filtered = data_manager._current_cohort
-    
-    assert filtered is not None
-    assert len(filtered) > 0
-    assert all(pd.to_datetime(row['Fecha_inicio']) > pd.to_datetime('2023-02-01') 
-              for _, row in filtered.iterrows())
+class TestQueryFiltering:
+    def test_simple_age_query(self, data_manager):
+        """Test simple age filter query."""
+        query = Query({
+            "field": "Edad",
+            "operation": "greater_than",
+            "value": 50
+        })
+        result = data_manager.apply_filter(query)
+        
+        assert result is not None
+        assert len(result) == 4  # Ages 55, 60, 65, 70
+        assert all(age > 50 for age in result['Edad'])
 
-def test_reset_cohort(data_manager):
-    """Test resetting cohort to full dataset."""
-    # Apply a filter first
-    filter_criteria = {
-        "field": "Descripcion",
-        "operation": "equals",
-        "value": "Asma"
-    }
-    
-    data_manager.apply_filter(filter_criteria)
-    filtered_size = len(data_manager._current_cohort)
-    assert filtered_size < len(data_manager._full_dataset)
-    
-    # Reset and verify
-    data_manager.reset_to_full()
-    assert len(data_manager._current_cohort) == len(data_manager._full_dataset)
-    pd.testing.assert_frame_equal(data_manager._current_cohort, data_manager._full_dataset)
+    def test_condition_equals_query(self, data_manager):
+        """Test condition equals filter query."""
+        query = Query({
+            "field": "Descripcion",
+            "operation": "equals",
+            "value": "Diabetes tipo 2"
+        })
+        result = data_manager.apply_filter(query)
+        
+        assert result is not None
+        assert len(result) == 4  # Count of 'Diabetes tipo 2' records
+        assert all(desc == "Diabetes tipo 2" for desc in result['Descripcion'])
 
-def test_filter_error_handling(data_manager):
-    """Test error handling for filters."""
-    original_data = data_manager._current_cohort.copy()
-    
-    # Test with non-existent field
-    filter_criteria = {
-        "field": "NonExistentField",
-        "operation": "equals",
-        "value": "SomeValue"
-    }
-    result = data_manager.apply_filter(filter_criteria)
-    assert result is None
-    pd.testing.assert_frame_equal(data_manager._current_cohort, original_data)
-    
-    # Test with invalid operation
-    filter_criteria = {
-        "field": "Descripcion",
-        "operation": "INVALID_OP",
-        "value": "Asma"
-    }
-    result = data_manager.apply_filter(filter_criteria)
-    assert result is None
-    pd.testing.assert_frame_equal(data_manager._current_cohort, original_data)
+    def test_complex_and_query(self, data_manager):
+        """Test complex AND query."""
+        query = Query({
+            "operation": "and",
+            "criteria": [
+                {
+                    "field": "Edad",
+                    "operation": "greater_than",
+                    "value": 40
+                },
+                {
+                    "field": "Descripcion",
+                    "operation": "equals",
+                    "value": "Diabetes tipo 2"
+                }
+            ]
+        })
+        result = data_manager.apply_filter(query)
+        
+        assert result is not None
+        assert all(age > 40 for age in result['Edad'])
+        assert all(desc == "Diabetes tipo 2" for desc in result['Descripcion'])
 
-def test_data_immutability(data_manager):
-    """Test that operations don't modify the original dataset."""
-    original_full = data_manager._full_dataset.copy()
-    
-    # Apply filter
-    data_manager.apply_filter({
-        "field": "Descripcion",
-        "operation": "equals",
-        "value": "Asma"
-    })
-    
-    # Reset and verify original data hasn't changed
-    data_manager.reset_to_full()
-    pd.testing.assert_frame_equal(original_full, data_manager._full_dataset)
+    def test_complex_or_query(self, data_manager):
+        """Test complex OR query."""
+        query = Query({
+            "operation": "or",
+            "criteria": [
+                {
+                    "field": "Descripcion",
+                    "operation": "equals",
+                    "value": "Diabetes tipo 2"
+                },
+                {
+                    "field": "Descripcion",
+                    "operation": "equals",
+                    "value": "Hipertensión"
+                }
+            ]
+        })
+        result = data_manager.apply_filter(query)
+        
+        assert result is not None
+        assert len(result) == 7  # Count of Diabetes OR Hipertensión
+        assert all(desc in ["Diabetes tipo 2", "Hipertensión"] for desc in result['Descripcion'])
+
+    def test_between_query(self, data_manager):
+        """Test between operation query."""
+        query = Query({
+            "field": "Edad",
+            "operation": "between",
+            "values": [30, 50]
+        })
+        result = data_manager.apply_filter(query)
+        
+        assert result is not None
+        assert len(result) == 5  # Ages 30, 35, 40, 45, 50
+        assert all(30 <= age <= 50 for age in result['Edad'])
+
+    def test_invalid_field_query(self, data_manager):
+        """Test query with invalid field."""
+        query = Query({
+            "field": "NonExistentField",
+            "operation": "equals",
+            "value": "test"
+        })
+        result = data_manager.apply_filter(query)
+        assert result is None
+
+    def test_invalid_operation_query(self, data_manager):
+        """Test query with invalid operation."""
+        query = Query({
+            "field": "Edad",
+            "operation": "invalid_op",
+            "value": 40
+        })
+        result = data_manager.apply_filter(query)
+        assert result is None
+
+class TestCohortManagement:
+    def test_reset_to_full(self, data_manager):
+        """Test resetting cohort to full dataset."""
+        initial_size = len(data_manager.get_current_cohort())
+        
+        # Apply a filter
+        query = Query({
+            "field": "Edad",
+            "operation": "greater_than",
+            "value": 50
+        })
+        data_manager.apply_filter(query)
+        
+        # Reset and verify
+        result = data_manager.reset_to_full()
+        assert result is not None
+        assert len(result) == initial_size
+
+    def test_sequential_filters(self, data_manager):
+        """Test applying multiple filters sequentially."""
+        # First filter: age > 40
+        query1 = Query({
+            "field": "Edad",
+            "operation": "greater_than",
+            "value": 40
+        })
+        result1 = data_manager.apply_filter(query1)
+        assert result1 is not None
+        size_after_first = len(result1)
+        
+        # Second filter: Diabetes tipo 2
+        query2 = Query({
+            "field": "Descripcion",
+            "operation": "equals",
+            "value": "Diabetes tipo 2"
+        })
+        result2 = data_manager.apply_filter(query2)
+        assert result2 is not None
+        assert len(result2) <= size_after_first
+
+class TestSchemaManagement:
+    def test_schema_updates_after_filter(self, data_manager):
+        """Test schema updates after applying filters."""
+        initial_schema = data_manager.get_current_schema()
+        
+        query = Query({
+            "field": "Edad",
+            "operation": "greater_than",
+            "value": 50
+        })
+        data_manager.apply_filter(query)
+        
+        filtered_schema = data_manager.get_current_schema()
+        assert filtered_schema['Edad']['unique_values'] < initial_schema['Edad']['unique_values']
+
+    def test_schema_reset(self, data_manager):
+        """Test schema reset when resetting to full dataset."""
+        initial_schema = data_manager.get_current_schema()
+        
+        # Apply filter
+        query = Query({
+            "field": "Edad",
+            "operation": "greater_than",
+            "value": 50
+        })
+        data_manager.apply_filter(query)
+        
+        # Reset and verify schema
+        data_manager.reset_to_full()
+        reset_schema = data_manager.get_current_schema()
+        assert reset_schema == initial_schema
 
 if __name__ == '__main__':
     pytest.main([__file__])
