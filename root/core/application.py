@@ -8,7 +8,7 @@ import pytest
 import os
 from typing import Dict, Any, Optional, List
 from interface.cli import HealthcareCLI
-from core.query_preprocessor import QueryPreprocessor
+from core.preparser import Preparser
 from core.parser import Parser
 from core.llm_handler import LLMHandler
 from utils.logger import logger
@@ -25,7 +25,7 @@ class Application:
     def __init__(self):
         logger.setLevel(LOG_LEVEL)
         logger.info("Initializing Application")
-        self.preprocessor = QueryPreprocessor()
+        self.preprocessor = Preparser()
         self.parser = Parser()
         self.llm_handler = LLMHandler()
         self.data_manager = DataManager(DATA_DIR)

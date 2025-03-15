@@ -1,17 +1,17 @@
 # tests/test_query_preprocessor.py
 import pytest
-from core.query_preprocessor import QueryPreprocessor
+from root.core.preparser import Preparser
 from core.query import Query
 
 @pytest.fixture
 def preprocessor():
     """Create QueryPreprocessor instance for testing."""
-    return QueryPreprocessor()
+    return Preparser()
 
 def test_initialization():
     """Test preprocessor initialization."""
-    preprocessor = QueryPreprocessor()
-    assert isinstance(preprocessor, QueryPreprocessor)
+    preprocessor = Preparser()
+    assert isinstance(preprocessor, Preparser)
     assert preprocessor.get_cache_size() == 0
     assert hasattr(preprocessor, 'patterns')
 

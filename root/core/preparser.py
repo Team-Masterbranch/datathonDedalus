@@ -6,7 +6,7 @@ from core.query import Query
 import re
 logger = setup_logger(__name__)
 
-class QueryPreprocessor:
+class Preparser:
     """
     First stage of query processing pipeline. 
     Attempts to parse queries using cache or regex before requiring LLM processing.
