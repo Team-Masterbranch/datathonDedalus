@@ -1,6 +1,8 @@
 # core/parser.py
 from typing import Optional, Dict, Any
 from utils.logger import logger
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 
 class Parser:
     """
@@ -37,36 +39,104 @@ class Parser:
 
     def _get_llm_response(self, query: str) -> str:
         """
-        Stub method for LLM interaction.
+        Stub method for LLM interaction that returns meaningful mock criteria.
         Will be replaced with actual LLM call later.
+        
+        Args:
+            query: User query string
+            
+        Returns:
+            str: JSON-formatted filtering criteria
         """
         logger.info("Getting LLM response")
-        # Stub response
-        return f"MOCK_RESPONSE_FOR: {query}"
+        
+        # Mock different response patterns based on query keywords
+        if "edad" in query.lower():
+            return {
+                "field": "Edad",
+                "operation": "between",
+                "values": [30, 50]
+            }
+        elif "condicion" in query.lower():
+            return {
+                "field": "Condicion",
+                "operation": "equals",
+                "value": "Diabetes"
+            }
+        elif "and" in query.lower():
+            return {
+                "operation": "and",
+                "criteria": [
+                    {
+                        "field": "Edad",
+                        "operation": "greater_than",
+                        "value": 40
+                    },
+                    {
+                        "field": "Condicion",
+                        "operation": "equals",
+                        "value": "Hipertension"
+                    }
+                ]
+            }
+        else:
+            # Default response
+            return {
+                "field": "Edad",
+                "operation": "greater_than",
+                "value": 70
+            }
 
-    def _format_criteria(self, llm_response: str) -> str:
+    def _format_criteria(self, llm_response: dict) -> dict:
         """
         Format and validate LLM response into proper criteria structure.
         
         Args:
-            llm_response: Raw response from LLM
+            llm_response: Dictionary containing filtering criteria
             
         Returns:
-            str: Formatted and validated criteria
+            dict: Formatted and validated criteria
         """
         logger.info("Formatting LLM response into criteria")
-        # Stub formatting
+        
+        # Here we could add validation logic
+        # For now, just return the criteria as is
         return llm_response
 
-    def validate_criteria(self, criteria: str) -> bool:
+    def validate_criteria(self, criteria: dict) -> bool:
         """
         Validate if criteria is properly structured.
         
         Args:
-            criteria: Criteria to validate
+            criteria: Criteria dictionary to validate
             
         Returns:
             bool: True if valid, False otherwise
         """
         logger.info(f"Validating criteria: {criteria}")
-        return True  # Stub validation
+        
+        valid_operations = ["equals", "greater_than", "less_than", "between", "and", "or"]
+        
+        try:
+            if "operation" not in criteria:
+                return False
+                
+            if criteria["operation"] not in valid_operations:
+                return False
+                
+            if criteria["operation"] in ["and", "or"]:
+                if "criteria" not in criteria or not isinstance(criteria["criteria"], list):
+                    return False
+                return all(self.validate_criteria(c) for c in criteria["criteria"])
+                
+            if "field" not in criteria:
+                return False
+                
+            if criteria["operation"] == "between":
+                return "values" in criteria and isinstance(criteria["values"], list) and len(criteria["values"]) == 2
+            else:
+                return "value" in criteria
+                
+        except Exception as e:
+            logger.error(f"Validation error: {e}")
+            return False

@@ -1,13 +1,14 @@
 # core/application.py
 import pytest
 import os
-import inspect
 from typing import Dict, Any, Optional, List
 from interface.cli import HealthcareCLI
 from core.query_preprocessor import QueryPreprocessor
 from core.parser import Parser
 from core.llm_handler import LLMHandler
 from utils.logger import logger
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 from core.query_manager import QueryManager
 from core.data_manager import DataManager
 
@@ -21,7 +22,9 @@ class Application:
         self.preprocessor = QueryPreprocessor()
         self.parser = Parser()
         self.llm_handler = LLMHandler()
-        self.data_manager = DataManager('data')
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        data_dir = os.path.join(base_dir, 'data')
+        self.data_manager = DataManager(data_dir)
         self.query_manager = QueryManager(self.data_manager)
         self.cli = HealthcareCLI(self)
         
@@ -124,7 +127,6 @@ class Application:
         except Exception as e:
             logger.error(f"Error getting test functions: {e}")
             return []
-
 
     def run_tests(self, test_file: Optional[str] = None, test_function: Optional[str] = None) -> Dict[str, Any]:
         try:

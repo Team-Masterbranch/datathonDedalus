@@ -86,11 +86,12 @@ class HealthcareCLI(cmd.Cmd):
     def default(self, line):
         """Handle any input that isn't a specific command as a query to the chatbot."""
         try:
-            # Change this line to properly await the coroutine
-            result = asyncio.run(self.app.process_user_query(line))
+            # Now passing both required parameters
+            result = asyncio.run(self.app.process_user_query(line, filter_current_cohort=False))
             print(result)
         except Exception as e:
             print(f"Error: {e}")
+
 
 
     def emptyline(self):

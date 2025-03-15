@@ -3,6 +3,8 @@ from typing import Dict, Any
 import pandas as pd
 from core.data_manager import DataManager
 from utils.logger import logger
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 
 class QueryManager:
     """
@@ -15,15 +17,15 @@ class QueryManager:
         self.last_query: Dict[str, Any] = {}
 
     async def execute_query(self, 
-                          structured_criteria: Dict[str, Any], 
-                          filter_current_cohort: bool = False) -> Dict[str, Any]:
+                        structured_criteria: Dict[str, Any], 
+                        filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
         Execute a query based on structured criteria.
         
         Args:
             structured_criteria: Dictionary containing parsed query parameters
             filter_current_cohort: If True, apply filter to current cohort,
-                                 if False, reset cohort before applying filter
+                                if False, reset cohort before applying filter
         
         Returns:
             Dict containing query results and metadata
@@ -38,10 +40,12 @@ class QueryManager:
             # Get starting DataFrame
             if not filter_current_cohort:
                 logger.info("Resetting cohort before applying filter")
-                self.data_manager.reset_cohort()
+                self.data_manager.reset_to_full()
             
             # Apply filter and get results
             filtered_df = self.data_manager.apply_filter(structured_criteria)
+            if filtered_df is None:
+                raise ValueError("Filter operation returned None")
             
             # Prepare result metadata
             result = {

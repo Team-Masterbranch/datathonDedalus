@@ -3,6 +3,8 @@ from typing import Optional, Dict, Any
 import os
 from utils.config import LLM_API_KEY
 from utils.logger import logger
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 
 class LLMHandler:
     """

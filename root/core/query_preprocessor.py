@@ -1,6 +1,8 @@
 # core/query_preprocessor.py
 from typing import Optional, Dict, Any
 from utils.logger import logger
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 
 class QueryPreprocessor:
     """
