@@ -1,5 +1,5 @@
 # core/data_manager.py
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional
 import pandas as pd
 import os
 import glob
@@ -39,13 +39,11 @@ class DataManager:
         # Initialize full dataset schema
         self._update_full_schema()
         self._update_current_schema()
-        
+
+
     def load_csv_files(self) -> bool:
         """
         Load CSV files from the data directory and combine them into a single DataFrame.
-        
-        Returns:
-            bool: True if loading was successful, False otherwise
         """
         try:
             logger.info(f"Loading CSV files from {self._data_path}")
@@ -55,13 +53,21 @@ class DataManager:
                 logger.error(f"No CSV files found in {self._data_path}")
                 return False
                 
-            dataframes = []
+            dataframes = {}
             for file in csv_files:
                 logger.info(f"Reading {file}")
+                table_name = os.path.splitext(os.path.basename(file))[0]
                 df = pd.read_csv(file)
-                dataframes.append(df)
+                df = self._prefix_columns(df, table_name)
+                dataframes[table_name] = df
+                logger.info(f"Loaded {table_name} with columns: {df.columns.tolist()}")
                 
-            self._full_dataset = pd.concat(dataframes, axis=0, ignore_index=True)
+            self._full_dataset = self._merge_dataframes(dataframes)
+            if self._full_dataset is None:
+                logger.error("Merge resulted in None DataFrame")
+                return False
+                
+            logger.info(f"Final merged dataset columns: {self._full_dataset.columns.tolist()}")
             self._current_cohort = self._full_dataset.copy()
             logger.info(f"Successfully loaded {len(csv_files)} files")
             return True
@@ -69,6 +75,64 @@ class DataManager:
         except Exception as e:
             logger.error(f"Error loading CSV files: {str(e)}")
             return False
+
+
+    def _prefix_columns(self, df: pd.DataFrame, table_name: str) -> pd.DataFrame:
+        """
+        Add table name prefix to column names except common join keys.
+        """
+        prefixed_columns = {}
+        join_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']  # Added PacienteID
+        
+        for col in df.columns:
+            # Don't prefix join keys
+            if col in join_keys:  # Removed .lower() to maintain exact matches
+                continue
+            prefixed_columns[col] = f"{table_name}.{col}"
+        
+        return df.rename(columns=prefixed_columns)
+
+    def _merge_dataframes(self, dataframes: Dict[str, pd.DataFrame]) -> Optional[pd.DataFrame]:
+        """
+        Merge DataFrames using appropriate join keys.
+        """
+        if not dataframes:
+            return None
+        
+        # Start with patients table if it exists
+        result = None
+        remaining_dfs = dataframes.copy()
+        
+        if 'pacientes' in remaining_dfs:
+            result = remaining_dfs.pop('pacientes')
+            logger.info(f"Starting merge with pacientes table, columns: {result.columns.tolist()}")
+        else:
+            first_table = list(remaining_dfs.keys())[0]
+            result = remaining_dfs.pop(first_table)
+            logger.info(f"Starting merge with {first_table} table, columns: {result.columns.tolist()}")
+        
+        # Merge remaining DataFrames
+        for table_name, df in remaining_dfs.items():
+            # Look for join keys without considering prefixes
+            join_key = None
+            possible_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']
+            
+            for key in possible_keys:
+                if key in result.columns and key in df.columns:
+                    join_key = key
+                    break
+            
+            if join_key is None:
+                logger.warning(f"No join key found for table {table_name}, columns: {df.columns.tolist()}")
+                continue
+                
+            logger.info(f"Merging {table_name} using key: {join_key}")
+            result = result.merge(df, how='left', on=join_key)
+            logger.info(f"After merging {table_name}, columns: {result.columns.tolist()}")
+        
+        return result
+
+
 
     def apply_filter(self, query: Query) -> Optional[pd.DataFrame]:
         """
@@ -227,7 +291,6 @@ class DataManager:
         self._current_cohort = self._full_dataset.copy()
         self._update_current_schema()
         return self._current_cohort
-
 
     def save_current_cohort(self, filepath: str, index: bool = False) -> bool:
         """
