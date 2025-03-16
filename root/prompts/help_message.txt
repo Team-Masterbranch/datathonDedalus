@@ -1,0 +1,14 @@
+Estoy aquí para ayudarte a identificar y analizar grupos de pacientes con enfermedades crónicas como diabetes, hipertensión o EPOC. Esto es lo que puedo hacer:
+--------------------------------
+1) FILTRAR PACIENTES:
+   - Sintaxis: "[Criterio1] Y/Ó [Criterio2]"
+   - Ejemplos:
+     * "Pacientes con diabetes y LDL > 100"
+     * "Mujeres >65 años con EPOC"
+     * "Fecha diagnóstico entre 2020-01-01 y 2023-12-31"
+
+2) GENERAR GRÁFICOS:
+   - Comandos válidos:
+     * "GRAFICAR distribución de [edad/IMC/HbA1c]"
+     * "COMPARAR [presión arterial] entre [hombres/mujeres]"
+     * "TENDENCIA de [colesterol] últimos 2 años"

@@ -12,6 +12,7 @@ class Query:
     # Supported operations and their human-readable translations
     OPERATIONS = {
         "equals": "es igual a",
+        "not_equals": "no es igual a",
         "greater_than": "es mayor que",
         "less_than": "es menor que",
         "and": "Y",
@@ -20,10 +21,10 @@ class Query:
     
     # Valid operations for different data types
     TYPE_OPERATIONS = {
-        'int64': ['equals', 'greater_than', 'less_than'],
-        'float64': ['equals', 'greater_than', 'less_than'],
-        'object': ['equals'],  # string type in pandas
-        'datetime64[ns]': ['equals', 'greater_than', 'less_than']
+        'int64': ['equals', 'not_equals', 'greater_than', 'less_than'],
+        'float64': ['equals', 'not_equals', 'greater_than', 'less_than'],
+        'object': ['equals', 'not_equals'],  # string type in pandas
+        'datetime64[ns]': ['equals', 'not_equals', 'greater_than', 'less_than']
     }
 
     def __init__(self, query_dict: Dict[str, Any]):

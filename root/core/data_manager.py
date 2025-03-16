@@ -1,5 +1,6 @@
 # core/data_manager.py
 from typing import Dict, Any, List, Optional
+import numpy as np
 import pandas as pd
 import os
 import glob
@@ -8,6 +9,8 @@ from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
 from core.visualizer_request import VisualizerRequest, ChartType
+from utils.config import UNIQUE_VALUES_THRESHOLD
+
 logger = setup_logger(__name__)
 
 class DataManager:
@@ -79,18 +82,18 @@ class DataManager:
 
     def _prefix_columns(self, df: pd.DataFrame, table_name: str) -> pd.DataFrame:
         """
-        Add table name prefix to column names except common join keys.
+        Add table name prefix to column names except join keys.
         """
         prefixed_columns = {}
-        join_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']  # Added PacienteID
+        join_keys = ['PacienteID', 'paciente_id', 'id']  # Case-sensitive join keys
         
         for col in df.columns:
-            # Don't prefix join keys
-            if col in join_keys:  # Removed .lower() to maintain exact matches
-                continue
-            prefixed_columns[col] = f"{table_name}.{col}"
+            if col not in join_keys:  # If not a join key
+                if not col.startswith(f"{table_name}."):  # If not already prefixed
+                    prefixed_columns[col] = f"{table_name}.{col}"
         
         return df.rename(columns=prefixed_columns)
+
 
     def _merge_dataframes(self, dataframes: Dict[str, pd.DataFrame]) -> Optional[pd.DataFrame]:
         """
@@ -131,7 +134,6 @@ class DataManager:
             logger.info(f"After merging {table_name}, columns: {result.columns.tolist()}")
         
         return result
-
 
 
     def apply_filter(self, query: Query) -> Optional[pd.DataFrame]:
@@ -218,7 +220,7 @@ class DataManager:
             return pd.concat(masks, axis=1).any(axis=1)
 
     def _handle_comparison_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
-        """Handle comparison operations (equals, greater_than, less_than, between)."""
+        """Handle comparison operations (equals, not_equals, greater_than, less_than, between)."""
         field = criteria.get('field')
         operation = criteria.get('operation')
         value = criteria.get('value')
@@ -234,6 +236,8 @@ class DataManager:
         try:
             if operation == 'equals':
                 return self._current_cohort[field] == value
+            elif operation == 'not_equals':
+                return self._current_cohort[field] != value
             elif operation == 'greater_than':
                 return self._current_cohort[field] > value
             elif operation == 'less_than':
@@ -262,16 +266,40 @@ class DataManager:
         if self._current_cohort is not None:
             self._current_schema = self._create_schema(self._current_cohort)
 
+
     def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
         """Create schema for given DataFrame."""
         schema = {}
         for column in df.columns:
-            schema[column] = {
+            column_info = {
                 'dtype': str(df[column].dtype),
                 'unique_values': df[column].nunique(),
                 'missing_values': df[column].isnull().sum()
             }
+            
+            # Add numeric statistics for numeric columns
+            if np.issubdtype(df[column].dtype, np.number):
+                column_info.update({
+                    'min': float(df[column].min()),
+                    'max': float(df[column].max()),
+                    'mean': float(df[column].mean())
+                })
+            # Add possible values only for non-numeric columns with few unique values
+            elif df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
+                unique_values = sorted(df[column].dropna().unique().tolist())
+                # Convert numpy types to native Python types
+                unique_values = [
+                    item.item() if hasattr(item, 'item') else item 
+                    for item in unique_values
+                ]
+                column_info['possible_values'] = unique_values
+            
+            schema[column] = column_info
+        
         return schema
+
+
+
 
     def get_full_schema(self) -> Dict[str, Dict]:
         """Get schema for the full dataset."""
@@ -320,7 +348,6 @@ class DataManager:
         except Exception as e:
             logger.error(f"Error saving cohort to CSV: {str(e)}")
             return False
-
 
     def validate_visualization_request(self, request: VisualizerRequest) -> bool:
         """

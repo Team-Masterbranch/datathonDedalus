@@ -34,7 +34,9 @@ CLI_INTRO = "Welcome to the Healthcare Data Analysis System. Type 'help' for com
 # Query Processing
 MAX_CACHE_SIZE = 1000  # Maximum number of cached queries
 
-# utils/config.py
+# Schema configuration
+UNIQUE_VALUES_THRESHOLD = 5  # Show all possible values if number of unique values is below this
+
 # Visualization settings
 CLI_CHART_WIDTH = 10
 CLI_CHART_HEIGHT = 6
