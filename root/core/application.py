@@ -55,7 +55,7 @@ class Application:
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
-    async def process_user_query(self, query: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
+    async def process_user_query(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
         Process and execute a user query.
         
@@ -65,11 +65,11 @@ class Application:
         """
         try:
             # Preprocessing and parsing (as before)
-            processed_query, needs_llm = self.preprocessor.process_query(query)
+            processed_query, needs_llm = self.preprocessor.process_query(user_input)
             
             if needs_llm:
                 structured_criteria = self.parser.process_with_llm(processed_query)
-                self.preprocessor.update_cache(query, structured_criteria)
+                self.preprocessor.update_cache(user_input, structured_criteria)
             else:
                 structured_criteria = processed_query
 

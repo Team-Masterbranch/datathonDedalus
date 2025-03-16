@@ -1,7 +1,6 @@
 # core/llm_handler.py
 from typing import Optional, Dict, Any
 from utils.config import (
-    LLM_API_KEY,
     LLM_DEFAULT_TEMPERATURE,
     LLM_MAX_TOKENS,
     LLM_TOP_P,
@@ -10,6 +9,7 @@ from utils.config import (
 )
 from utils.logger import logger
 from utils.logger import setup_logger
+import os
 logger = setup_logger(__name__)
 
 class LLMHandler:
@@ -20,7 +20,7 @@ class LLMHandler:
 
     def __init__(self):
         logger.info("Initializing LLM Handler")
-        self.api_key = LLM_API_KEY
+        self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             logger.error("LLM API key not found in config")
             raise ValueError("LLM API key not configured")

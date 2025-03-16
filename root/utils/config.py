@@ -15,11 +15,6 @@ TESTS_DIR = PROJECT_ROOT / 'tests'
 DATA_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
-# LLM Configuration
-LLM_API_KEY = os.getenv('LLM_API_KEY')
-if not LLM_API_KEY:
-    raise ValueError("LLM_API_KEY environment variable not set")
-
 LLM_DEFAULT_TEMPERATURE = 0.7
 LLM_MAX_TOKENS = 150
 LLM_TOP_P = 1.0
