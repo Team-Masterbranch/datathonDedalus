@@ -1,4 +1,5 @@
 # core/application.py
+from core.context_manager import ContextManager
 from utils.config import (
     DATA_DIR,
     LOG_LEVEL,
@@ -20,7 +21,6 @@ from core.result_analyzer import ResultAnalyzer
 from core.visualizer import Visualizer
 
 
-
 class Application:
     """
     Application service layer that coordinates between different components.
@@ -28,7 +28,7 @@ class Application:
     def __init__(self):
         logger.setLevel(LOG_LEVEL)
         logger.info("Initializing Application")
-        self.preprocessor = Preparser()
+        self.preparser = Preparser()
         self.parser = Parser()
         self.llm_handler = LLMHandler()
         self.data_manager = DataManager(DATA_DIR)
@@ -36,6 +36,7 @@ class Application:
         self.cli = HealthcareCLI(self)
         self.result_analyzer = ResultAnalyzer()
         self.visualizer = Visualizer()
+        self.context_manager = ContextManager()
         
     def start(self):
         """Start the application and its interface."""
@@ -64,18 +65,19 @@ class Application:
             filter_current_cohort: Whether to filter current cohort or start new search
         """
         try:
+            self.context_manager.add_user_message(user_input)
             # Preprocessing and parsing (as before)
-            processed_query, needs_llm = self.preprocessor.process_query(user_input)
+            preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                structured_criteria = self.parser.process_with_llm(processed_query)
-                self.preprocessor.update_cache(user_input, structured_criteria)
+                user_intention = self.parser.process_with_llm(preparse_result)
+                self.preparser.update_cache(user_input, user_intention)
             else:
-                structured_criteria = processed_query
+                user_intention = preparse_result
 
             # Execute query using QueryManager
             result = await self.query_manager.execute_query(
-                structured_criteria, 
+                user_intention, 
                 filter_current_cohort=filter_current_cohort
             )
             
@@ -124,21 +126,13 @@ class Application:
         ]
         return sorted(test_files)
 
+
     def get_test_functions(self, test_file: str) -> List[str]:
-        """
-        Get list of test functions in a specific test file.
-        
-        Args:
-            test_file: Name of the test file without .py extension
-            
-        Returns:
-            List of test function names
-        """
         try:
             project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            test_path = os.path.join(project_root, 'tests', f'test_{test_file}.py')
+            test_file = test_file if test_file.startswith('test_') else f'test_{test_file}'
+            test_path = os.path.join(project_root, 'tests', f'{test_file}.py')
             
-            # Use ast module instead of importing
             import ast
             
             with open(test_path, 'r') as file:
@@ -146,7 +140,7 @@ class Application:
                 
             test_functions = [
                 node.name for node in ast.walk(tree)
-                if isinstance(node, ast.FunctionDef) 
+                if (isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef))
                 and node.name.startswith('test_')
             ]
             
@@ -155,6 +149,8 @@ class Application:
         except Exception as e:
             logger.error(f"Error getting test functions: {e}")
             return []
+
+
 
     def run_tests(self, test_file: Optional[str] = None, test_function: Optional[str] = None) -> Dict[str, Any]:
         try:

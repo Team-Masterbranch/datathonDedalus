@@ -1,6 +1,7 @@
 # core/intention.py
 from enum import Enum
-from typing import Optional, List
+import json
+from typing import Any, Dict, Optional, List
 from core.query import Query
 from core.visualizer_request import VisualizerRequest
 from utils.logger import setup_logger
@@ -8,19 +9,19 @@ from utils.logger import setup_logger
 logger = setup_logger(__name__)
 
 class IntentionType(Enum):
-    COHORT_FILTER = "cohort_filter"
-    VISUALIZATION = "visualization"
-    HELP = "help"
-    UNKNOWN = "unknown"
+    COHORT_FILTER = "COHORT_FILTER"
+    VISUALIZATION = "VISUALIZATION"
+    HELP = "HELP"
+    UNKNOWN = "UNKNOWN"
 
 class FilterTarget(Enum):
-    FULL_DATASET = "full_dataset"
-    CURRENT_COHORT = "current_cohort"
+    FULL_DATASET = "FULL_DATASET"
+    CURRENT_COHORT = "CURRENT_COHORT"
 
 class Intention:
     def __init__(self, 
                  intention_type: IntentionType,
-                 description: str,
+                 description: Optional[str] = '',
                  query: Optional[Query] = None,
                  filter_target: Optional[FilterTarget] = None,
                  visualizer_request: Optional[VisualizerRequest] = None):
@@ -84,99 +85,105 @@ class Intention:
             logger.error(f"Validation error: {str(e)}")
             self.validation_errors.append(f"Unexpected validation error: {str(e)}")
             return False
+    
+    
+    @staticmethod
+    def _parse_query_dict(query_dict: Dict[str, Any]) -> Query:
+        """
+        Parse a query dictionary from LLM response.
         
+        Simple query format from LLM:
+        {
+            "field": "pacientes.Edad",
+            "operation": "greater_than",
+            "value": 65
+        }
         
+        Complex query format from LLM:
+        {
+            "operation": "and",
+            "criteria": [
+                {
+                    "field": "Descripcion",
+                    "operation": "equals",
+                    "value": "Diabetes"
+                },
+                {
+                    "field": "Edad",
+                    "operation": "greater_than",
+                    "value": 31
+                }
+            ]
+        }
+        """
+        # If it's a simple query (no nested conditions)
+        if "field" in query_dict:
+            # Keep the same structure as received from LLM
+            return Query(query_dict)
         
+        # If it's a complex query with AND/OR operators
+        if "operation" in query_dict and "criteria" in query_dict:
+            return Query({
+                "operation": query_dict["operation"],
+                "criteria": [
+                    Intention._parse_query_dict(cond) for cond in query_dict["criteria"]
+                ]
+            })
         
+        raise ValueError("Invalid query format")
+    
+    
     @classmethod
-    def from_llm_response(cls, llm_response: dict) -> 'Intention':
-        """Creates Intention object from LLM response dictionary."""
+    def from_llm_response(cls, llm_response: str) -> 'Intention':
+        """
+        Create an Intention object from LLM response string.
+        Handles both simple and complex nested queries.
+        
+        Expected format:
+        {
+            "intention_type": "COHORT_FILTER",
+            "description": "Filtrar pacientes con diabetes mayores de 31 años",
+            "query": {
+                "operation": "and",
+                "criteria": [
+                    {
+                        "field": "Descripcion",
+                        "operation": "equals",
+                        "value": "Diabetes"
+                    },
+                    {
+                        "field": "Edad",
+                        "operation": "greater_than",
+                        "value": 31
+                    }
+                ]
+            },
+            "filter_target": "FULL_DATASET"
+        }
+        """
         try:
-            # Get intention type and normalize it
-            intention_type_str = llm_response.get("intention_type", "")
-            if not intention_type_str:
-                logger.warning("No intention type provided")
-                return cls(IntentionType.UNKNOWN, "No intention type provided")
-
-            # Convert to uppercase and replace spaces/underscores with underscores
-            intention_type_str = intention_type_str.upper().replace(' ', '_').replace('-', '_')
+            # Parse the JSON string into a dictionary
+            intention_dict = json.loads(llm_response)
             
-            # Try to match with enum
-            try:
-                intention_type = IntentionType[intention_type_str]
-            except (KeyError, AttributeError):
-                logger.warning(f"Unknown intention type: {intention_type_str}")
-                return cls(IntentionType.UNKNOWN, f"Failed to parse intention type: {intention_type_str}")
+            # Parse the query structure
+            query_dict = intention_dict.get('query', {})
+            query = cls._parse_query_dict(query_dict)
+            
+            # Create Intention object
+            return cls(
+                intention_type=IntentionType(intention_dict.get('intention_type')),
+                query=query,
+                filter_target=FilterTarget(intention_dict.get('filter_target', 'FULL_DATASET'))
+            )
+            
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON in LLM response: {e}")
+        except KeyError as e:
+            raise ValueError(f"Missing required field in LLM response: {e}")
+        except ValueError as e:
+            raise ValueError(f"Invalid value in LLM response: {e}")
 
-            description = llm_response.get("description", "")
-
-            if intention_type == IntentionType.COHORT_FILTER:
-                # Get and validate filter target
-                filter_target_str = llm_response.get("filter_target", "")
-                if not filter_target_str:
-                    logger.warning("No filter target provided for COHORT_FILTER intention")
-                    return cls(IntentionType.UNKNOWN, "No filter target provided")
-
-                # Normalize filter target string
-                filter_target_str = filter_target_str.upper().replace(' ', '_').replace('-', '_')
-                
-                try:
-                    filter_target = FilterTarget[filter_target_str]
-                except (KeyError, AttributeError):
-                    logger.warning(f"Invalid filter target: {filter_target_str}")
-                    return cls(IntentionType.UNKNOWN, f"Failed to parse filter target: {filter_target_str}")
-
-                # Get and validate query
-                query_data = llm_response.get("query")
-                if not query_data:
-                    logger.warning("No query data provided for COHORT_FILTER intention")
-                    return cls(IntentionType.UNKNOWN, "No query data provided")
-
-                query = Query(query_data)
-                
-                return cls(
-                    intention_type=intention_type,
-                    description=description,
-                    query=query,
-                    filter_target=filter_target
-                )
-
-            elif intention_type == IntentionType.VISUALIZATION:
-                visualizer_data = llm_response.get("visualizer_request")
-                if not visualizer_data:
-                    logger.warning("No visualizer request data provided")
-                    return cls(IntentionType.UNKNOWN, "No visualizer request data provided")
-
-                # Ensure title is present
-                if "title" not in visualizer_data:
-                    visualizer_data["title"] = description or "Visualization"
-
-                try:
-                    visualizer_request = VisualizerRequest(**visualizer_data)
-                except Exception as e:
-                    logger.error(f"Error creating visualizer request: {e}")
-                    return cls(IntentionType.UNKNOWN, f"Error creating visualizer request: {e}")
-
-                return cls(
-                    intention_type=intention_type,
-                    description=description,
-                    visualizer_request=visualizer_request
-                )
-
-
-            else:  # HELP or UNKNOWN
-                return cls(
-                    intention_type=intention_type,
-                    description=description
-                )
-
-        except Exception as e:
-            logger.error(f"Error parsing LLM response: {e}")
-            return cls(IntentionType.UNKNOWN, f"Failed to parse LLM response: {e}")
-
-
-
-
+        
     def get_validation_errors(self) -> List[str]:
         """Returns list of validation errors."""
         return self.validation_errors

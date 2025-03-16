@@ -27,7 +27,7 @@ class LLMHandler:
         """Format schema into a readable string"""
         return '\n'.join([f"{col}: {dtype}" for col, dtype in schema.items()])
 
-    def test(self, request: str) -> Dict[str, Any]:
+    def single_input_request(self, request: str) -> Dict[str, Any]:
         try:
             # Get current schema
             schema = self.data_manager.get_full_schema()
