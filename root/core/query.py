@@ -277,3 +277,12 @@ class Query:
                     f"{criteria[1]['field']} {criteria[1]['operation']} {criteria[1]['value']})"
             except (KeyError, IndexError):
                 return "Invalid complex query format"
+
+    def __str__(self) -> str:
+        """
+        Returns a string representation of the query.
+
+        Returns:
+            str: String representation of the query
+        """
+        return self.to_human_readable()
