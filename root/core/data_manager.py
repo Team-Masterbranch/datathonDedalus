@@ -58,19 +58,19 @@ class DataManager:
                 
             dataframes = {}
             for file in csv_files:
-                logger.info(f"Reading {file}")
+                logger.debug(f"Reading {file}")
                 table_name = os.path.splitext(os.path.basename(file))[0]
                 df = pd.read_csv(file)
                 df = self._prefix_columns(df, table_name)
                 dataframes[table_name] = df
-                logger.info(f"Loaded {table_name} with columns: {df.columns.tolist()}")
+                logger.debug(f"Loaded {table_name} with columns: {df.columns.tolist()}")
                 
             self._full_dataset = self._merge_dataframes(dataframes)
             if self._full_dataset is None:
                 logger.error("Merge resulted in None DataFrame")
                 return False
                 
-            logger.info(f"Final merged dataset columns: {self._full_dataset.columns.tolist()}")
+            logger.debug(f"Final merged dataset columns: {self._full_dataset.columns.tolist()}")
             self._current_cohort = self._full_dataset.copy()
             logger.info(f"Successfully loaded {len(csv_files)} files")
             return True
@@ -108,11 +108,11 @@ class DataManager:
         
         if 'pacientes' in remaining_dfs:
             result = remaining_dfs.pop('pacientes')
-            logger.info(f"Starting merge with pacientes table, columns: {result.columns.tolist()}")
+            logger.debug(f"Starting merge with pacientes table, columns: {result.columns.tolist()}")
         else:
             first_table = list(remaining_dfs.keys())[0]
             result = remaining_dfs.pop(first_table)
-            logger.info(f"Starting merge with {first_table} table, columns: {result.columns.tolist()}")
+            logger.debug(f"Starting merge with {first_table} table, columns: {result.columns.tolist()}")
         
         # Merge remaining DataFrames
         for table_name, df in remaining_dfs.items():
@@ -131,7 +131,7 @@ class DataManager:
                 
             logger.info(f"Merging {table_name} using key: {join_key}")
             result = result.merge(df, how='left', on=join_key)
-            logger.info(f"After merging {table_name}, columns: {result.columns.tolist()}")
+            logger.debug(f"After merging {table_name}, columns: {result.columns.tolist()}")
         
         return result
 
@@ -183,13 +183,16 @@ class DataManager:
             Optional[pd.Series]: Boolean mask for filtering or None if error
         """
         try:
-            criteria = query._query
-            operation = criteria.get('operation')
+            criteria = query.get_query_dict()
+            operation = query.get_operation()
+            
+            logger.debug(f"Processing query filter: {criteria}")
+            logger.debug(f"Operation: {operation}")
             
             # Handle logical operations (AND/OR)
             if operation in ['and', 'or']:
                 return self._handle_logical_operation(criteria)
-                
+            
             # Handle comparison operations
             return self._handle_comparison_operation(criteria)
             
@@ -199,14 +202,19 @@ class DataManager:
 
     def _handle_logical_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
         """Handle AND/OR operations."""
+        logger.debug(f"Handling logical operation: {criteria}")
+        logger.debug(f"'criteria' not in criteria: {'criteria' not in criteria}")
+                
         if 'criteria' not in criteria:
             logger.error("Missing criteria for logical operation")
             return None
             
         operation = criteria['operation']
+        logger.debug(f"Operation: {operation}")
         masks = []
         
         for subcriteria in criteria['criteria']:
+            logger.debug(f"Processing subcriteria: {subcriteria}")
             submask = self._handle_comparison_operation(subcriteria)
             if submask is not None:
                 masks.append(submask)
@@ -215,12 +223,14 @@ class DataManager:
             return None
             
         if operation == 'and':
+            logger.debug(f"Exiting _handle_logical_operation with AND operation")
             return pd.concat(masks, axis=1).all(axis=1)
         else:  # or
             return pd.concat(masks, axis=1).any(axis=1)
 
     def _handle_comparison_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
         """Handle comparison operations (equals, not_equals, greater_than, less_than, between)."""
+        logger.debug(f"Handling comparison operation: {criteria}")
         field = criteria.get('field')
         operation = criteria.get('operation')
         value = criteria.get('value')

@@ -225,9 +225,9 @@ class TestIntention:
 
         # Test query
         assert intention.query is not None, "Query should not be None"
-        assert intention.query._query["field"] == "age", \
-            f"Expected field 'age' but got {intention.query._query['field']}"
-        assert intention.query._query["operation"] == "greater_than", \
-            f"Expected operation 'greater_than' but got {intention.query._query['operation']}"
-        assert intention.query._query["value"] == 40, \
-            f"Expected value 40 but got {intention.query._query['value']}"
+        assert intention.query._query_dict["field"] == "age", \
+            f"Expected field 'age' but got {intention.query._query_dict['field']}"
+        assert intention.query._query_dict["operation"] == "greater_than", \
+            f"Expected operation 'greater_than' but got {intention.query._query_dict['operation']}"
+        assert intention.query._query_dict["value"] == 40, \
+            f"Expected value 40 but got {intention.query._query_dict['value']}"

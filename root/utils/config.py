@@ -24,7 +24,7 @@ LLM_PRESENCE_PENALTY = 0.0
 # Logging Configuration
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-LOG_LEVEL = "INFO"
+LOG_LEVEL = "DEBUG"
 LOG_FILE_PATTERN = "app_{date}.log"
 
 # CLI Configuration

@@ -36,10 +36,14 @@ class Intention:
 
     def validate(self, data_manager = None) -> bool:
         """Validates intention based on its type."""
+        logger.debug(f"Entered intention.validate method")
+        logger.debug(f"Data manager: {data_manager}")
+        logger.debug(f"Intention: {self}")
         self.validation_errors = []
 
         try:
             if not self.description:
+                logger.debug(f"Description is required")
                 self.validation_errors.append("Description is required")
 
             if self.intention_type == IntentionType.COHORT_FILTER:
@@ -50,11 +54,14 @@ class Intention:
                 elif not isinstance(self.filter_target, FilterTarget):
                     self.validation_errors.append("Filter target must be a valid FilterTarget enum value")
                 
-                # Validate query against schema if data_manager is provided
-                if self.query and isinstance(self.filter_target, FilterTarget) and data_manager:
+                
+                # Validate query against schema if data_manager is provided                
+                
+                if data_manager:
                     schema = (data_manager.get_full_schema() 
                             if self.filter_target == FilterTarget.FULL_DATASET 
                             else data_manager.get_current_schema())
+                    logger.debug(f"Schema created")
                     
                     if not schema:
                         self.validation_errors.append("Could not get schema from data manager")
@@ -62,6 +69,7 @@ class Intention:
                         self.validation_errors.append("Invalid query for the given schema")
 
             elif self.intention_type == IntentionType.VISUALIZATION:
+                logger.debug(f"Entered VISUALIZATION intention validation")
                 if not self.visualizer_request:
                     self.validation_errors.append("VisualizerRequest is required for VISUALIZATION intention")
                 elif data_manager:
@@ -78,7 +86,7 @@ class Intention:
                 else:
                     # If no data_manager provided, skip column validation
                     return True
-
+            logger.debug(f"Exited intention.validate method")
             return len(self.validation_errors) == 0
 
         except Exception as e:
@@ -87,8 +95,8 @@ class Intention:
             return False
     
     
-    @staticmethod
-    def _parse_query_dict(query_dict: Dict[str, Any]) -> Query:
+    @classmethod
+    def _parse_query_dict(cls, query_dict: Dict) -> Query:   
         """
         Parse a query dictionary from LLM response.
         
@@ -116,23 +124,24 @@ class Intention:
             ]
         }
         """
-        # If it's a simple query (no nested conditions)
-        if "field" in query_dict:
-            # Keep the same structure as received from LLM
-            return Query(query_dict)
-        
-        # If it's a complex query with AND/OR operators
-        if "operation" in query_dict and "criteria" in query_dict:
+        if not isinstance(query_dict, dict):
+            raise ValueError("Query must be a dictionary")
+            
+        if query_dict.get('operation') in ['and', 'or']:
+            # Handle compound queries
+            criteria = [
+                cls._parse_query_dict(q) if isinstance(q, dict) else Query(q)
+                for q in query_dict.get('criteria', [])
+            ]
             return Query({
-                "operation": query_dict["operation"],
-                "criteria": [
-                    Intention._parse_query_dict(cond) for cond in query_dict["criteria"]
-                ]
+                'operation': query_dict['operation'],
+                'criteria': criteria
             })
         
-        raise ValueError("Invalid query format")
-    
-    
+        # If it's a simple query, return it directly
+        return Query(query_dict)
+
+  
     @classmethod
     def from_llm_response(cls, llm_response: str) -> 'Intention':
         """
@@ -172,6 +181,7 @@ class Intention:
             # Create Intention object
             return cls(
                 intention_type=IntentionType(intention_dict.get('intention_type')),
+                description=intention_dict.get('description', ''),
                 query=query,
                 filter_target=FilterTarget(intention_dict.get('filter_target', 'FULL_DATASET'))
             )

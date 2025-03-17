@@ -32,17 +32,15 @@ class QueryManager:
             Dict containing query results and metadata
         """
         logger.info(f"Executing query with filter_current_cohort={filter_current_cohort}")
-        logger.debug(f"Query criteria: {query._query}")
+        logger.debug(f"Query criteria: {query._query_dict}")
 
-        try:
-            # Validate query against schema
-            schema = self.data_manager.get_current_schema()
-            
-            if not query.validate(schema):
-                raise QueryExecutionError("Invalid query structure or field types")
-
-            # Store query for reference
-            self.last_query = query
+        try:        
+            if filter_current_cohort:
+                if not query.validate(self.data_manager.get_current_schema()):
+                    raise QueryExecutionError("Invalid query structure or field types")
+            else:
+                if not query.validate(self.data_manager.get_full_schema()):
+                    raise QueryExecutionError("Invalid query structure or field types")
 
             # Get starting DataFrame
             if not filter_current_cohort:
@@ -56,7 +54,7 @@ class QueryManager:
             
             # Prepare result metadata
             result = {
-                "criteria": query._query,
+                "criteria": query._query_dict,
                 "human_readable": str(query),
                 "row_count": len(filtered_df),
                 "filtered_from": len(self.data_manager.get_current_cohort()),

@@ -30,7 +30,27 @@ async def main():
         
         # Get LLM response as string
         user_input = "Dame mujeres mayores que 60"
-        llm_response = llm_handler.single_input_request(user_input)
+        # llm_response = llm_handler.single_input_request(user_input)
+        llm_response = '''{
+            "intention_type": "COHORT_FILTER",
+            "description": "Filtrar mujeres mayores de 60 años",
+            "query": {
+                "operation": "and",
+                "criteria": [
+                    {
+                        "field": "pacientes.Genero",
+                        "operation": "equals",
+                        "value": "Femenino"
+                    },
+                    {
+                        "field": "pacientes.Edad",
+                        "operation": "greater_than",
+                        "value": 60
+                    }
+                ]
+            },
+            "filter_target": "FULL_DATASET"
+        }'''
         
         print("\nLLM Response:")
         print(llm_response)
@@ -46,6 +66,8 @@ async def main():
         # Execute intention
         print("\nExecuting intention...")
         result = await executor.execute(intention)
+        
+        print(result)
         
         print("\nExecution result:")
         print(f"Success: {result['success']}")

@@ -4,6 +4,7 @@ from core.intention import FilterTarget, Intention, IntentionType
 from core.query_manager import QueryManager
 from core.visualizer import Visualizer
 from core.data_manager import DataManager
+from core.query import Query
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -13,7 +14,7 @@ class IntentionExecutor:
         self.query_manager = query_manager
         self.visualizer = visualizer
         self.data_manager = data_manager
-
+        
     async def execute(self, intention: Intention) -> Dict[str, Any]:
         """
         Execute the intention based on its type.
@@ -24,6 +25,7 @@ class IntentionExecutor:
         Returns:
             Dict containing execution results
         """
+        logger.debug(f"Entered intention_executor.execute method")
         # Validate intention first
         if not intention.validate(self.data_manager):
             return {
