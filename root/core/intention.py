@@ -175,8 +175,7 @@ class Intention:
             intention_dict = json.loads(llm_response)
             
             # Parse the query structure
-            query_dict = intention_dict.get('query', {})
-            query = cls._parse_query_dict(query_dict)
+            query = Query.from_llm_response(llm_response)
             
             # Create Intention object
             return cls(

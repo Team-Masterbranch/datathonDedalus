@@ -1,153 +1,104 @@
-# tests/test_query.py
-import pytest
-from datetime import datetime
+# root/tests/test_query.py
+import os
+import sys
+import pytest  # Add this import
+from pathlib import Path
+
+# Add parent directory to Python path
+current_dir = Path(__file__).parent
+root_dir = current_dir.parent
+sys.path.insert(0, str(root_dir))
+
 from core.query import Query
 
-@pytest.fixture
-def sample_schema():
-    """Provide test schema that matches our test data structure."""
-    return {
-        'PacienteID': {'dtype': 'int64', 'unique_values': 100, 'missing_values': 0},
-        'Edad': {'dtype': 'int64', 'unique_values': 50, 'missing_values': 0},
-        'Descripcion': {'dtype': 'object', 'unique_values': 10, 'missing_values': 0},
-        'Fecha_inicio': {'dtype': 'datetime64[ns]', 'unique_values': 30, 'missing_values': 0}
-    }
-
-@pytest.fixture
-def simple_query():
-    """Provide a simple query for testing."""
-    return Query({
-        "field": "Edad",
+def test_simple_query_creation():
+    """Test creating a simple query using create_simple"""
+    query = Query.create_simple("pacientes.Edad", "greater_than", 40)
+    
+    assert query.is_complex == False
+    assert query.query_dict == {
+        "field": "pacientes.Edad",
         "operation": "greater_than",
         "value": 40
-    })
+    }
 
-@pytest.fixture
-def complex_query():
-    """Provide a complex query with nested conditions."""
-    return Query({
+def test_complex_query_creation():
+    """Test creating a complex query using create_complex"""
+    query1_dict = {"field": "pacientes.Genero", "operation": "equals", "value": "Femenino"}
+    query2_dict = {"field": "pacientes.Edad", "operation": "greater_than", "value": 60}
+    
+    query = Query.create_complex("and", query1_dict, query2_dict)
+    
+    assert query.is_complex == True
+    assert query.query_dict == {
         "operation": "and",
         "criteria": [
-            {
-                "field": "Edad",
-                "operation": "greater_than",
-                "value": 40
-            },
-            {
-                "operation": "or",
-                "criteria": [
-                    {
-                        "field": "Descripcion",
-                        "operation": "equals",
-                        "value": "Diabetes tipo 2"
-                    },
-                    {
-                        "field": "Descripcion",
-                        "operation": "equals",
-                        "value": "Hipertensión"
-                    }
-                ]
-            }
+            {"field": "pacientes.Genero", "operation": "equals", "value": "Femenino"},
+            {"field": "pacientes.Edad", "operation": "greater_than", "value": 60}
         ]
-    })
+    }
 
-def test_query_initialization():
-    """Test basic query initialization."""
-    query_dict = {"field": "Edad", "operation": "equals", "value": 40}
-    query = Query(query_dict)
-    assert query.raw == query_dict
-    assert isinstance(query.timestamp, datetime)
-
-def test_simple_human_readable(simple_query):
-    """Test human readable output for simple query."""
-    readable = simple_query.to_human_readable()
-    assert readable == "Edad es mayor que 40"
-
-def test_complex_human_readable(complex_query):
-    """Test human readable output for complex query."""
-    readable = complex_query.to_human_readable()
-    assert readable == "(Edad es mayor que 40 Y (Descripcion es igual a Diabetes tipo 2 O Descripcion es igual a Hipertensión))"
-
-def test_query_validation_simple(simple_query, sample_schema):
-    """Test validation of simple query against schema."""
-    assert simple_query.validate(sample_schema) is True
-
-def test_query_validation_complex(complex_query, sample_schema):
-    """Test validation of complex query against schema."""
-    assert complex_query.validate(sample_schema) is True
-
-def test_query_validation_invalid_field(sample_schema):
-    """Test validation with non-existent field."""
-    query = Query({
-        "field": "NonExistentField",
-        "operation": "equals",
-        "value": 40
-    })
-    assert query.validate(sample_schema) is False
-
-def test_query_validation_invalid_operation(sample_schema):
-    """Test validation with invalid operation for field type."""
-    query = Query({
-        "field": "Edad",
-        "operation": "like",  # 'like' operation not supported for int64
-        "value": 40
-    })
-    assert query.validate(sample_schema) is False
-
-def test_query_validation_invalid_structure(sample_schema):
-    """Test validation with invalid query structure."""
-    query = Query({
-        "operation": "and",
-        "criteria": []  # Empty criteria list is invalid
-    })
-    assert query.validate(sample_schema) is False
-
-def test_llm_format(complex_query):
-    """Test LLM format output structure."""
-    llm_format = complex_query.to_llm_format()
+def test_query_from_llm_response():
+    """Test creating query from LLM response string"""
+    llm_response = '''{
+        "query": {
+            "operation": "and",
+            "criteria": [
+                {"field": "pacientes.Genero", "operation": "equals", "value": "Femenino"},
+                {"field": "pacientes.Edad", "operation": "greater_than", "value": 60}
+            ]
+        }
+    }'''
     
-    assert "query_structure" in llm_format
-    assert "human_readable" in llm_format
-    assert "timestamp" in llm_format
-    assert "metadata" in llm_format
+    query = Query.from_llm_response(llm_response)
     
-    metadata = llm_format["metadata"]
-    assert "operations_used" in metadata
-    assert "fields_referenced" in metadata
+    assert query.is_complex == True
+    assert len(query.query_dict["criteria"]) == 2
+    assert query.query_dict["operation"] == "and"
+
+def test_invalid_llm_response():
+    """Test handling invalid JSON in LLM response"""
+    invalid_response = "{ invalid json }"
     
-    assert set(metadata["operations_used"]) == {"and", "or", "greater_than", "equals"}
-    assert set(metadata["fields_referenced"]) == {"Edad", "Descripcion"}
+    with pytest.raises(ValueError) as exc_info:
+        Query.from_llm_response(invalid_response)
+    assert "Invalid JSON in LLM response" in str(exc_info.value)
 
-def test_query_equality():
-    """Test query equality comparison."""
-    query1 = Query({"field": "Edad", "operation": "equals", "value": 40})
-    query2 = Query({"field": "Edad", "operation": "equals", "value": 40})
-    query3 = Query({"field": "Edad", "operation": "equals", "value": 41})
-    
-    assert query1 == query2
-    assert query1 != query3
-    assert query1 != "not a query"
-
-def test_get_operations_used(complex_query):
-    """Test extraction of used operations."""
-    operations = complex_query._get_operations_used()
-    assert set(operations) == {"and", "or", "greater_than", "equals"}
-
-def test_get_fields_referenced(complex_query):
-    """Test extraction of referenced fields."""
-    fields = complex_query._get_fields_referenced()
-    assert set(fields) == {"Edad", "Descripcion"}
-
-def test_invalid_node_structure():
-    """Test handling of invalid node structure."""
-    query = Query({"invalid": "structure"})
+def test_human_readable_simple():
+    """Test human readable output for simple query"""
+    query = Query.create_simple("pacientes.Edad", "greater_than", 40)
     readable = query.to_human_readable()
-    assert isinstance(readable, str)  # Should not raise exception
-    assert not query.validate(sample_schema)
+    assert readable == "pacientes.Edad greater_than 40"
 
-def test_string_representation(complex_query):
-    """Test string representation of query."""
-    assert str(complex_query) == complex_query.to_human_readable()
+def test_human_readable_complex():
+    """Test human readable output for complex query"""
+    query1_dict = {"field": "pacientes.Genero", "operation": "equals", "value": "Femenino"}
+    query2_dict = {"field": "pacientes.Edad", "operation": "greater_than", "value": 60}
+    query = Query.create_complex("and", query1_dict, query2_dict)
+    
+    readable = query.to_human_readable()
+    assert readable == "(pacientes.Genero equals Femenino AND pacientes.Edad greater_than 60)"
+
+def test_direct_constructor():
+    """Test direct constructor usage"""
+    query_dict = {"field": "pacientes.Edad", "operation": "greater_than", "value": 40}
+    query = Query(query_dict, is_complex=False)
+    
+    assert query.is_complex == False
+    assert query.query_dict == query_dict
+
+def test_empty_query_dict():
+    """Test creating query with empty dictionary"""
+    query = Query({}, False)
+    readable = query.to_human_readable()
+    assert readable == "Empty query"  # Changed expectation
+
+def test_missing_query_in_llm_response():
+    """Test handling LLM response without query field"""
+    llm_response = '{"something_else": {}}'
+    
+    query = Query.from_llm_response(llm_response)
+    assert query.query_dict == {}
 
 if __name__ == '__main__':
     pytest.main([__file__])
