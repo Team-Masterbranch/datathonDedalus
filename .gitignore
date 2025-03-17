@@ -9,3 +9,4 @@ __pycache__/
 .Python
 /root/data/img/*
 /root/data/cohort.csv
+.~lock.*
