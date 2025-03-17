@@ -24,6 +24,16 @@ class ContextManager:
         self._system_messages = system_messages.copy()
         self._update_full_conversation()
 
+    def get_last_request(self) -> str:
+        """
+        Get the last user message in the conversation.
+
+        Returns:
+            The last user message as a string.
+        """
+        if self._user_messages:
+            return self._user_messages[-1]
+        return ""
 
     def add_user_message(self, user_message: str) -> None:
         """

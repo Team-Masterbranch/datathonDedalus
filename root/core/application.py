@@ -1,5 +1,7 @@
 # core/application.py
 from core.context_manager import ContextManager
+from core.intention import Intention
+from core.intention_executor import IntentionExecutor
 from utils.config import (
     DATA_DIR,
     LOG_LEVEL,
@@ -29,14 +31,17 @@ class Application:
         logger.setLevel(LOG_LEVEL)
         logger.info("Initializing Application")
         self.preparser = Preparser()
-        self.parser = Parser()
         self.llm_handler = LLMHandler()
         self.data_manager = DataManager(DATA_DIR)
+        self.parser = Parser(self.llm_handler, self.data_manager)
         self.query_manager = QueryManager(self.data_manager)
         self.cli = HealthcareCLI(self)
         self.result_analyzer = ResultAnalyzer()
         self.visualizer = Visualizer()
         self.context_manager = ContextManager()
+        self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
+        
+        self.visualizer.clear_output_directory()
         
     def start(self):
         """Start the application and its interface."""
@@ -53,6 +58,7 @@ class Application:
 
     def shutdown(self):
         """Cleanup and shutdown application."""
+        self.visualizer.clear_output_directory()
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
@@ -70,41 +76,21 @@ class Application:
             preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                user_intention = self.parser.process_with_llm(preparse_result)
+                message = self.context_manager.get_last_request()
+                user_intention = self.parser.process_message(message)
                 self.preparser.update_cache(user_input, user_intention)
             else:
                 user_intention = preparse_result
 
-            # Execute query using QueryManager
-            result = await self.query_manager.execute_query(
-                user_intention, 
-                filter_current_cohort=filter_current_cohort
-            )
+            self.intention_executer.execute(user_intention)
+            self.data_manager.save_current_cohort("root/data/temp/filtered_cohort.csv", index=False)
+            print("Filtered cohort saved to root/data/temp/filtered_cohort.csv")
             
-            # Analyze results and generate visualizations
-            cohort_path, viz_requests = self.result_analyzer.analyze_cohort(self.data_manager)
-            
-            if cohort_path:
-                print(f"\nYour requested cohort is saved in file: {cohort_path}")
-                
-                # Generate visualizations
-                if viz_requests:
-                    viz_results = self.visualizer.create_visualizations(
-                        self.data_manager.get_current_cohort(),
-                        viz_requests
-                    )
-                    
-                    if viz_results:
-                        print("\nGenerated visualizations are saved in:")
-                        for path in viz_results:
-                            print(f"- {path}")
-            
-            return result
+            self.shutdown
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
             raise
-
 
     def get_available_tests(self) -> List[str]:
         """
@@ -125,7 +111,6 @@ class Application:
             if f.startswith('test_') and f.endswith('.py')
         ]
         return sorted(test_files)
-
 
     def get_test_functions(self, test_file: str) -> List[str]:
         try:
@@ -149,8 +134,6 @@ class Application:
         except Exception as e:
             logger.error(f"Error getting test functions: {e}")
             return []
-
-
 
     def run_tests(self, test_file: Optional[str] = None, test_function: Optional[str] = None) -> Dict[str, Any]:
         try:

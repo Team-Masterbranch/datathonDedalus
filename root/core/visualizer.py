@@ -38,6 +38,28 @@ class Visualizer:
         sns.set_style("whitegrid")  # Changed from plt.style.use('seaborn')
         sns.set_palette("husl")
 
+    def clear_output_directory(self) -> None:
+        """
+        Clear all images from the output directory.
+        """
+        try:
+            if not os.path.exists(self.output_dir):
+                logger.info(f"Output directory does not exist: {self.output_dir}")
+                return
+
+            file_count = 0
+            for filename in os.listdir(self.output_dir):
+                file_path = os.path.join(self.output_dir, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    file_count += 1
+
+            logger.info(f"Cleared {file_count} files from output directory: {self.output_dir}")
+
+        except Exception as e:
+            logger.error(f"Error clearing output directory: {e}")
+
+
     def create_visualizations(self, 
                             data: pd.DataFrame, 
                             requests: List[VisualizerRequest],

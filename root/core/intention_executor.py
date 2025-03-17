@@ -15,7 +15,7 @@ class IntentionExecutor:
         self.visualizer = visualizer
         self.data_manager = data_manager
         
-    async def execute(self, intention: Intention) -> Dict[str, Any]:
+    def execute(self, intention: Intention) -> Dict[str, Any]:
         """
         Execute the intention based on its type.
         
@@ -35,15 +35,16 @@ class IntentionExecutor:
 
         try:
             if intention.intention_type == IntentionType.COHORT_FILTER:
-                # Execute query through query manager
-                result = await self.query_manager.execute_query(
-                    intention.query,
-                    filter_current_cohort=(intention.filter_target == FilterTarget.CURRENT_COHORT)
-                )
+                query = intention.query
+                if intention.filter_target == FilterTarget.FULL_DATASET:
+                    logger.debug(f"Resetting cohort to full dataset")
+                    self.data_manager.reset_to_full()
+                logger.debug(f"Cohort shape before query execution: {self.data_manager.get_current_cohort().shape}")
+                self.data_manager.apply_query_on_current_cohort(query)
+                logger.debug(f"Cohort shape after query execution: {self.data_manager.get_current_cohort().shape}")
                 return {
                     "success": True,
                     "type": "cohort_filter",
-                    "result": result
                 }
 
             elif intention.intention_type == IntentionType.VISUALIZATION:

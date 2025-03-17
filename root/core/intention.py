@@ -55,18 +55,19 @@ class Intention:
                     self.validation_errors.append("Filter target must be a valid FilterTarget enum value")
                 
                 
-                # Validate query against schema if data_manager is provided                
+                # Validate query against schema if data_manager is provided
+                # This part was deactivated because of refactoring of Query class.                
                 
-                if data_manager:
-                    schema = (data_manager.get_full_schema() 
-                            if self.filter_target == FilterTarget.FULL_DATASET 
-                            else data_manager.get_current_schema())
-                    logger.debug(f"Schema created")
+                # if data_manager:
+                #     schema = (data_manager.get_full_schema() 
+                #             if self.filter_target == FilterTarget.FULL_DATASET 
+                #             else data_manager.get_current_schema())
+                #     logger.debug(f"Schema created")
                     
-                    if not schema:
-                        self.validation_errors.append("Could not get schema from data manager")
-                    elif not self.query.validate(schema):
-                        self.validation_errors.append("Invalid query for the given schema")
+                #     if not schema:
+                #         self.validation_errors.append("Could not get schema from data manager")
+                #     elif not self.query.validate(schema):
+                #         self.validation_errors.append("Invalid query for the given schema")
 
             elif self.intention_type == IntentionType.VISUALIZATION:
                 logger.debug(f"Entered VISUALIZATION intention validation")

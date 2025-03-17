@@ -76,7 +76,7 @@ def main():
     test_cases = [
         {
             "title": "Cohort Filter Test",
-            "request": "Dame pacientes mayores que 65"
+            "request": "Dame mujeres mayores que 65"
         }#,
         # Add more test cases here when needed
     ]
@@ -85,7 +85,15 @@ def main():
     for test_case in test_cases:
         try:
             # Get LLM response
-            response = llm.single_input_request(test_case["request"])
+            response = llm.single_string_request(test_case["request"])
+            
+            # Print raw LLM responce
+            print("Raw LLM response:")
+            print("-"*80)
+            print(response)
+            print("-"*80)
+            print(f"Type of response from LLM is {type(response)}")
+            print("-"*80)
             
             # Parse and print response
             parsed_response = print_response(test_case["title"], response)
