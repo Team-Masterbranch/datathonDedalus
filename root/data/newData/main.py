@@ -27,6 +27,9 @@ def main():
     # Step 6: Generate encounters
     run_script('generators/generate_encounters.py')
 
+    # Step 7: Generate procedures
+    run_script('generators/generate_procedures.py')
+
 if __name__ == '__main__':
     # Change to the script's directory to ensure relative paths work correctly
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
