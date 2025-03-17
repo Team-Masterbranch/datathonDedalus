@@ -1,13 +1,8 @@
-"""Logger module for the project.
-
-This module provides a centralized logging configuration for the entire project.
-It sets up logging with proper formatting, file handling, and log levels.
-"""
-
 import sys
 import logging
 from datetime import datetime
 from typing import Optional
+from pathlib import Path
 
 from .config import (
     LOGS_DIR,
@@ -23,38 +18,45 @@ if sys.stdout.encoding != 'utf-8':
         import codecs
         sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
 
-__all__ = ['setup_logger']
-
-# Use config constants and derive other values
-LOG_FILE_NAME = f"app_{datetime.now().strftime('%Y%m%d')}.log"
-
 def setup_logger(name: str, log_file: Optional[str] = None) -> logging.Logger:
     """Set up and configure logger instance."""
     # Create logger
     logger = logging.getLogger(name)
-    logger.setLevel(getattr(logging, LOG_LEVEL))  # Convert string level to logging constant
+    
+    if not logger.handlers:
+        # Set the base level from config
+        logger.setLevel(getattr(logging, LOG_LEVEL))
 
-    # Create formatters
-    formatter = logging.Formatter(LOG_FORMAT, DATE_FORMAT)
+        # Create formatters
+        formatter = logging.Formatter(LOG_FORMAT, DATE_FORMAT)
 
-    # Create file handler with UTF-8 encoding
-    LOGS_DIR.mkdir(exist_ok=True)  # Create logs directory if it doesn't exist
-    file_path = LOGS_DIR / (log_file or LOG_FILE_NAME)
-    file_handler = logging.FileHandler(file_path, encoding='utf-8')
-    file_handler.setLevel(getattr(logging, LOG_LEVEL))
-    file_handler.setFormatter(formatter)
+        # Create file handler
+        LOGS_DIR.mkdir(exist_ok=True)
+        file_path = LOGS_DIR / f"app_{datetime.now().strftime('%Y%m%d')}.log"
+        if log_file:
+            file_path = LOGS_DIR / log_file
+            
+        file_handler = logging.FileHandler(file_path, encoding='utf-8')
+        file_handler.setLevel(getattr(logging, LOG_LEVEL))
+        file_handler.setFormatter(formatter)
 
-    # Create console handler with UTF-8 encoding
-    console_handler = logging.StreamHandler(sys.stdout)  # Explicitly use stdout
-    console_handler.setLevel(getattr(logging, LOG_LEVEL))
-    console_handler.setFormatter(formatter)
+        # Create console handler
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(getattr(logging, LOG_LEVEL))
+        console_handler.setFormatter(formatter)
 
-    # Add handlers to logger
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+        # Add handlers to logger
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
 
     return logger
 
+# Configure root logger
+logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL),
+    format=LOG_FORMAT,
+    datefmt=DATE_FORMAT
+)
 
-# Create default logger instance
+# Create module logger
 logger = setup_logger(__name__)

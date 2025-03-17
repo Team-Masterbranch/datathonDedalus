@@ -1,8 +1,11 @@
 # core/parser.py
 from typing import Optional, Dict, Any
-from utils.logger import logger
-from utils.logger import setup_logger
+from pathlib import Path
+from core.intention import Intention
+from core.data_manager import DataManager
+from core.llm_handler import LLMHandler
 from core.query import Query
+from utils.logger import setup_logger
 logger = setup_logger(__name__)
 
 class Parser:
@@ -14,7 +17,10 @@ class Parser:
     4. Updating preprocessor cache
     """
 
-    def __init__(self):
+    def __init__(self, llm_handler: LLMHandler, data_manager: DataManager):
+        self.llm_handler = llm_handler
+        self.data_manager = data_manager
+        self.prompts_dir = Path(__file__).parent.parent / "prompts"
         logger.info("Initializing Parser")
 
     def process_with_llm(self, query: str) -> Query:
@@ -164,3 +170,64 @@ class Parser:
         except Exception as e:
             logger.error(f"Validation error: {e}")
             return False
+
+
+
+    def process_message(self, message: Dict[str, str]) -> Intention:
+        """
+        Process message through LLM and return structured Intention object.
+        
+        Args:
+            message: Dictionary containing message with format {"role": str, "content": str}
+            
+        Returns:
+            Intention: Structured Intention object
+            
+        Raises:
+            ValueError: If message format is invalid or LLM response cannot be parsed
+        """
+        try:
+            # Get current schema
+            schema = self.data_manager.get_full_schema()
+            formatted_schema = self._format_schema(schema)
+            
+            # Create system messages with prompts and schema
+            system_messages = [
+                {
+                    "role": "system",
+                    "content": self._load_prompt("system_intentions.txt")
+                },
+                {
+                    "role": "system",
+                    "content": f"{self._load_prompt('schema_description.txt')}\n{formatted_schema}"
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("system_examples.txt")
+                }
+            ]
+
+            # Combine system messages with user message
+            messages = system_messages + [message]
+            
+            # Get LLM response using llm_handler
+            llm_response = self.llm_handler.send_chat_request(messages)
+            
+            # Convert LLM response to Intention object
+            intention = Intention.from_llm_response(llm_response)
+            logger.info(f"Generated Intention object: {intention}")
+            
+            return intention
+
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            raise
+
+    def _format_schema(self, schema: dict) -> str:
+        """Format schema into a readable string"""
+        return '\n'.join([f"{col}: {dtype}" for col, dtype in schema.items()])
+    
+    def _load_prompt(self, filename: str) -> str:
+        """Load prompt from file"""
+        with open(self.prompts_dir / filename, 'r', encoding='utf-8') as f:
+            return f.read().strip()

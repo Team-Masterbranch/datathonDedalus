@@ -1,0 +1,12 @@
+--- No he entendido la consulta ---  
+¡Discúlpame! Parece que no he podido procesar tu solicitud.  
+Por favor, intenta reformularla usando estos formatos:  
+
+► Ejemplos de filtros:  
+   - "Pacientes con diabetes y HbA1c > 7%"  
+   - "Mujeres entre 50-65 años CON diagnóstico de hipertensión"  
+   - "Resultados de LDL < 100 mg/dL en los últimos 6 meses"  
+
+► Ejemplos de gráficos:  
+   - "Graficar distribución de edades en la cohorte actual"  
+   - "Comparar presión arterial sistólica entre hombres y mujeres" 

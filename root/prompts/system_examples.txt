@@ -1,0 +1,36 @@
+Example responses (note there is NO text before or after the JSON):
+For "show patients older than 50":
+{
+    "intention_type": "COHORT_FILTER",
+    "description": "Filter patients over 50 years old",
+    "query": {
+        "field": "age",
+        "operation": "greater_than",
+        "value": 50
+    },
+    "filter_target": "FULL_DATASET"
+}
+
+For "create age distribution chart":
+{
+    "intention_type": "VISUALIZATION",
+    "description": "Show age distribution of patients",
+    "visualizer_request": {
+        "chart_type": "histogram",
+        "title": "Age Distribution",
+        "x_column": "age",
+        "y_column": "count"
+    }
+}
+
+For "what can you do?":
+{
+    "intention_type": "HELP",
+}
+
+For "make coffee":
+{
+    "intention_type": "UNKNOWN",
+}
+
+REMEMBER: Return ONLY the JSON object, with no additional text.

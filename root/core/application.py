@@ -1,4 +1,7 @@
 # core/application.py
+from core.context_manager import ContextManager
+from core.intention import Intention
+from core.intention_executor import IntentionExecutor
 from utils.config import (
     DATA_DIR,
     LOG_LEVEL,
@@ -20,7 +23,6 @@ from core.result_analyzer import ResultAnalyzer
 from core.visualizer import Visualizer
 
 
-
 class Application:
     """
     Application service layer that coordinates between different components.
@@ -28,14 +30,18 @@ class Application:
     def __init__(self):
         logger.setLevel(LOG_LEVEL)
         logger.info("Initializing Application")
-        self.preprocessor = Preparser()
-        self.parser = Parser()
+        self.preparser = Preparser()
         self.llm_handler = LLMHandler()
         self.data_manager = DataManager(DATA_DIR)
+        self.parser = Parser(self.llm_handler, self.data_manager)
         self.query_manager = QueryManager(self.data_manager)
         self.cli = HealthcareCLI(self)
         self.result_analyzer = ResultAnalyzer()
         self.visualizer = Visualizer()
+        self.context_manager = ContextManager()
+        self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
+        
+        self.visualizer.clear_output_directory()
         
     def start(self):
         """Start the application and its interface."""
@@ -52,10 +58,11 @@ class Application:
 
     def shutdown(self):
         """Cleanup and shutdown application."""
+        self.visualizer.clear_output_directory()
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
-    async def process_user_query(self, query: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
+    async def process_user_query(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
         Process and execute a user query.
         
@@ -64,45 +71,26 @@ class Application:
             filter_current_cohort: Whether to filter current cohort or start new search
         """
         try:
+            self.context_manager.add_user_message(user_input)
             # Preprocessing and parsing (as before)
-            processed_query, needs_llm = self.preprocessor.process_query(query)
+            preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                structured_criteria = self.parser.process_with_llm(processed_query)
-                self.preprocessor.update_cache(query, structured_criteria)
+                message = self.context_manager.get_last_request()
+                user_intention = self.parser.process_message(message)
+                self.preparser.update_cache(user_input, user_intention)
             else:
-                structured_criteria = processed_query
+                user_intention = preparse_result
 
-            # Execute query using QueryManager
-            result = await self.query_manager.execute_query(
-                structured_criteria, 
-                filter_current_cohort=filter_current_cohort
-            )
+            self.intention_executer.execute(user_intention)
+            self.data_manager.save_current_cohort("root/data/temp/filtered_cohort.csv", index=False)
+            print("Filtered cohort saved to root/data/temp/filtered_cohort.csv")
             
-            # Analyze results and generate visualizations
-            cohort_path, viz_requests = self.result_analyzer.analyze_cohort(self.data_manager)
-            
-            if cohort_path:
-                print(f"\nYour requested cohort is saved in file: {cohort_path}")
-                
-                # Generate visualizations
-                if viz_requests:
-                    viz_results = self.visualizer.create_visualizations(
-                        self.data_manager.get_current_cohort(),
-                        viz_requests
-                    )
-                    
-                    if viz_results:
-                        print("\nGenerated visualizations are saved in:")
-                        for path in viz_results:
-                            print(f"- {path}")
-            
-            return result
+            self.shutdown
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
             raise
-
 
     def get_available_tests(self) -> List[str]:
         """
@@ -125,20 +113,11 @@ class Application:
         return sorted(test_files)
 
     def get_test_functions(self, test_file: str) -> List[str]:
-        """
-        Get list of test functions in a specific test file.
-        
-        Args:
-            test_file: Name of the test file without .py extension
-            
-        Returns:
-            List of test function names
-        """
         try:
             project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            test_path = os.path.join(project_root, 'tests', f'test_{test_file}.py')
+            test_file = test_file if test_file.startswith('test_') else f'test_{test_file}'
+            test_path = os.path.join(project_root, 'tests', f'{test_file}.py')
             
-            # Use ast module instead of importing
             import ast
             
             with open(test_path, 'r') as file:
@@ -146,7 +125,7 @@ class Application:
                 
             test_functions = [
                 node.name for node in ast.walk(tree)
-                if isinstance(node, ast.FunctionDef) 
+                if (isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef))
                 and node.name.startswith('test_')
             ]
             

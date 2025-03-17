@@ -15,11 +15,6 @@ TESTS_DIR = PROJECT_ROOT / 'tests'
 DATA_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
-# LLM Configuration
-LLM_API_KEY = os.getenv('LLM_API_KEY')
-if not LLM_API_KEY:
-    raise ValueError("LLM_API_KEY environment variable not set")
-
 LLM_DEFAULT_TEMPERATURE = 0.7
 LLM_MAX_TOKENS = 150
 LLM_TOP_P = 1.0
@@ -39,7 +34,9 @@ CLI_INTRO = "Welcome to the Healthcare Data Analysis System. Type 'help' for com
 # Query Processing
 MAX_CACHE_SIZE = 1000  # Maximum number of cached queries
 
-# utils/config.py
+# Schema configuration
+UNIQUE_VALUES_THRESHOLD = 5  # Show all possible values if number of unique values is below this
+
 # Visualization settings
 CLI_CHART_WIDTH = 10
 CLI_CHART_HEIGHT = 6

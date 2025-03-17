@@ -1,95 +1,166 @@
 # core/llm_handler.py
-from typing import Optional, Dict, Any
-from utils.config import (
-    LLM_API_KEY,
-    LLM_DEFAULT_TEMPERATURE,
-    LLM_MAX_TOKENS,
-    LLM_TOP_P,
-    LLM_FREQUENCY_PENALTY,
-    LLM_PRESENCE_PENALTY
-)
-from utils.logger import logger
-from utils.logger import setup_logger
-logger = setup_logger(__name__)
+import os
+from pathlib import Path
+from typing import Any, Dict, List
+
+from openai import OpenAI
+
+from core.data_manager import DataManager
+from utils import logger
+from utils.config import DATA_DIR
 
 class LLMHandler:
-    """
-    Handles interactions with the LLM service.
-    Currently supports basic query processing with configurable parameters.
-    """
-
     def __init__(self):
-        logger.info("Initializing LLM Handler")
-        self.api_key = LLM_API_KEY
-        if not self.api_key:
-            logger.error("LLM API key not found in config")
-            raise ValueError("LLM API key not configured")
-        
-        # Configure LLM parameters
-        params = {
-            "temperature": LLM_DEFAULT_TEMPERATURE,
-            "max_tokens": LLM_MAX_TOKENS,
-            "top_p": LLM_TOP_P,
-            "frequency_penalty": LLM_FREQUENCY_PENALTY,
-             "presence_penalty": LLM_PRESENCE_PENALTY
-        }
+        self.client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            base_url="https://litellm.dccp.pbu.dedalus.com"
+        )
+        self.data_manager = DataManager(DATA_DIR)
+        self.prompts_dir = Path(__file__).parent.parent / "prompts"
 
-    async def process_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Process a query through the LLM.
-        
-        Args:
-            query: The query string to process
-            params: Optional parameters to override defaults
-            
-        Returns:
-            str: LLM response
-        """
-        logger.info(f"Processing query through LLM: {query[:50]}...")  # Log first 50 chars
-        
-        # Merge default params with any provided params
-        query_params = self.default_params.copy()
-        if params:
-            query_params.update(params)
+    def _load_prompt(self, filename: str) -> str:
+        """Load prompt from file"""
+        with open(self.prompts_dir / filename, 'r', encoding='utf-8') as f:
+            return f.read().strip()
 
+    def _format_schema(self, schema: dict) -> str:
+        """Format schema into a readable string"""
+        return '\n'.join([f"{col}: {dtype}" for col, dtype in schema.items()])
+
+    def single_string_request(self, request: str) -> Dict[str, Any]:
         try:
-            response = await self._send_to_llm(query, query_params)
-            logger.info("Successfully received LLM response")
-            return response
+            # Get current schema
+            schema = self.data_manager.get_full_schema()
+            formatted_schema = self._format_schema(schema)
+            
+            # Load static prompts
+            intentions_prompt = self._load_prompt("system_intentions.txt")
+            examples_prompt = self._load_prompt("system_examples.txt")
+            schema_description = self._load_prompt("schema_description.txt")
+            
+            # Combine schema description with actual schema
+            schema_prompt = f"{schema_description}\n{formatted_schema}"
+
+            # Create system messages
+            system_messages = [
+                {
+                    "role": "system",
+                    "content": intentions_prompt
+                },
+                {
+                    "role": "system",
+                    "content": schema_prompt
+                },
+                {
+                    "role": "system",
+                    "content": examples_prompt
+                }
+            ]
+
+            messages = system_messages + [
+                {
+                    "role": "user",
+                    "content": request
+                }
+            ]
+            
+            response = self.client.chat.completions.create(
+                model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
+                messages=messages
+            )
+
+            return response.choices[0].message.content
+
         except Exception as e:
-            logger.error(f"Error processing LLM query: {e}")
+            logger.error(f"Error in LLM test: {e}")
             raise
 
-    async def _send_to_llm(self, query: str, params: Dict[str, Any]) -> str:
+    def single_message_request(self, message: Dict[str, str]) -> str:
         """
-        Send query to LLM service and get response.
-        Stub method - replace with actual LLM API calls.
-        """
-        logger.info("Sending query to LLM service")
-        # TODO: Implement actual LLM API call
-        # For now, return mock response
-        return f"LLM MOCK RESPONSE: Processed query '{query[:30]}...'"
-
-    def update_default_params(self, params: Dict[str, Any]) -> None:
-        """
-        Update default parameters for LLM queries.
+        Process a single input message through LLM.
         
         Args:
-            params: Dictionary of parameters to update
-        """
-        logger.info(f"Updating default LLM parameters: {params}")
-        self.default_params.update(params)
-
-    @staticmethod
-    def format_prompt(query: str) -> str:
-        """
-        Format a query into a proper prompt for the LLM.
-        
-        Args:
-            query: Raw query string
+            message: Dictionary containing message with format {"role": str, "content": str}
             
         Returns:
-            str: Formatted prompt
+            str: LLM response text
+            
+        Raises:
+            ValueError: If message format is invalid
         """
-        # TODO: Implement proper prompt formatting
-        return f"Convert the following healthcare query into structured criteria: {query}"
+        try:
+            # Validate message format
+            if not isinstance(message, dict) or "role" not in message or "content" not in message:
+                raise ValueError("Invalid message format. Expected {'role': str, 'content': str}")
+
+            # Get current schema
+            schema = self.data_manager.get_full_schema()
+            formatted_schema = self._format_schema(schema)
+            
+            # Load static prompts
+            intentions_prompt = self._load_prompt("system_intentions.txt")
+            examples_prompt = self._load_prompt("system_examples.txt")
+            schema_description = self._load_prompt("schema_description.txt")
+            
+            # Combine schema description with actual schema
+            schema_prompt = f"{schema_description}\n{formatted_schema}"
+
+            # Create system messages
+            system_messages = [
+                {
+                    "role": "system",
+                    "content": intentions_prompt
+                },
+                {
+                    "role": "system",
+                    "content": schema_prompt
+                },
+                {
+                    "role": "system",
+                    "content": examples_prompt
+                }
+            ]
+
+            # Combine system messages with user message
+            messages = system_messages + [message]
+            
+            response = self.client.chat.completions.create(
+                model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
+                messages=messages
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            logger.error(f"Error in LLM request: {e}")
+            raise
+
+
+    def send_chat_request(
+        self, 
+        messages: List[Dict[str, str]], 
+        model: str = "bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0"
+    ) -> str:
+        """
+        Send a generic chat completion request to LLM.
+        
+        Args:
+            messages: List of message dictionaries with format [{"role": str, "content": str}, ...]
+            model: Model identifier to use for the request
+            
+        Returns:
+            str: LLM response text
+            
+        Raises:
+            Exception: If LLM request fails
+        """
+        try:
+            response = self.client.chat.completions.create(
+                model=model,
+                messages=messages
+            )
+            return response.choices[0].message.content
+            
+        except Exception as e:
+            logger.error(f"Error in chat request: {e}")
+            raise

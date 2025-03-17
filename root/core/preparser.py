@@ -1,5 +1,6 @@
 # core/query_preprocessor.py
 from typing import Optional, Dict, Any, Tuple, Union
+from core.intention import FilterTarget, Intention, IntentionType
 from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
@@ -13,7 +14,7 @@ class Preparser:
     """
 
     def __init__(self):
-        self.cache: Dict[str, Query] = {}  # Now stores Query objects instead of dicts
+        self.cache: Dict[str, Intention] = {}  
         logger.info("Initializing QueryPreprocessor")
         self._compile_regex_patterns()
 
@@ -35,9 +36,9 @@ class Preparser:
         }
 
 
-    def process_query(self, raw_query: str) -> Tuple[Union[Query, str], bool]:
+    def preparse_user_input(self, user_input: str) -> Tuple[Union[Intention, str], bool]:
         """
-        Process raw query and determine if it needs LLM processing.
+        Process raw user input and determine if it needs LLM processing.
         
         Args:
             raw_query: Raw query string from CLI
@@ -47,38 +48,44 @@ class Preparser:
             - If cache/regex match: (Query object, False)
             - If needs LLM: (raw_query string, True)
         """
-        logger.info(f"Processing query: {raw_query}")
+        logger.info(f"Processing query: {user_input}")
 
         # Try cache first
-        cached_result = self._check_cache(raw_query)
+        cached_result = self._check_cache(user_input)
         if cached_result:
-            logger.info("Cache hit - returning cached Query")
+            logger.info("Cache hit - returning cached Intention")
             return cached_result, False
 
         # Try regex patterns
-        regex_result = self._try_regex_match(raw_query)
+        regex_result = self._try_regex_match(user_input)
         if regex_result:
             logger.info("Regex match - creating Query object")
             query = Query(regex_result)
-            self.update_cache(raw_query, query)
-            return query, False
+            # Create Intention object with the query
+            intention = Intention(
+                type=IntentionType.COHORT_FILTER,
+                query=query,
+                target=FilterTarget.FULL_DATASET
+            )
+            self.update_cache(user_input, intention)
+            return intention, False
 
         # No matches found, needs LLM processing
         logger.info("Query requires LLM processing")
-        return raw_query, True
+        return user_input, True
 
-    def _check_cache(self, query: str) -> Optional[Query]:
+    def _check_cache(self, input: str) -> Optional[Intention]:
         """
-        Check if query exists in cache.
+        Check if input exists in cache.
         
         Args:
-            query: Raw query string
+            input: Raw input string
             
         Returns:
-            Optional[Query]: Cached Query object if exists, None otherwise
+            Optional[Intention]: Cached Query object if exists, None otherwise
         """
-        logger.info("Checking query cache")
-        return self.cache.get(query)
+        logger.info("Checking intentions cache")
+        return self.cache.get(input)
 
     def _try_regex_match(self, query: str) -> Optional[Dict[str, Any]]:
         """
@@ -120,7 +127,7 @@ class Preparser:
             
         return None
 
-    def update_cache(self, raw_query: str, query: Query) -> None:
+    def update_cache(self, user_input: str, intention: Intention) -> None:
         """
         Update cache with processed Query object.
         
@@ -128,8 +135,8 @@ class Preparser:
             raw_query: Original raw query string
             query: Processed Query object
         """
-        logger.info(f"Updating cache for query: {raw_query}")
-        self.cache[raw_query] = query
+        logger.info(f"Updating cache for query: {user_input}")
+        self.cache[user_input] = intention
 
     def clear_cache(self) -> None:
         """Clear the query cache."""

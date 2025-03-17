@@ -1,5 +1,6 @@
 # core/data_manager.py
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional
+import numpy as np
 import pandas as pd
 import os
 import glob
@@ -8,6 +9,8 @@ from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
 from core.visualizer_request import VisualizerRequest, ChartType
+from utils.config import UNIQUE_VALUES_THRESHOLD
+
 logger = setup_logger(__name__)
 
 class DataManager:
@@ -39,13 +42,10 @@ class DataManager:
         # Initialize full dataset schema
         self._update_full_schema()
         self._update_current_schema()
-        
+
     def load_csv_files(self) -> bool:
         """
         Load CSV files from the data directory and combine them into a single DataFrame.
-        
-        Returns:
-            bool: True if loading was successful, False otherwise
         """
         try:
             logger.info(f"Loading CSV files from {self._data_path}")
@@ -55,13 +55,21 @@ class DataManager:
                 logger.error(f"No CSV files found in {self._data_path}")
                 return False
                 
-            dataframes = []
+            dataframes = {}
             for file in csv_files:
-                logger.info(f"Reading {file}")
+                logger.debug(f"Reading {file}")
+                table_name = os.path.splitext(os.path.basename(file))[0]
                 df = pd.read_csv(file)
-                dataframes.append(df)
+                df = self._prefix_columns(df, table_name)
+                dataframes[table_name] = df
+                logger.debug(f"Loaded {table_name} with columns: {df.columns.tolist()}")
                 
-            self._full_dataset = pd.concat(dataframes, axis=0, ignore_index=True)
+            self._full_dataset = self._merge_dataframes(dataframes)
+            if self._full_dataset is None:
+                logger.error("Merge resulted in None DataFrame")
+                return False
+                
+            logger.debug(f"Final merged dataset columns: {self._full_dataset.columns.tolist()}")
             self._current_cohort = self._full_dataset.copy()
             logger.info(f"Successfully loaded {len(csv_files)} files")
             return True
@@ -70,123 +78,243 @@ class DataManager:
             logger.error(f"Error loading CSV files: {str(e)}")
             return False
 
-    def apply_filter(self, query: Query) -> Optional[pd.DataFrame]:
+    def _prefix_columns(self, df: pd.DataFrame, table_name: str) -> pd.DataFrame:
         """
-        Apply filter based on Query object to current cohort.
+        Add table name prefix to column names except join keys.
+        """
+        prefixed_columns = {}
+        join_keys = ['PacienteID', 'paciente_id', 'id']  # Case-sensitive join keys
+        
+        for col in df.columns:
+            if col not in join_keys:  # If not a join key
+                if not col.startswith(f"{table_name}."):  # If not already prefixed
+                    prefixed_columns[col] = f"{table_name}.{col}"
+        
+        return df.rename(columns=prefixed_columns)
+
+    def _merge_dataframes(self, dataframes: Dict[str, pd.DataFrame]) -> Optional[pd.DataFrame]:
+        """
+        Merge DataFrames using appropriate join keys.
+        """
+        if not dataframes:
+            return None
+        
+        # Start with patients table if it exists
+        result = None
+        remaining_dfs = dataframes.copy()
+        
+        if 'pacientes' in remaining_dfs:
+            result = remaining_dfs.pop('pacientes')
+            logger.debug(f"Starting merge with pacientes table, columns: {result.columns.tolist()}")
+        else:
+            first_table = list(remaining_dfs.keys())[0]
+            result = remaining_dfs.pop(first_table)
+            logger.debug(f"Starting merge with {first_table} table, columns: {result.columns.tolist()}")
+        
+        # Merge remaining DataFrames
+        for table_name, df in remaining_dfs.items():
+            # Look for join keys without considering prefixes
+            join_key = None
+            possible_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']
+            
+            for key in possible_keys:
+                if key in result.columns and key in df.columns:
+                    join_key = key
+                    break
+            
+            if join_key is None:
+                logger.warning(f"No join key found for table {table_name}, columns: {df.columns.tolist()}")
+                continue
+                
+            logger.info(f"Merging {table_name} using key: {join_key}")
+            result = result.merge(df, how='left', on=join_key)
+            logger.debug(f"After merging {table_name}, columns: {result.columns.tolist()}")
+        
+        return result
+
+    def apply_query_on_current_cohort(self, query: Query):
+        """
+        Apply a query to the current cohort.
+
+        Args:
+            query: Query object containing query parameters
+
+        Returns:
+            bool: True if query was applied successfully, False otherwise
+
+        Raises:
+            ValueError: If query is invalid or operation is not supported
+        """
+        logger.debug(f"Entered apply_query_on_current_cohort method.")
+        result = self._apply_query_to_dataframe(query, self._current_cohort)
+        logger.debug(f"apply_query_on_current_cohort >> Result shape after applying query: {result.shape if result is not None else 'None'}")
+        self._current_cohort = result
+        logger.debug(f"New cohort shape: {self._current_cohort.shape if self._current_cohort is not None else 'None'}")
+
+    def _apply_query_to_dataframe(self, query: Query, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Apply a query to the current cohort.
+
+        Args:
+            query: Query object containing query parameters
+
+        Returns:
+            bool: True if query was applied successfully, False otherwise
+
+        Raises:
+            ValueError: If query is invalid or operation is not supported
+        """
+        try:
+            logger.debug(f"Entered _apply_query_to_dataframe with df shape {df.shape}")
+            # Simple query
+            if not query.is_complex:
+                logger.debug(f"Applying simple query: {query.to_human_readable()}")
+                result = self._apply_basic_query_to_dataframe(query, df)
+                logger.debug(f"Result shape after simple query: {result.shape if result is not None else 'None'}")
+                return result
+            # Complex query
+            else:
+                logger.debug(f"Applying complex query: {query.to_human_readable()}")
+                left_df = self._apply_query_to_dataframe(query.get_query1(), df)
+                right_df = self._apply_query_to_dataframe(query.get_query2(), df)
+                operation = query.get_operation().lower()
+                result = self._apply_operation_to_dataframes(left_df, right_df, operation)
+                logger.debug(f"Result shape after complex query: {result.shape if result is not None else 'None'}")
+                return result
+        
+        except Exception as e:
+            logger.error(f"Error applying query: {e}")
+            return False
+
+    def _apply_basic_query_to_dataframe(self, query: Query, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Apply a simple query to a DataFrame.
         
         Args:
-            query: Query object containing filter criteria
-            
+            df (pd.DataFrame): Input DataFrame
+            query (Query): Simple query object
+                Example: Query with field="pacientes.Edad", operation="greater_than", value=40
+        
         Returns:
-            Optional[pd.DataFrame]: Filtered DataFrame or None if error
+            pd.DataFrame: Filtered DataFrame
+            
+        Raises:
+            ValueError: If query is complex or operation is not supported
         """
         try:
-            logger.info(f"Applying filter with query: {query}")
-            
-            if self._current_cohort is None:
-                logger.error("Cannot apply filter: current cohort is None")
-                return None
+            if query.is_complex:
+                raise ValueError("Expected simple query, got complex query")
                 
-            logger.info(f"Current cohort shape: {self._current_cohort.shape}")
+            field = query.get_field()
+            operation = query.get_operation().lower()
+            value = query.get_value()
             
-            # Get filter mask based on query
-            mask = self._apply_query_filter(query)
-            if mask is None:
-                return None
+            logger.debug(f"Applying query: {field} {operation} {value}")
+            logger.debug(f"Input DataFrame shape: {df.shape}")
+            
+            # Verify field exists in DataFrame
+            if field not in df.columns:
+                raise ValueError(f"Field '{field}' not found in DataFrame")
                 
-            # Apply filter mask to current cohort
-            self._current_cohort = self._current_cohort[mask]
-            logger.info(f"Filter applied successfully. New cohort shape: {self._current_cohort.shape}")
-            
-            # Update schema for filtered cohort
-            self._update_current_schema()
-            return self._current_cohort
-            
-        except Exception as e:
-            logger.error(f"Error applying filter: {str(e)}")
-            return None
-
-    def _apply_query_filter(self, query: Query) -> Optional[pd.Series]:
-        """
-        Create and apply filter mask based on Query object.
-        
-        Args:
-            query: Query object containing filter criteria
-            
-        Returns:
-            Optional[pd.Series]: Boolean mask for filtering or None if error
-        """
-        try:
-            criteria = query._query
-            operation = criteria.get('operation')
-            
-            # Handle logical operations (AND/OR)
-            if operation in ['and', 'or']:
-                return self._handle_logical_operation(criteria)
-                
-            # Handle comparison operations
-            return self._handle_comparison_operation(criteria)
-            
-        except Exception as e:
-            logger.error(f"Error creating query filter: {str(e)}")
-            return None
-
-    def _handle_logical_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
-        """Handle AND/OR operations."""
-        if 'criteria' not in criteria:
-            logger.error("Missing criteria for logical operation")
-            return None
-            
-        operation = criteria['operation']
-        masks = []
-        
-        for subcriteria in criteria['criteria']:
-            submask = self._handle_comparison_operation(subcriteria)
-            if submask is not None:
-                masks.append(submask)
-        
-        if not masks:
-            return None
-            
-        if operation == 'and':
-            return pd.concat(masks, axis=1).all(axis=1)
-        else:  # or
-            return pd.concat(masks, axis=1).any(axis=1)
-
-    def _handle_comparison_operation(self, criteria: Dict[str, Any]) -> Optional[pd.Series]:
-        """Handle comparison operations (equals, greater_than, less_than, between)."""
-        field = criteria.get('field')
-        operation = criteria.get('operation')
-        value = criteria.get('value')
-        
-        if not all([field, operation]):
-            logger.error(f"Invalid criteria structure: {criteria}")
-            return None
-            
-        if field not in self._current_cohort.columns:
-            logger.error(f"Field {field} not found in dataset")
-            return None
-            
-        try:
+            # Apply the appropriate operation
             if operation == 'equals':
-                return self._current_cohort[field] == value
+                result = df[df[field] == value]
+                
+            elif operation == 'not_equals':
+                result = df[df[field] != value]
+                
             elif operation == 'greater_than':
-                return self._current_cohort[field] > value
+                result = df[df[field] > value]
+                
             elif operation == 'less_than':
-                return self._current_cohort[field] < value
+                result = df[df[field] < value]
+                
+            elif operation == 'greater_equal':
+                result = df[df[field] >= value]
+                
+            elif operation == 'less_equal':
+                result = df[df[field] <= value]
+                
+            elif operation == 'contains':
+                if not isinstance(value, str):
+                    raise ValueError("'contains' operation requires string value")
+                result = df[df[field].astype(str).str.contains(value, na=False)]
+                
+            elif operation == 'in':
+                if not isinstance(value, (list, tuple)):
+                    raise ValueError("'in' operation requires list or tuple value")
+                result = df[df[field].isin(value)]
+                
             elif operation == 'between':
-                values = criteria.get('values', [])
-                if len(values) != 2:
-                    logger.error("Between operation requires exactly 2 values")
-                    return None
-                return (self._current_cohort[field] >= values[0]) & (self._current_cohort[field] <= values[1])
+                if not isinstance(value, (list, tuple)) or len(value) != 2:
+                    raise ValueError("'between' operation requires list/tuple of 2 values")
+                result = df[(df[field] >= value[0]) & (df[field] <= value[1])]
+                
+            elif operation == 'is_null':
+                result = df[df[field].isna()]
+                
+            elif operation == 'is_not_null':
+                result = df[df[field].notna()]
+                
+            else:
+                raise ValueError(f"Unsupported operation: {operation}")
+                
+            logger.debug(f"Result DataFrame shape: {result.shape}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error in _apply_basic_query_to_dataframe: {str(e)}")
+            raise RuntimeError(f"Failed to apply query: {str(e)}")
+
+    def _apply_operation_to_dataframes(self, df1: pd.DataFrame, df2: pd.DataFrame, operation: str) -> pd.DataFrame:
+        """
+        Apply logical operation (AND/OR) between two DataFrames.
+        
+        Args:
+            df1 (pd.DataFrame): First DataFrame
+            df2 (pd.DataFrame): Second DataFrame
+            operation (str): Logical operation ('and' or 'or')
+            
+        Returns:
+            pd.DataFrame: Result of applying the logical operation
+            
+        Example:
+            If operation is 'and':
+                Returns rows that exist in both df1 AND df2
+            If operation is 'or':
+                Returns rows that exist in either df1 OR df2
+        """
+        try:
+            logger.debug(f"Applying {operation} operation between DataFrames")
+            logger.debug(f"DataFrame 1 shape: {df1.shape}")
+            logger.debug(f"DataFrame 2 shape: {df2.shape}")
+            
+            if operation.lower() == 'and':
+                # For AND, we want intersection of both DataFrames
+                # Keep only rows that exist in both DataFrames
+                result = pd.merge(df1, df2, how='inner')
+                
+            elif operation.lower() == 'or':
+                # For OR, we want union of both DataFrames
+                # Keep rows that exist in either DataFrame
+                result = pd.concat([df1, df2]).drop_duplicates()
+                
             else:
                 logger.error(f"Unsupported operation: {operation}")
-                return None
+                raise ValueError(f"Unsupported operation: {operation}. Use 'and' or 'or'.")
                 
+            logger.debug(f"Result DataFrame shape: {result.shape}")
+            return result
+            
         except Exception as e:
-            logger.error(f"Error in comparison operation: {str(e)}")
-            return None
+            logger.error(f"Error in _apply_operation: {str(e)}")
+            raise RuntimeError(f"Failed to apply operation: {str(e)}")
+
+    def _print_preview_df (self, df: pd.DataFrame, n: int = 5) -> None:
+        """Print preview of DataFrame."""
+        logger.debug(f"Preview of DataFrame (first {n} rows):")
+        logger.debug(df.head(n))
+
 
     def _update_full_schema(self):
         """Update schema for the full dataset."""
@@ -202,11 +330,31 @@ class DataManager:
         """Create schema for given DataFrame."""
         schema = {}
         for column in df.columns:
-            schema[column] = {
+            column_info = {
                 'dtype': str(df[column].dtype),
                 'unique_values': df[column].nunique(),
                 'missing_values': df[column].isnull().sum()
             }
+            
+            # Add numeric statistics for numeric columns
+            if np.issubdtype(df[column].dtype, np.number):
+                column_info.update({
+                    'min': float(df[column].min()),
+                    'max': float(df[column].max()),
+                    'mean': float(df[column].mean())
+                })
+            # Add possible values only for non-numeric columns with few unique values
+            elif df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
+                unique_values = sorted(df[column].dropna().unique().tolist())
+                # Convert numpy types to native Python types
+                unique_values = [
+                    item.item() if hasattr(item, 'item') else item 
+                    for item in unique_values
+                ]
+                column_info['possible_values'] = unique_values
+            
+            schema[column] = column_info
+        
         return schema
 
     def get_full_schema(self) -> Dict[str, Dict]:
@@ -227,7 +375,6 @@ class DataManager:
         self._current_cohort = self._full_dataset.copy()
         self._update_current_schema()
         return self._current_cohort
-
 
     def save_current_cohort(self, filepath: str, index: bool = False) -> bool:
         """
@@ -257,7 +404,6 @@ class DataManager:
         except Exception as e:
             logger.error(f"Error saving cohort to CSV: {str(e)}")
             return False
-
 
     def validate_visualization_request(self, request: VisualizerRequest) -> bool:
         """

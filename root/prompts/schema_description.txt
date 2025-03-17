@@ -1,0 +1,16 @@
+The database schema includes detailed information about each column:
+- Column name
+- Data type
+- Statistical information where applicable:
+  * For numeric fields: min, max, mean values
+  * For categorical fields: number of unique values, list of possible values
+  * Missing values count
+  * Distribution characteristics
+
+Use this metadata to:
+1. Choose appropriate fields for queries
+2. Validate value ranges in filters
+3. Select meaningful visualizations
+4. Suggest relevant aggregations
+
+Below is the current schema with all available metadata:
