@@ -84,8 +84,6 @@ def run_test():
         # Test query application on real data
         print("\nTesting query application on full dataset...")
         
-
-        
         # Show initial dataset info
         initial_cohort = data_manager.get_current_cohort()
         print("\nInitial dataset shape:", initial_cohort.shape)
