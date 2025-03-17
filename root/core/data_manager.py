@@ -315,7 +315,6 @@ class DataManager:
         logger.debug(f"Preview of DataFrame (first {n} rows):")
         logger.debug(df.head(n))
 
-
     def _update_full_schema(self):
         """Update schema for the full dataset."""
         if self._full_dataset is not None:
@@ -486,3 +485,80 @@ class DataManager:
             logger.error(f"Error validating visualization request: {e}")
             return False
 
+    def _format_schema_to_string(self, schema: Dict[str, Dict]) -> str:
+        """
+        Format schema into a readable string representation.
+        
+        Args:
+            schema: Dictionary containing column information
+            
+        Returns:
+            str: Formatted string representation of the schema
+        
+        Example output:
+            Column: pacientes.Edad
+            - Type: float64
+            - Unique Values: 50
+            - Missing Values: 2
+            - Min: 18.0
+            - Max: 95.0
+            - Mean: 45.6
+            
+            Column: pacientes.Genero
+            - Type: object
+            - Unique Values: 2
+            - Missing Values: 0
+            - Possible Values: ['F', 'M']
+        """
+        if not schema:
+            return "Empty schema"
+            
+        formatted_lines = []
+        
+        for column, info in sorted(schema.items()):
+            # Start with column name
+            formatted_lines.append(f"Column: {column}")
+            
+            # Add basic information
+            formatted_lines.append(f"- Type: {info['dtype']}")
+            formatted_lines.append(f"- Unique Values: {info['unique_values']}")
+            formatted_lines.append(f"- Missing Values: {info['missing_values']}")
+            
+            # Add numeric statistics if available
+            if 'min' in info:
+                formatted_lines.append(f"- Min: {info['min']}")
+                formatted_lines.append(f"- Max: {info['max']}")
+                formatted_lines.append(f"- Mean: {info['mean']}")
+                
+            # Add possible values if available
+            if 'possible_values' in info:
+                formatted_lines.append(f"- Possible Values: {info['possible_values']}")
+                
+            # Add blank line between columns
+            formatted_lines.append("")
+            
+        return "\n".join(formatted_lines)
+
+    def get_readable_schema_current_cohort(self) -> str:
+        """
+        Get a human-readable string representation of the current cohort schema.
+
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if self._current_cohort is None:
+            return "No current cohort available"
+
+        return self._format_schema_to_string(self._current_schema)
+    
+    def get_readable_schema_full_dataset(self) -> str:
+        """
+        Get a human-readable string representation of the full dataset schema.
+
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if self._full_dataset is None:
+            return "No full dataset available"
+
+        return self._format_schema_to_string(self._full_schema)
