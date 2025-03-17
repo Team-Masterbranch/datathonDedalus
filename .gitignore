@@ -10,3 +10,5 @@ __pycache__/
 /root/data/img/*
 /root/data/cohort.csv
 .~lock.*
+docs/prompts/notes about LLM API
+root/data/temp/*
