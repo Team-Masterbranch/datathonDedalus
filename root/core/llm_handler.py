@@ -34,7 +34,7 @@ class LLMHandler:
     def single_string_request(self, request: str) -> Dict[str, Any]:
         try:
             # Get current schema
-            schema = self.data_manager.get_full_schema()
+            schema = self.data_manager.get_current_schema()
             formatted_schema = self._format_schema(schema)
             
             # Load static prompts
@@ -98,7 +98,7 @@ class LLMHandler:
                 raise ValueError("Invalid message format. Expected {'role': str, 'content': str}")
 
             # Get current schema
-            schema = self.data_manager.get_full_schema()
+            schema = self.data_manager.get_current_schema()
             formatted_schema = self._format_schema(schema)
             
             # Load static prompts
