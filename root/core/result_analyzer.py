@@ -11,8 +11,24 @@ logger = setup_logger(__name__)
 
 class ResultAnalyzer:
     """
-    Analyzes query results and suggests visualizations.
-    Will be enhanced with LLM capabilities in the future.
+    This module receives information about Intention object created by first LLM interaction,
+    and instructs LLM to:
+    1. Create a reaction message to user ("Here is the summary of your request...")
+    2. Using provided schema of filtered dataset, make a brief summary of cohort
+       statictics and, if there is something unusual or interesting about it, 
+       also mention it in a text message and add visualization request.
+    3. Create a name for a cohort (this will be used to save data later)
+    4. Propose next step to user.
+
+    After this interaction, AnalisisResult object will be created. This is the object that
+    formalizes:
+    1. Cohort description to make a directory and save all the files (.csv, schema,
+       visualizqtions) there.
+    2. Message, that will be displayed to user as a result of interaction ("I applied 
+       filter you requested, and we have 123 patients...")
+    4. List of visualization requests, if needed.
+    3. Request to save data (we save all or nothing)
+    
     """
     
     def __init__(self):
