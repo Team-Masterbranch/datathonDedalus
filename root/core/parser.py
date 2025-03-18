@@ -1,5 +1,5 @@
 # core/parser.py
-from typing import Optional, Dict, Any
+from typing import List, Optional, Dict, Any
 from pathlib import Path
 from core.intention import Intention
 from core.data_manager import DataManager
@@ -172,8 +172,7 @@ class Parser:
             return False
 
 
-
-    def process_message(self, message: Dict[str, str]) -> Intention:
+    def process_single_message(self, message: Dict[str, str]) -> Intention:
         """
         Process message through LLM and return structured Intention object.
         
@@ -222,6 +221,58 @@ class Parser:
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             raise
+
+    def process_message_list(self, messages: List[Dict[str, str]]) -> Intention:
+        """
+        Process multiple messages through LLM and return structured Intention object.
+        Similar to process_message but handles a list of messages for context.
+        
+        Args:
+            messages: List of dictionaries containing messages with format [{"role": str, "content": str}, ...]
+                
+        Returns:
+            Intention: Structured Intention object
+                
+        Raises:
+            ValueError: If message format is invalid or LLM response cannot be parsed
+        """
+        try:
+            # Get current schema
+            schema = self.data_manager.get_full_schema()
+            formatted_schema = self._format_schema(schema)
+            
+            # Create system messages with prompts and schema
+            system_messages = [
+                {
+                    "role": "system",
+                    "content": self._load_prompt("system_intentions.txt")
+                },
+                {
+                    "role": "system",
+                    "content": f"{self._load_prompt('schema_description.txt')}\n{formatted_schema}"
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("system_examples.txt")
+                }
+            ]
+
+            # Combine system messages with user messages
+            all_messages = system_messages + messages
+            
+            # Get LLM response using llm_handler
+            llm_response = self.llm_handler.send_chat_request(all_messages)
+            
+            # Convert LLM response to Intention object
+            intention = Intention.from_llm_response(llm_response)
+            logger.info(f"Generated Intention object from multiple messages: {intention}")
+            
+            return intention
+
+        except Exception as e:
+            logger.error(f"Error processing messages: {e}")
+            raise
+
 
     def _format_schema(self, schema: dict) -> str:
         """Format schema into a readable string"""

@@ -42,3 +42,9 @@ CLI_CHART_WIDTH = 10
 CLI_CHART_HEIGHT = 6
 IMG_DPI = 300
 IMG_FORMAT = 'png'
+
+
+# LLM Logging Configuration
+LLM_LOG_DIR = LOGS_DIR / 'llm'
+LLM_LOG_FILE = LLM_LOG_DIR / 'llm_interactions.log'
+LLM_LOG_SEPARATOR = "\n" + "="*80 + "\n"  # Separator between log entries
