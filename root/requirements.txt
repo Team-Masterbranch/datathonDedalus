@@ -1,0 +1,5 @@
+pandas
+seaborn
+pytest
+matplotlib
+litellm
