@@ -1,5 +1,6 @@
 # core/visualizer.py
 # core/visualizer.py
+from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -209,7 +210,7 @@ class Visualizer:
         logger.info(f"Saved plot to {filepath}")
         return filepath
 
-    def create_visualization(self,
+    def create_visualization_old(self,
                         data: pd.DataFrame,
                         request: VisualizerRequest,
                         gui_mode: bool = False,
@@ -259,6 +260,78 @@ class Visualizer:
                 plt.close(fig)
                 return None
             return None
+
+    def create_visualization(self,
+                            data: pd.DataFrame,
+                            request: VisualizerRequest,
+                            output_path: Path) -> bool:
+        """
+        Create and save a single visualization.
+        
+        Args:
+            data: DataFrame containing cohort data
+            request: VisualizerRequest object
+            output_path: Path where to save the visualization
+            
+        Returns:
+            bool: True if visualization was created and saved successfully
+        """
+        try:
+            # Calculate figure size (width: 1000px, height: automatic based on golden ratio)
+            width_inches = 1000 / 100  # Convert pixels to inches (assuming 100 DPI)
+            height_inches = width_inches / 1.618  # Golden ratio for aesthetically pleasing dimensions
+            
+            # Create figure with specified size
+            fig = plt.figure(figsize=(width_inches, height_inches), dpi=100)
+            
+            # Add subplot with a specific background color
+            ax = fig.add_subplot(111, facecolor='none')
+            
+            # Create the visualization based on chart type
+            if request.chart_type == ChartType.BAR:
+                self._create_bar_chart(data, request)
+            elif request.chart_type == ChartType.PIE:
+                self._create_pie_chart(data, request)
+            elif request.chart_type == ChartType.LINE:
+                self._create_line_chart(data, request)
+            elif request.chart_type == ChartType.HISTOGRAM:
+                self._create_histogram(data, request)
+            elif request.chart_type == ChartType.SCATTER:
+                self._create_scatter_plot(data, request)
+            elif request.chart_type == ChartType.BOX:
+                self._create_box_plot(data, request)
+            else:
+                logger.error(f"Unsupported chart type: {request.chart_type}")
+                return False
+            
+            # Customize the plot
+            plt.title(request.title, pad=20)
+            plt.tight_layout()
+            
+            # Save the plot with transparency
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            plt.savefig(
+                output_path,
+                format='png',
+                dpi=100,
+                bbox_inches='tight',
+                facecolor='none',
+                edgecolor='none',
+                transparent=True
+            )
+            
+            # Close the figure to free memory
+            plt.close(fig)
+            
+            logger.info(f"Saved visualization to {output_path}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error creating visualization: {e}")
+            plt.close()  # Ensure figure is closed even if error occurs
+            return False
+
+
 
     def create_visualizations_list(self,
                                 data: pd.DataFrame,

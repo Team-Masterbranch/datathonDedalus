@@ -1,4 +1,6 @@
+from core.visualizer_request import VisualizerRequest, ChartType  
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from enum import Enum
@@ -7,6 +9,7 @@ import logging
 from core.session_manager import SessionManager
 from core.llm_handler import LLMHandler
 from core.data_manager import DataManager
+from core.visualizer import Visualizer
 
 logger = logging.getLogger(__name__)
 
@@ -24,14 +27,15 @@ class Action:
     parameters: Dict[str, Any]
 
 class ActionManager:
-    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager):
+    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager, visualizer: Visualizer):
         self.actions: List[Action] = []
         self.llm_handler = llm_handler
         self.session_manager = session_manager
         self.data_manager = data_manager
+        self.visualizer = visualizer
         logger.debug("ActionManager initialized")
         
-    def decode_llm_response(self, json_str: str) -> bool:
+    def decode_llm_response_old(self, json_str: str) -> bool:
         """
         Decode LLM JSON response and create corresponding actions
         """
@@ -68,6 +72,65 @@ class ActionManager:
         except Exception as e:
             logger.error(f"Unexpected error during decoding: {e}")
             return False
+
+    def decode_llm_response(self, json_str: str) -> bool:
+        """
+        Decode LLM JSON response and create corresponding actions.
+        Handles cases where JSON is embedded within other text.
+        """
+        logger.debug(f"Starting to decode LLM response: {json_str[:100]}...")
+        try:
+            # Check if response is empty or None
+            if not json_str or not json_str.strip():
+                logger.error("Received empty LLM response")
+                return False
+
+            # Find the first '[' and last ']' to extract JSON array
+            start_idx = json_str.find('[')
+            end_idx = json_str.rfind(']')
+            
+            if start_idx == -1 or end_idx == -1:
+                logger.error("No JSON array found in response")
+                logger.debug(f"Response content: {json_str}")
+                return False
+                
+            # Extract the JSON part
+            json_content = json_str[start_idx:end_idx + 1]
+            logger.debug(f"Extracted JSON content: {json_content[:100]}...")
+            
+            # Parse the JSON
+            actions_data = json.loads(json_content)
+            logger.debug(f"JSON successfully parsed, got {type(actions_data)}")
+            
+            if not isinstance(actions_data, list):
+                logger.error(f"LLM response must be a list, got {type(actions_data)}")
+                return False
+                
+            logger.debug(f"Found {len(actions_data)} actions to process")
+            
+            # Clear existing actions before adding new ones
+            self.actions.clear()
+            logger.debug("Cleared existing actions")
+            
+            # Validate and create each action
+            for i, action_data in enumerate(actions_data):
+                logger.debug(f"Processing action {i+1}/{len(actions_data)}: {action_data.get('type', 'unknown')}")
+                if not self._validate_and_add_action(action_data):
+                    logger.error(f"Validation failed for action {i+1}")
+                    self.actions.clear()
+                    return False
+                    
+            logger.debug(f"Successfully processed all {len(self.actions)} actions")
+            return True
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {e}")
+            logger.debug(f"Problematic JSON string: {json_content if 'json_content' in locals() else json_str}")
+            return False
+        except Exception as e:
+            logger.error(f"Unexpected error during decoding: {e}")
+            return False
+
             
     def _validate_and_add_action(self, action_data: Dict) -> bool:
         """Validate single action and add if valid"""
@@ -255,39 +318,99 @@ class ActionManager:
         
         print("\nTotal actions:", len(self.actions))
 
-    def display_messages(self) -> None:
+    def execute_actions(self) -> None:
         """
-        Execute only print_message actions and remove other actions.
-        Displays messages to console and updates the actions list.
+        Execute pending actions.
+        Currently supports:
+        - print_message: Displays text messages
+        - create_visualization: Creates and saves visualization plots
         """
         if not self.actions:
             self.display_text("No actions to process")
             return
 
-        # Filter message actions
-        message_actions = [
-            action for action in self.actions 
-            if action.type == ActionType.PRINT_MESSAGE
-        ]
-        
-        other_actions = len(self.actions) - len(message_actions)
-        if other_actions > 0:
-            self.display_text(f"Skipping {other_actions} non-message actions")
+        # Counter for visualization files in this session
+        viz_counter = 0
 
-        # Execute message actions
-        for action in message_actions:
-            message = action.parameters.get("message")
-            if message:
-                self.display_text(message)
+        for action in self.actions:
+            try:
+                if action.type == ActionType.PRINT_MESSAGE:
+                    message = action.parameters.get("message")
+                    if message:
+                        self.display_text(message)
+                    else:
+                        self.display_text("Found empty message action")
+
+                elif action.type == ActionType.CREATE_VISUALIZATION:
+                    viz_counter += 1
+                    self._handle_visualization_action(action, viz_counter)
+
+            except Exception as e:
+                logger.error(f"Error executing action {action.type}: {e}")
+                self.display_text(f"Error executing action: {str(e)}")
+
+        # Clear processed actions
+        self.actions.clear()
+
+    
+    def _handle_visualization_action(self, action: Action, counter: int) -> None:
+        """
+        Handle creation and display of visualization.
+        
+        Args:
+            action: The visualization action to execute
+            counter: Counter for unique filename generation
+        """
+        try:
+            request_dict = action.parameters.get("request", {})
+            if not request_dict:
+                raise ValueError("Empty visualization request")
+
+            # Convert dictionary to VisualizerRequest
+            request = VisualizerRequest(
+                chart_type=ChartType(request_dict.get("chart_type")),
+                title=request_dict.get("title", ""),
+                x_column=request_dict.get("x_column"),
+                y_column=request_dict.get("y_column"),
+                category_column=request_dict.get("category_column")
+            )
+
+            # Generate unique filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"viz_{counter:03d}_{timestamp}.png"
+            
+            # Get path from session manager
+            output_path = Path(self.session_manager.get_current_session_path()) / filename
+
+            # Create visualization
+            success = self.visualizer.create_visualization(
+                data=self.data_manager.get_current_cohort(),
+                request=request,
+                output_path=output_path
+            )
+
+            if success:
+                self.display_text(f"Created visualization: {filename}")
+                self.send_image_to_gui(output_path)
             else:
-                self.display_text("Found empty message action")
+                self.display_text("Failed to create visualization")
 
-        # Update actions list to remove processed messages
-        self.actions = [
-            action for action in self.actions 
-            if action.type != ActionType.PRINT_MESSAGE
-        ]
+        except Exception as e:
+            logger.error(f"Error in visualization creation: {e}")
+            self.display_text(f"Visualization error: {str(e)}")
+
+
+    def send_image_to_gui(self, image_path: Path) -> None:
+        """
+        Stub method for sending image to GUI.
+        Will be implemented when GUI is ready.
         
+        Args:
+            image_path: Path to the created visualization image
+        """
+        logger.info(f"[GUI-STUB] Would display image: {image_path}")
+        # This will be replaced with actual GUI integration code later
+        print(f"[GUI Preview] Image would be displayed: {image_path}")
 
 
     def display_text(self, text: str) -> None:

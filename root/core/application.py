@@ -41,7 +41,7 @@ class Application:
         self.visualizer = Visualizer()
         self.session_manager = SessionManager()
         self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
-        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager)
+        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager, self.visualizer)
         
     def start(self):
         """Start the application and its interface."""
@@ -118,7 +118,7 @@ class Application:
             self.intention_executer.execute(user_intention)
             
             self.action_manager.get_llm_response()
-            self.action_manager.display_messages()
+            self.action_manager.execute_actions()
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
