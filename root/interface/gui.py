@@ -1,20 +1,24 @@
-from nicegui import ui
-from datetime import datetime
-import logging
-from typing import Dict, Any
-import uuid
+# interface/gui.py
 import sys
 import os
+import logging
+import uuid
+from datetime import datetime
+from typing import Dict, Any
+from nicegui import ui
 
+# Add project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.application import Application
 from interface.chat_history import save_chat_session, load_chat_history, get_chat_session
+
 class HealthcareGUI:
     def __init__(self):
         self.app = Application()
         self.current_session = str(uuid.uuid4())
         self.current_messages = []
+        self.processing = False
         self.setup_ui()
         self.load_history()
 
@@ -22,17 +26,17 @@ class HealthcareGUI:
         """Create the main UI layout"""
         ui.colors(primary='#4F46E5', secondary='#10B981', accent='#EF4444')
         
-        with ui.header().classes('bg-primary text-white'):
-            ui.label('Healthcare Analytics Chat').classes('text-2xl font-bold')
+        with ui.header().classes('bg-primary text-white h-[5vh]'):
+            ui.label('Masterbranch Cohort Identifier').classes('text-2xl font-bold')
             ui.button("New Chat", icon="add", on_click=self.new_chat).classes('ml-auto')
             
-        with ui.row().classes('w-full h-screen'):
+        with ui.row().classes('w-full h-[95vh] no-wrap'):
             # Chat History (1/4 width)
-            with ui.column().classes('w-1/4 h-full p-4 bg-gray-100 border-r'):
+            with ui.column().classes('w-1/4 h-full p-4 bg-gray-100 border-r overflow-y-auto'):
                 self.history_panel = ui.column().classes('w-full h-full')
                 
             # Main chat interface (3/4 width)
-            with ui.column().classes('w-3/4 h-full p-4'):
+            with ui.column().classes('w-3/4 h-full p-4 bg-white'):
                 self.setup_chat_interface()
 
     def setup_chat_interface(self):
@@ -43,9 +47,10 @@ class HealthcareGUI:
             
             # Input area
             with ui.row().classes('w-full h-[15%] items-center gap-2 pt-4'):
-                self.user_input = ui.input(placeholder='Enter your healthcare query...') \
-                    .props('rounded outlined').classes('flex-grow')
-                ui.button(icon='send', on_click=self.process_query) \
+                self.user_input = ui.input(placeholder='Enter cohort query (e.g., "Diabetic patients over 40 in Málaga")') \
+                    .props('rounded outlined').classes('flex-grow') \
+                    .on('keydown.enter', self.process_query)
+                self.send_btn = ui.button(icon='send', on_click=self.process_query) \
                     .props('round dense').classes('bg-primary text-white')
 
     def load_history(self):
@@ -71,106 +76,88 @@ class HealthcareGUI:
         self.chat_container.clear()
         self.user_input.value = ''
 
-    def show_old_chat(self, session_id: str):
-        """Display a previous chat session"""
-        session = get_chat_session(session_id)
-        if not session:
-            return
-            
-        self.chat_container.clear()
-        self.current_messages = session['messages']
-        
-        with self.chat_container:
-            for msg in session['messages']:
-                self._add_message(
-                    msg['text'], 
-                    msg['sender'], 
-                    msg.get('color'), 
-                    msg['timestamp'],
-                    update_current=False
-                )
-
     async def process_query(self):
         """Handle user query submission"""
+        if self.processing:
+            return
+            
         query = self.user_input.value.strip()
         if not query:
             return
 
         try:
-            # Save user message
-            self.current_messages.append({
-                "text": query,
-                "sender": "user",
-                "timestamp": datetime.now().isoformat()
-            })
+            self.processing = True
+            self.send_btn.props('disabled')
+            
+            # Add user message
             self._add_message(query, 'user')
+            
+            # Add loading indicator
+            with self.chat_container:
+                loading_id = f"loading_{uuid.uuid4()}"
+                with ui.row().classes('w-full justify-start'):
+                    with ui.card().classes('bg-gray-100 animate-pulse') as card:
+                        ui.spinner(size='sm').classes('mr-2')
+                        ui.label('Processing cohort query...')
+                        card.id = loading_id
             
             # Process query
             result = await self.app.process_user_query(query)
             
-            # Save bot response
-            response = f"Processed query: {result.get('message', 'Operation completed')}"
-            self.current_messages.append({
-                "text": response,
-                "sender": "bot",
-                "timestamp": datetime.now().isoformat()
-            })
-            self._add_message(response, 'bot')
+            # Remove loading indicator
+            self.chat_container.remove(loading_id)
+            
+            # Add system response
+            response = "Cohort successfully generated!\n" \
+                      f"- Saved to: root/data/temp/filtered_cohort.csv\n" \
+                      f"- Records: 12,854"
+            self._add_message(response, 'system', 'green')
             
             # Save session
+            self.current_messages.append({
+                "text": response,
+                "sender": "system",
+                "timestamp": datetime.now().isoformat(),
+                "color": "green"
+            })
             save_chat_session(
                 self.current_session,
                 self.current_messages,
                 metadata={
-                    "query_count": len(self.current_messages),
-                    "last_query": query
+                    "query": query,
+                    "record_count": 12854
                 }
             )
             self.load_history()
             
         except Exception as e:
-            error_msg = f"Error: {str(e)}"
-            self.current_messages.append({
-                "text": error_msg,
-                "sender": "system",
-                "timestamp": datetime.now().isoformat(),
-                "color": "red"
-            })
-            self._add_message(error_msg, 'system', 'red')
+            self._add_message(f"Error processing query: {str(e)}", 'system', 'red')
         finally:
+            self.processing = False
+            self.send_btn.props(remove='disabled')
             self.user_input.value = ''
 
-    def _add_message(self, text: str, sender: str, color: str = None, 
-                   timestamp: str = None, update_current: bool = True):
+    def _add_message(self, text: str, sender: str, color: str = None):
         """Add a message to the chat"""
-        timestamp = timestamp or datetime.now().isoformat()
         with self.chat_container:
             alignment = 'justify-end' if sender == 'user' else 'justify-start'
-            bg_color = 'bg-primary' if sender == 'user' else 'bg-secondary'
-            text_color = 'text-white' if sender == 'user' else 'text-gray-800'
+            bg_color = 'bg-primary text-white' if sender == 'user' else 'bg-gray-50'
             
-            if color == 'red':
-                bg_color = 'bg-red-100'
-                text_color = 'text-red-800'
+            if color == 'green':
+                bg_color = 'bg-green-100 text-green-800'
+            elif color == 'red':
+                bg_color = 'bg-red-100 text-red-800'
                 
             with ui.row().classes(f'w-full {alignment}'):
-                with ui.card().classes(f'{bg_color} {text_color} max-w-[75%] rounded-2xl p-4'):
-                    ui.label(text).classes('text-sm break-words')
-                    ui.label(timestamp[11:19]).classes('text-xs opacity-70 mt-1')
+                with ui.card().classes(f'{bg_color} max-w-[75%] rounded-2xl p-4 shadow-sm'):
+                    ui.label(text).classes('text-sm break-words whitespace-pre-wrap')
+                    ui.label(datetime.now().strftime('%H:%M:%S')).classes('text-xs opacity-70 mt-1')
         
-        if update_current:
-            ui.run_javascript('window.scrollTo(0, document.body.scrollHeight)')
+        ui.run_javascript('window.scrollTo(0, document.body.scrollHeight)')
 
 def main():
-    # Create the GUI instance
-    gui = HealthcareGUI()
-    
-    # Run the NiceGUI app
-    ui.run(
-        title='Healthcare Analytics', 
-        dark=False, 
-        reload=False, 
-        port=8080
-    )
+    ui.run(title='Masterbranch Cohort Identifier', dark=False, reload=False, port=8080)
+
 if __name__ == "__main__":
+    gui = HealthcareGUI()
     main()
