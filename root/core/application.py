@@ -41,11 +41,28 @@ class Application:
         self.context_manager = ContextManager()
         self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
         
-        self.visualizer.clear_output_directory()
-        
     def start(self):
         """Start the application and its interface."""
         logger.info("Starting application")
+        self.visualizer.clear_output_directory()
+        
+        # Load existing or newly created cache to preparser
+        cache_path = "root/data/cache.json"
+        if not os.path.exists(cache_path):
+            logger.info("Cache file not found. Creating new cache.")
+            try:
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                # Save empty cache
+                self.preparser.save_cache_to_file(cache_path)
+            except IOError as e:
+                logger.error(f"Failed to create cache file: {e}")
+                raise
+        try:
+            self.preparser.load_cache_from_file(cache_path)
+        except IOError as e:
+            logger.error(f"Failed to load cache: {e}")
+            raise
         try:
             self.cli.cmdloop()
         except KeyboardInterrupt:
@@ -59,6 +76,7 @@ class Application:
     def shutdown(self):
         """Cleanup and shutdown application."""
         self.visualizer.clear_output_directory()
+        self.preparser.save_cache_to_file("root/data/cache.json")
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         

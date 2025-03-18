@@ -12,3 +12,4 @@ __pycache__/
 .~lock.*
 docs/prompts/notes about LLM API
 root/data/temp/*
+root/data/cache.json
