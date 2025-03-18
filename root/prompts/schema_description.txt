@@ -1,16 +1,16 @@
-The database schema includes detailed information about each column:
-- Column name
-- Data type
-- Statistical information where applicable:
-  * For numeric fields: min, max, mean values
-  * For categorical fields: number of unique values, list of possible values
-  * Missing values count
-  * Distribution characteristics
+Para genarar las consultas te enviamos una esquema de la base de datos con:
+- Nombre de la columna
+- Tipo de dato
+- Información estadística cuando sea aplicable:
+  * Para campos numéricos: valores mínimos, máximos y promedio
+  * Para campos categóricos: número de valores únicos, lista de valores posibles
+  * Conteo de valores faltantes
+  * Características de distribución
 
-Use this metadata to:
-1. Choose appropriate fields for queries
-2. Validate value ranges in filters
-3. Select meaningful visualizations
-4. Suggest relevant aggregations
+Utiliza estos metadatos para:
+1. Elegir los campos apropiados para las consultas
+2. Validar rangos de valores en los filtros
+3. Seleccionar visualizaciones significativas
+4. Sugerir agregaciones relevantes
 
-Below is the current schema with all available metadata:
+Esquema actual de cohorte seleccionado:

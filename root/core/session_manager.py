@@ -1,8 +1,12 @@
 # core/context_manager.py
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict
 from pathlib import Path
+import logging
+from utils.config import SESSION_BASE_DIR
 
-class ContextManager:
+logger = logging.getLogger(__name__)
+
+class SessionManager:
     """
     Manages conversation context by storing system, user messages and LLM responses.
     """
@@ -11,6 +15,32 @@ class ContextManager:
         self._user_messages: List[Dict[str, str]] = []
         self._llm_responses: List[Dict[str, str]] = []
         self._full_conversation: List[Dict[str, str]] = []
+        self.interactions_counter: int = 0
+        self.base_session_dir = SESSION_BASE_DIR
+        self.current_interaction_folder: Path = self._get_current_session_dir()
+    
+    def increment_interaction(self) -> str:
+        """
+        Increment interaction counter and create new session directory.
+        
+        Returns:
+            Path to the new session directory
+        """
+        self.interactions_counter += 1
+        self.current_interaction_folder = self._get_current_session_dir()
+        self.current_interaction_folder.mkdir(parents=True, exist_ok=True)
+        logger.debug(f"Created session directory: {self.current_interaction_folder}")
+        return str(self.current_interaction_folder)
+    
+    def _get_current_session_dir(self) -> Path:
+        """Get path to current session directory."""
+        # Use at least 3 digits with zero padding
+        return self.base_session_dir / f"{self.interactions_counter:03d}"
+    
+    def get_current_session_path(self) -> str:
+        """Get current session directory path."""
+        return str(self.current_interaction_folder)
+
 
     def set_system_messages(self, system_messages: List[Dict[str, str]]) -> None:
         """
@@ -41,7 +71,7 @@ class ContextManager:
 
         Args:
             user_message: The content of user's message
-        """
+        """        
         user_msg = {"role": "user", "content": user_message}
         self._user_messages.append(user_msg)
         self._update_full_conversation()
@@ -114,6 +144,10 @@ class ContextManager:
         self._system_messages.clear()
         self.clear_context()
 
+    def get_user_messages(self) -> List[str]:
+        """Get all user messages in the conversation."""
+        return self._user_messages.copy()
+    
     def get_messages(self, include_system: bool = True) -> List[Dict[str, str]]:
         """
         Get all messages in format ready for LLM.

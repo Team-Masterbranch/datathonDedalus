@@ -9,7 +9,7 @@ from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
 from core.visualizer_request import VisualizerRequest, ChartType
-from utils.config import UNIQUE_VALUES_THRESHOLD
+from utils.config import PATIENT_ID_COLUMN, PATIENT_ID_ALTERNATIVES, UNIQUE_VALUES_THRESHOLD
 
 logger = setup_logger(__name__)
 
@@ -83,7 +83,7 @@ class DataManager:
         Add table name prefix to column names except join keys.
         """
         prefixed_columns = {}
-        join_keys = ['PacienteID', 'paciente_id', 'id']  # Case-sensitive join keys
+        join_keys = [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES
         
         for col in df.columns:
             if col not in join_keys:  # If not a join key
@@ -115,7 +115,7 @@ class DataManager:
         for table_name, df in remaining_dfs.items():
             # Look for join keys without considering prefixes
             join_key = None
-            possible_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']
+            possible_keys = [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES
             
             for key in possible_keys:
                 if key in result.columns and key in df.columns:
@@ -149,6 +149,7 @@ class DataManager:
         result = self._apply_query_to_dataframe(query, self._current_cohort)
         logger.debug(f"apply_query_on_current_cohort >> Result shape after applying query: {result.shape if result is not None else 'None'}")
         self._current_cohort = result
+        self._update_current_schema()
         logger.debug(f"New cohort shape: {self._current_cohort.shape if self._current_cohort is not None else 'None'}")
 
     def _apply_query_to_dataframe(self, query: Query, df: pd.DataFrame) -> pd.DataFrame:
@@ -315,7 +316,6 @@ class DataManager:
         logger.debug(f"Preview of DataFrame (first {n} rows):")
         logger.debug(df.head(n))
 
-
     def _update_full_schema(self):
         """Update schema for the full dataset."""
         if self._full_dataset is not None:
@@ -325,37 +325,6 @@ class DataManager:
         """Update schema for the current cohort."""
         if self._current_cohort is not None:
             self._current_schema = self._create_schema(self._current_cohort)
-
-    def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
-        """Create schema for given DataFrame."""
-        schema = {}
-        for column in df.columns:
-            column_info = {
-                'dtype': str(df[column].dtype),
-                'unique_values': df[column].nunique(),
-                'missing_values': df[column].isnull().sum()
-            }
-            
-            # Add numeric statistics for numeric columns
-            if np.issubdtype(df[column].dtype, np.number):
-                column_info.update({
-                    'min': float(df[column].min()),
-                    'max': float(df[column].max()),
-                    'mean': float(df[column].mean())
-                })
-            # Add possible values only for non-numeric columns with few unique values
-            elif df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
-                unique_values = sorted(df[column].dropna().unique().tolist())
-                # Convert numpy types to native Python types
-                unique_values = [
-                    item.item() if hasattr(item, 'item') else item 
-                    for item in unique_values
-                ]
-                column_info['possible_values'] = unique_values
-            
-            schema[column] = column_info
-        
-        return schema
 
     def get_full_schema(self) -> Dict[str, Dict]:
         """Get schema for the full dataset."""
@@ -376,34 +345,62 @@ class DataManager:
         self._update_current_schema()
         return self._current_cohort
 
-    def save_current_cohort(self, filepath: str, index: bool = False) -> bool:
+    def _save_current_data(self, path: str, name: str) -> None:
         """
-        Save the current cohort to a CSV file.
+        Helper method to save the current cohort data to a CSV file.
         
         Args:
-            filepath: Path where to save the CSV file
-            index: Whether to save the DataFrame index (default False)
-            
-        Returns:
-            bool: True if save was successful, False otherwise
+            path (str): Directory path where the file will be saved
+            name (str): Base name for the file (without extension)
         """
-        try:
-            if self._current_cohort is None:
-                logger.error("Cannot save: current cohort is None")
-                return False
-                
-            # Ensure directory exists
-            os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
+        if self._current_cohort is None:
+            raise ValueError("No cohort is currently loaded")
             
-            # Save to CSV
-            self._current_cohort.to_csv(filepath, index=index)
-            logger.info(f"Successfully saved cohort to {filepath}")
-            logger.info(f"Saved {len(self._current_cohort)} records")
-            return True
+        file_path = os.path.join(path, f"{name}.csv")
+        os.makedirs(path, exist_ok=True)
+        self._current_cohort.to_csv(file_path, index=False)
+
+    def _save_current_schema(self, path: str, name: str) -> None:
+        """
+        Helper method to save the current cohort schema to a text file.
+        
+        Args:
+            path (str): Directory path where the file will be saved
+            name (str): Base name for the file (without extension)
+        """
+        if self._current_cohort is None:
+            raise ValueError("No cohort is currently loaded")
             
-        except Exception as e:
-            logger.error(f"Error saving cohort to CSV: {str(e)}")
-            return False
+        schema_path = os.path.join(path, f"{name}_schema.txt")
+        os.makedirs(path, exist_ok=True)
+        
+        # Get formatted schema using existing method
+        formatted_schema = self._format_schema_to_string(self._current_schema)
+               
+        # Write formatted schema to file
+        with open(schema_path, 'w', encoding='utf-8') as f:
+            f.write(formatted_schema)
+            
+        logger.info(f"Saved current schema. It's shape is {self._current_schema.shape}")
+
+
+    def save_current_cohort(self, path: str = "root/data/temp/data_manager_output", 
+                        name: str = "test") -> None:
+        """
+        Save the current cohort data and its schema to separate files.
+        
+        Args:
+            path (str): Directory path where the files will be saved. 
+                    Defaults to "root/data/temp/data_manager_output"
+            name (str): Base name for the files (without extension). 
+                    Defaults to "test"
+        """
+        # Normalize path separators for cross-platform compatibility
+        path = os.path.normpath(path)
+        
+        # Save both data and schema
+        self._save_current_data(path, name)
+        self._save_current_schema(path, name)
 
     def validate_visualization_request(self, request: VisualizerRequest) -> bool:
         """
@@ -486,3 +483,161 @@ class DataManager:
             logger.error(f"Error validating visualization request: {e}")
             return False
 
+    def get_readable_schema_current_cohort(self) -> str:
+        """
+        Get a human-readable string representation of the current cohort schema.
+
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if self._current_cohort is None:
+            return "No current cohort available"
+
+        return self._format_schema_to_string(self._current_schema)
+    
+    def get_readable_schema_full_dataset(self) -> str:
+        """
+        Get a human-readable string representation of the full dataset schema.
+
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if self._full_dataset is None:
+            return "No full dataset available"
+
+        return self._format_schema_to_string(self._full_schema)
+    
+    def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
+        """
+        Create schema for given DataFrame with enhanced value distribution information.
+        """
+        # Get original source tables from column prefixes
+        source_tables = sorted(set(col.split('.')[0] for col in df.columns if '.' in col))
+        
+        # Look for patient ID column
+        patient_id_col = next((col for col in [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES 
+                             if col in df.columns), None)
+        
+        # Count unique patients if we found the ID column
+        unique_patients = df[patient_id_col].nunique() if patient_id_col else None
+        
+        schema = {
+            '_database_info': {
+                'total_rows': len(df),
+                'unique_patients': unique_patients,
+                'total_columns': len(df.columns),
+                'source_tables': source_tables,
+                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        }
+        
+        # Generate column-level information
+        for column in df.columns:
+            column_info = {
+                'dtype': str(df[column].dtype),
+                'unique_values': df[column].nunique(),
+                'missing_values': df[column].isnull().sum(),
+                'total_rows': len(df)
+            }
+            
+            # Add numeric statistics for numeric columns
+            if np.issubdtype(df[column].dtype, np.number):
+                column_info.update({
+                    'min': float(df[column].min()) if not df[column].isna().all() else None,
+                    'max': float(df[column].max()) if not df[column].isna().all() else None,
+                    'mean': float(df[column].mean()) if not df[column].isna().all() else None
+                })
+                
+            # Add value distribution for columns with few unique values
+            if 1 < df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
+                value_counts = df[column].value_counts()
+                total_non_null = value_counts.sum()
+                
+                distribution = []
+                for value, count in value_counts.items():
+                    percentage = (count / total_non_null) * 100
+                    # Handle different types of values (including numpy types)
+                    cleaned_value = str(value.item() if hasattr(value, 'item') else value)
+                    distribution.append({
+                        'value': cleaned_value,
+                        'count': int(count),
+                        'percentage': round(float(percentage), 2)
+                    })
+                
+                column_info['value_distribution'] = distribution
+            
+            schema[column] = column_info
+        
+        return schema
+
+    def _format_schema_to_string(self, schema: Dict[str, Dict]) -> str:
+        """
+        Format schema into a readable string representation.
+        
+        Args:
+            schema (Dict[str, Dict]): Schema dictionary to format
+            
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if not schema:
+            return "Empty schema"
+            
+        formatted_lines = []
+        
+        # Database-level information
+        if '_database_info' in schema:
+            db_info = schema['_database_info']
+            formatted_lines.extend([
+                "DATABASE INFORMATION",
+                "=" * 50,
+                f"Total Rows: {db_info['total_rows']}",
+                f"Unique Patients: {db_info['unique_patients']}",
+                f"Total Columns: {db_info['total_columns']}",
+                f"Original Source Tables: {', '.join(db_info['source_tables'])}",
+                f"Schema Generated: {db_info['timestamp']}",
+                "",
+                "COLUMN DETAILS",
+                "=" * 50,
+                ""
+            ])
+        
+        # Column-level information
+        for column, info in sorted(schema.items()):
+            if column == '_database_info':
+                continue
+                
+            # Basic column information
+            formatted_lines.append(f"Column: {column}")
+            formatted_lines.append(f"- Type: {info['dtype']}")
+            formatted_lines.append(f"- Unique Values: {info['unique_values']}")
+            
+            # Missing values information
+            missing_percentage = (info['missing_values'] / info['total_rows']) * 100
+            formatted_lines.append(
+                f"- Missing Values: {info['missing_values']} of {info['total_rows']} "
+                f"({missing_percentage:.2f}%)"
+            )
+            
+            # Numeric statistics if available
+            if all(key in info for key in ['min', 'max', 'mean']):
+                if info['min'] is not None:  # Check if numeric stats exist
+                    formatted_lines.extend([
+                        f"- Minimum: {info['min']}",
+                        f"- Maximum: {info['max']}",
+                        f"- Mean: {info['mean']:.2f}"
+                    ])
+                
+            # Value distribution if available
+            if 'value_distribution' in info:
+                formatted_lines.append("- Value Distribution:")
+                for dist in info['value_distribution']:
+                    formatted_lines.append(
+                        f"  • {dist['value']}: {dist['count']} occurrences "
+                        f"({dist['percentage']}%)"
+                    )
+            
+            # Add blank line between columns
+            formatted_lines.append("")
+        
+        return "\n".join(formatted_lines)

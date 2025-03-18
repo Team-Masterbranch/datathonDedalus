@@ -1,6 +1,6 @@
 # core/application.py
-from core.context_manager import ContextManager
-from core.intention import Intention
+from core.session_manager import SessionManager
+from core.intention import Intention, IntentionType
 from core.intention_executor import IntentionExecutor
 from utils.config import (
     DATA_DIR,
@@ -21,6 +21,7 @@ from core.query_manager import QueryManager
 from core.data_manager import DataManager
 from core.result_analyzer import ResultAnalyzer
 from core.visualizer import Visualizer
+from core.action_manager import ActionManager
 
 
 class Application:
@@ -38,14 +39,32 @@ class Application:
         self.cli = HealthcareCLI(self)
         self.result_analyzer = ResultAnalyzer()
         self.visualizer = Visualizer()
-        self.context_manager = ContextManager()
+        self.session_manager = SessionManager()
         self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
-        
-        self.visualizer.clear_output_directory()
+        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager)
         
     def start(self):
         """Start the application and its interface."""
         logger.info("Starting application")
+        self.visualizer.clear_output_directory()
+        
+        # Load existing or newly created cache to preparser
+        cache_path = "root/data/cache.json"
+        if not os.path.exists(cache_path):
+            logger.info("Cache file not found. Creating new cache.")
+            try:
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                # Save empty cache
+                self.preparser.save_cache_to_file(cache_path)
+            except IOError as e:
+                logger.error(f"Failed to create cache file: {e}")
+                raise
+        try:
+            self.preparser.load_cache_from_file(cache_path)
+        except IOError as e:
+            logger.error(f"Failed to load cache: {e}")
+            raise
         try:
             self.cli.cmdloop()
         except KeyboardInterrupt:
@@ -59,34 +78,47 @@ class Application:
     def shutdown(self):
         """Cleanup and shutdown application."""
         self.visualizer.clear_output_directory()
+        self.preparser.save_cache_to_file("root/data/cache.json")
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
-    async def process_user_query(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
+    async def process_user_input(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
-        Process and execute a user query.
+        Main method to process user input and execute actions.
         
         Args:
-            query: The user's query string
-            filter_current_cohort: Whether to filter current cohort or start new search
+            user_input: User's text input/question
         """
         try:
-            self.context_manager.add_user_message(user_input)
+            self.session_manager.add_user_message(user_input)
+            self.session_manager.increment_interaction()
             # Preprocessing and parsing (as before)
             preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                message = self.context_manager.get_last_request()
-                user_intention = self.parser.process_message(message)
+                message = self.session_manager.get_last_request()
+                # user_messages = self.context_manager.get_user_messages()
+                user_intention = self.parser.process_single_message(message)
+                # user_intention = self.parser.process_message_list(user_messages)
                 self.preparser.update_cache(user_input, user_intention)
             else:
                 user_intention = preparse_result
-
-            self.intention_executer.execute(user_intention)
-            self.data_manager.save_current_cohort("root/data/temp/filtered_cohort.csv", index=False)
-            print("Filtered cohort saved to root/data/temp/filtered_cohort.csv")
             
-            self.shutdown
+            if user_intention.intention_type == IntentionType.HELP:
+                # Print help from \root\prompts\help_message.txt
+                self.text_file_output("root/prompts/help_message.txt")
+                return
+                
+            elif user_intention.intention_type == IntentionType.UNKNOWN:
+                # Print help from root\prompts\unknown_intention_message.txt
+                self.text_file_output("root/prompts/unknown_intention_message.txt")
+                return
+
+            # This needs rework: old intension object is really only a query.                
+            self.intention_executer.execute(user_intention)
+            
+            self.action_manager.get_llm_response()
+            self.action_manager.display_messages()
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
@@ -185,4 +217,52 @@ class Application:
                 "test_file": test_file,
                 "test_function": test_function
             }
+
+    def text_output(self, message: str, message_type: str = "info") -> None:
+        """
+        Output text messages to console (and later to GUI).
+        
+        Args:
+            message (str): The message to output
+            message_type (str): Type of message. Can be "info", "error", "warning", or "success"
+                            Used for different styling in future GUI implementation
+        """
+        # Dictionary of prefix symbols for different message types
+        prefix_dict = {
+            "info": "ℹ️",
+            "error": "❌",
+            "warning": "⚠️",
+            "success": "✅"
+        }
+        
+        # Get prefix (default to info if message_type is not recognized)
+        prefix = prefix_dict.get(message_type.lower(), prefix_dict["info"])
+        
+        # For now, just print to console
+        print(f"{prefix} {message}")
+        
+        # Log the message with appropriate level
+        if message_type.lower() == "error":
+            logger.error(message)
+        elif message_type.lower() == "warning":
+            logger.warning(message)
+        else:
+            logger.info(message)
+
+    def text_file_output(self, file_path: str, message_type: str = "info") -> None:
+        """
+        Print the contents of a text file using text_output method
+        
+        Args:
+            file_path (str): Path to the text file
+            message_type (str): Type of message for formatting (default: "info")
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                self.text_output(content, message_type)
+        except FileNotFoundError:
+            self.text_output(f"File not found at {file_path}", "error")
+        except Exception as e:
+            self.text_output(f"Error reading file: {str(e)}", "error")
 

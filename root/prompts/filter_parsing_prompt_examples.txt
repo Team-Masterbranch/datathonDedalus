@@ -1,0 +1,59 @@
+Ejemplos de respuestas (nota que NO hay texto antes o después del JSON):
+
+Para "mostrar pacientes mayores de 50":
+{
+    "intention_type": "COHORT_FILTER",
+    "description": "Filtrar pacientes mayores de 50 años",
+    "query": {
+        "field": "Edad",
+        "operation": "greater_than",
+        "value": 50
+    },
+    "filter_target": "FULL_DATASET"
+}
+
+Para "y con diabetes":
+{
+    "intention_type": "COHORT_FILTER",
+    "description": "Filtrar cohorte actual para pacientes con diabetes",
+    "query": {
+        "field": "Condicion",
+        "operation": "equals",
+        "value": "diabetes"
+    },
+    "filter_target": "CURRENT_COHORT"
+}
+
+Para "buscar mujeres fumadoras":
+{
+    "intention_type": "COHORT_FILTER",
+    "description": "Filtrar por pacientes mujeres que fuman",
+    "query": {
+        "operation": "and",
+        "criteria": [
+            {
+                "field": "Genero",
+                "operation": "equals",
+                "value": "Femenino"
+            },
+            {
+                "field": "EsFumador",
+                "operation": "equals",
+                "value": "True"
+            }
+        ]
+    },
+    "filter_target": "FULL_DATASET"
+}
+
+Para "¿cuál es la edad promedio de estos pacientes?":
+{
+    "intention_type": "NON_FILTER"
+}
+
+Para "¿puedes crear un gráfico?":
+{
+    "intention_type": "NON_FILTER"
+}
+
+RECUERDA: Devolver SOLO el objeto JSON, sin ningún texto adicional.

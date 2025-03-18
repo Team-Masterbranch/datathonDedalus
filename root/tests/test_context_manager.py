@@ -1,10 +1,10 @@
 # tests/test_context_manager.py
 import pytest
-from core.context_manager import ContextManager
+from root.core.session_manager import SessionManager
 
 @pytest.fixture
 def context():
-    return ContextManager()
+    return SessionManager()
 
 @pytest.fixture
 def system_messages():
@@ -90,7 +90,7 @@ def test_get_last_n_exchanges(context, system_messages):
 
 def test_invalid_system_message_format():
     """Test validation of system message format"""
-    context = ContextManager()
+    context = SessionManager()
     invalid_messages = [
         {"role": "invalid", "content": "message"},  # Invalid role
         {"content": "message"},  # Missing role

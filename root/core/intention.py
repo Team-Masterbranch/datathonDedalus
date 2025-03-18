@@ -13,6 +13,7 @@ class IntentionType(Enum):
     VISUALIZATION = "VISUALIZATION"
     HELP = "HELP"
     UNKNOWN = "UNKNOWN"
+    NON_FILTER = "NON_FILTER"
 
 class FilterTarget(Enum):
     FULL_DATASET = "FULL_DATASET"

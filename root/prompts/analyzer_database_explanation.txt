@@ -1,0 +1,2 @@
+Below is a detailed description (schema) of medical database: 
+

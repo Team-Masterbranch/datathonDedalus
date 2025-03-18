@@ -23,38 +23,23 @@ Para intenciones COHORT_FILTER, debes proporcionar:
       * operation: Uno de ["equals", "greater_than", "less_than", "between"]
       * value: El valor para filtrar
 - filter_target: "CURRENT_COHORT" o "FULL_DATASET"
-  * Usa "CURRENT_COHORT" cuando el usuario quiere refinar resultados existentes
-  * Usa "FULL_DATASET" cuando se inicia una nueva búsqueda
-  * Ejemplos:
-    - "muestra pacientes mayores de 65" -> "FULL_DATASET" (nueva búsqueda)
-    - "de estos, muestra solo hombres" -> "CURRENT_COHORT" (refinando resultados)
-    - "entre ellos, encuentra diabéticos" -> "CURRENT_COHORT" (filtrado adicional)
-    - "encuentra todas las mujeres" -> "FULL_DATASET" (nueva búsqueda)
+  * Usa **"CURRENT_COHORT"** cuando:
+    - El usuario añade condiciones adicionales a una búsqueda previa (ej: "y mayores", "también con diabetes")
+    - Usa términos como "de estos", "entre ellos", "además", o conectores como "y" para refinar
+    - Es una continuación de una conversación previa sin indicar una nueva búsqueda
+  * Usa **"FULL_DATASET"** solo cuando:
+    - El usuario inicia una nueva consulta sin contexto previo (ej: "encuentra mujeres")
+    - Usa términos como "nuevos", "todos", o reinicia parámetros
 
-Ejemplos de estructuras de consulta:
-1. Consulta simple:
-{
-    "field": "Edad",
-    "operation": "greater_than",
-    "value": 65
-}
+Ejemplos clave para filter_target:
+- "muestra pacientes mayores de 65" → "FULL_DATASET" (nueva búsqueda)
+- "de estos, muestra solo hombres" → "CURRENT_COHORT" (refinamiento)
+- "y mayores de 40 años" → "CURRENT_COHORT" (condición adicional al contexto actual)
+- "encuentra todas las mujeres" → "FULL_DATASET" (nueva búsqueda)
 
-2. Consulta compuesta con AND:
-{
-    "operation": "and",
-    "criteria": [
-        {
-            "field": "Descripcion",
-            "operation": "equals",
-            "value": "Diabetes"
-        },
-        {
-            "field": "Edad",
-            "operation": "greater_than",
-            "value": 31
-        }
-    ]
-}
+Ejemplo de consulta secuencial:
+1. Primera solicitud: "hombres asmáticos" → "FULL_DATASET"
+2. Segunda solicitud: "y mayores de 65" → "CURRENT_COHORT" (solo agrega la condición de edad al cohorte existente)
 
 Para intenciones VISUALIZATION, debes proporcionar:
 - intention_type: "VISUALIZATION"
