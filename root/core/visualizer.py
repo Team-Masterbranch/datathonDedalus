@@ -106,6 +106,7 @@ class Visualizer:
             logger.error(f"Error creating visualizations: {e}")
             return results
 
+    # Outdated
     def _create_visualization(self,
                             data: pd.DataFrame,
                             request: VisualizerRequest,
@@ -207,3 +208,95 @@ class Visualizer:
         
         logger.info(f"Saved plot to {filepath}")
         return filepath
+
+    def create_visualization(self,
+                        data: pd.DataFrame,
+                        request: VisualizerRequest,
+                        gui_mode: bool = False,
+                        figure_size: Optional[Tuple[int, int]] = None) -> Any:
+        """
+        Create single visualization based on request.
+        
+        Args:
+            data: DataFrame containing cohort data
+            request: VisualizerRequest object
+            gui_mode: If True, returns figure object instead of saving
+            figure_size: Optional tuple of (width, height)
+            
+        Returns:
+            Either:
+            - File path (if gui_mode=False)
+            - Figure object (if gui_mode=True)
+        """
+        try:
+            # Create figure with specified size
+            fig = plt.figure(figsize=figure_size)
+            
+            if request.chart_type == ChartType.BAR:
+                self._create_bar_chart(data, request)
+            elif request.chart_type == ChartType.PIE:
+                self._create_pie_chart(data, request)
+            elif request.chart_type == ChartType.LINE:
+                self._create_line_chart(data, request)
+            elif request.chart_type == ChartType.HISTOGRAM:
+                self._create_histogram(data, request)
+            elif request.chart_type == ChartType.SCATTER:
+                self._create_scatter_plot(data, request)
+            elif request.chart_type == ChartType.BOX:
+                self._create_box_plot(data, request)
+            
+            plt.title(request.title)
+            plt.tight_layout()
+            
+            if gui_mode:
+                return fig
+            else:
+                return self._save_plot(request.title)
+                
+        except Exception as e:
+            logger.error(f"Error creating visualization: {e}")
+            if gui_mode:
+                plt.close(fig)
+                return None
+            return None
+
+    def create_visualizations_list(self,
+                                data: pd.DataFrame,
+                                requests: List[VisualizerRequest],
+                                gui_mode: bool = False,
+                                figure_size: Optional[Tuple[int, int]] = None) -> List[Any]:
+        """
+        Create multiple visualizations based on requests.
+        
+        Args:
+            data: DataFrame containing cohort data
+            requests: List of VisualizerRequest objects
+            gui_mode: If True, returns figure objects instead of saving files
+            figure_size: Optional tuple of (width, height)
+            
+        Returns:
+            List of either:
+            - File paths (if gui_mode=False)
+            - Figure objects (if gui_mode=True)
+        """
+        results = []
+        
+        try:
+            for request in requests:
+                result = self.create_visualization(
+                    data=data,
+                    request=request,
+                    gui_mode=gui_mode,
+                    figure_size=figure_size
+                )
+                if result is not None:
+                    results.append(result)
+                    logger.debug(f"Created visualization for request: {request.title}")
+                else:
+                    logger.warning(f"Failed to create visualization for request: {request.title}")
+                    
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error creating visualizations list: {e}")
+            return results
