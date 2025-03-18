@@ -94,18 +94,19 @@ class Application:
             preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                # message = self.context_manager.get_last_request()
-                user_messages = self.context_manager.get_user_messages()
-                # user_intention = self.parser.process_single_message(message)
-                user_intention = self.parser.process_message_list(user_messages)
+                message = self.context_manager.get_last_request()
+                # user_messages = self.context_manager.get_user_messages()
+                user_intention = self.parser.process_single_message(message)
+                # user_intention = self.parser.process_message_list(user_messages)
                 self.preparser.update_cache(user_input, user_intention)
             else:
                 user_intention = preparse_result
-
             
             self.intention_executer.execute(user_intention)
-            self.data_manager.save_current_cohort("root/data/temp/filtered_cohort.csv", index=False)
-            print("Filtered cohort saved to root/data/temp/filtered_cohort.csv")
+            print("Cohort shape in application")
+            print(self.data_manager.get_current_cohort().shape)
+            # print(self.data_manager.get_readable_schema_current_cohort())
+            self.data_manager.save_current_cohort()
             
             self.shutdown
             
