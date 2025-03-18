@@ -326,13 +326,17 @@ class DataManager:
             self._current_schema = self._create_schema(self._current_cohort)
 
     def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
-        """Create schema for given DataFrame."""
+        """
+        Create schema for given DataFrame with enhanced value distribution information.
+        Adds percentage distribution for categorical columns with few unique values.
+        """
         schema = {}
         for column in df.columns:
             column_info = {
                 'dtype': str(df[column].dtype),
                 'unique_values': df[column].nunique(),
-                'missing_values': df[column].isnull().sum()
+                'missing_values': df[column].isnull().sum(),
+                'total_rows': len(df)
             }
             
             # Add numeric statistics for numeric columns
@@ -342,15 +346,28 @@ class DataManager:
                     'max': float(df[column].max()),
                     'mean': float(df[column].mean())
                 })
-            # Add possible values only for non-numeric columns with few unique values
+            # Add value distribution for columns with few unique values
             elif df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
-                unique_values = sorted(df[column].dropna().unique().tolist())
-                # Convert numpy types to native Python types
-                unique_values = [
-                    item.item() if hasattr(item, 'item') else item 
-                    for item in unique_values
-                ]
-                column_info['possible_values'] = unique_values
+                # Calculate value counts and percentages
+                value_counts = df[column].value_counts()
+                total_non_null = value_counts.sum()
+                
+                # Create distribution information
+                distribution = []
+                for value, count in value_counts.items():
+                    percentage = (count / total_non_null) * 100
+                    # Convert numpy types to native Python types
+                    cleaned_value = value.item() if hasattr(value, 'item') else value
+                    distribution.append({
+                        'value': cleaned_value,
+                        'count': int(count),
+                        'percentage': round(float(percentage), 2)
+                    })
+                
+                column_info['value_distribution'] = distribution
+                
+                # Keep the possible_values list for backward compatibility
+                column_info['possible_values'] = [item['value'] for item in distribution]
             
             schema[column] = column_info
         
