@@ -118,7 +118,7 @@ class Application:
             self.intention_executer.execute(user_intention)
             
             self.action_manager.get_llm_response()
-            self.action_manager.print_actions()
+            self.action_manager.display_messages()
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")

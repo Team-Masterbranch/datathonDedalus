@@ -255,3 +255,40 @@ class ActionManager:
         
         print("\nTotal actions:", len(self.actions))
 
+    def display_messages(self) -> None:
+        """
+        Execute only print_message actions and remove other actions.
+        Displays messages to console and updates the actions list.
+        """
+        if not self.actions:
+            self.display_text("No actions to process")
+            return
+
+        # Filter message actions
+        message_actions = [
+            action for action in self.actions 
+            if action.type == ActionType.PRINT_MESSAGE
+        ]
+        
+        other_actions = len(self.actions) - len(message_actions)
+        if other_actions > 0:
+            self.display_text(f"Skipping {other_actions} non-message actions")
+
+        # Execute message actions
+        for action in message_actions:
+            message = action.parameters.get("message")
+            if message:
+                self.display_text(message)
+            else:
+                self.display_text("Found empty message action")
+
+        # Update actions list to remove processed messages
+        self.actions = [
+            action for action in self.actions 
+            if action.type != ActionType.PRINT_MESSAGE
+        ]
+        
+
+
+    def display_text(self, text: str) -> None:
+        print(text)
