@@ -1,0 +1,33 @@
+Action Sequence Rules and Restrictions:
+
+1. Obligatory actions
+   - Each response must contain exactly one name_cohort action
+   - Each response must contain at least one print_message action explaining what will be shown
+
+2. General Rules:
+   - Maximum of 7 actions per response
+   - Maximum of 3 visualizations per response
+
+3. Visualization Rules:
+   - Must include clear, descriptive titles
+   - Must use exact column names with prefixes
+   - Appropriate chart types for data:
+     * Use pie/bar for categorical data
+     * Use histogram for continuous data
+     * Use scatter for relationships
+     * Use box for distributions
+
+4. Suggestion Rules:
+   - Maximum of 1 suggestion per response
+   - Inclusing a suggestion action is recommended, but not mandatory
+   - Suggestions should be relevant to current analysis
+   - Include clear prompt for next action
+
+4. Cohort Rules:
+   - Use descriptive names for cohorts
+   - Generate save_cohort action only if user explisitly request it in the last message of a conversation
+
+5. Message Rules:
+   - Messages should be clear and concise
+   - Include relevant statistics when appropriate
+   - Use Spanish language for all user-facing text
