@@ -1,6 +1,6 @@
 # core/application.py
 from core.context_manager import ContextManager
-from core.intention import Intention
+from core.intention import Intention, IntentionType
 from core.intention_executor import IntentionExecutor
 from utils.config import (
     DATA_DIR,
@@ -102,6 +102,14 @@ class Application:
             else:
                 user_intention = preparse_result
             
+            if user_intention.intention_type == IntentionType.HELP:
+                # Print help from \root\prompts\help_message.txt
+                self.text_file_output("root/prompts/help_message.txt")
+                
+            elif user_intention.intention_type == IntentionType.UNKNOWN:
+                # Print help from root\prompts\unknown_intention_message.txt
+                self.text_file_output("root/prompts/unknown_intention_message.txt")
+                
             self.intention_executer.execute(user_intention)
             print("Cohort shape in application")
             print(self.data_manager.get_current_cohort().shape)
@@ -208,3 +216,50 @@ class Application:
                 "test_function": test_function
             }
 
+    def text_output(self, message: str, message_type: str = "info") -> None:
+        """
+        Output text messages to console (and later to GUI).
+        
+        Args:
+            message (str): The message to output
+            message_type (str): Type of message. Can be "info", "error", "warning", or "success"
+                            Used for different styling in future GUI implementation
+        """
+        # Dictionary of prefix symbols for different message types
+        prefix_dict = {
+            "info": "ℹ️",
+            "error": "❌",
+            "warning": "⚠️",
+            "success": "✅"
+        }
+        
+        # Get prefix (default to info if message_type is not recognized)
+        prefix = prefix_dict.get(message_type.lower(), prefix_dict["info"])
+        
+        # For now, just print to console
+        print(f"{prefix} {message}")
+        
+        # Log the message with appropriate level
+        if message_type.lower() == "error":
+            logger.error(message)
+        elif message_type.lower() == "warning":
+            logger.warning(message)
+        else:
+            logger.info(message)
+
+    def text_file_output(self, file_path: str, message_type: str = "info") -> None:
+        """
+        Print the contents of a text file using text_output method
+        
+        Args:
+            file_path (str): Path to the text file
+            message_type (str): Type of message for formatting (default: "info")
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                self.text_output(content, message_type)
+        except FileNotFoundError:
+            self.text_output(f"File not found at {file_path}", "error")
+        except Exception as e:
+            self.text_output(f"Error reading file: {str(e)}", "error")
