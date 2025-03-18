@@ -13,3 +13,4 @@ __pycache__/
 docs/prompts/notes about LLM API
 root/data/temp/*
 root/data/cache.json
+root/logs/llm/llm_interactions.log
