@@ -1,8 +1,12 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Optional, Dict, Any
 from enum import Enum
 import json
 import logging
+from core.session_manager import SessionManager
+from core.llm_handler import LLMHandler
+from core.data_manager import DataManager
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +24,11 @@ class Action:
     parameters: Dict[str, Any]
 
 class ActionManager:
-    def __init__(self):
+    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager):
         self.actions: List[Action] = []
+        self.llm_handler = llm_handler
+        self.session_manager = session_manager
+        self.data_manager = data_manager
         logger.debug("ActionManager initialized")
         
     def decode_llm_response(self, json_str: str) -> bool:
@@ -150,3 +157,101 @@ class ActionManager:
         """Get number of pending actions"""
         logger.debug(f"Getting count of pending actions: {len(self.actions)}")
         return len(self.actions)
+
+    def get_llm_response(self) -> bool:
+        """
+        Get response from LLM and parse it into actions.
+        
+        Args:
+            session_manager: SessionManager instance containing conversation history
+            llm_handler: LLMHandler instance for making LLM requests
+            data_manager: DataManager instance for getting current schema
+            
+        Returns:
+            bool: True if actions were successfully created, False otherwise
+        """
+        logger.debug("Starting get_llm_response")
+        try:
+            # Get current schema
+            formatted_schema = self.data_manager.get_readable_schema_current_cohort()
+            
+            # Create system messages with analyzer prompts and schema
+            system_messages = [
+                {
+                    "role": "system",
+                    "content": self._load_prompt("analyzer_introduction.txt")
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("analyzer_database_explanation.txt")
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("analyzer_actions_explanation.txt")
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("analyzer_actions_restrictions.txt")
+                },
+                {
+                    "role": "system",
+                    "content": f"{self._load_prompt('schema_description.txt')}\n{formatted_schema}"
+                }
+            ]
+            
+            # Get conversation history from session manager
+            conversation_messages = self.session_manager.get_messages()
+            
+            # Combine system messages with conversation history
+            all_messages = system_messages + conversation_messages
+            logger.debug(f"Prepared {len(all_messages)} messages for LLM")
+            
+            # Get response from LLM
+            llm_response = self.llm_handler.send_chat_request(all_messages)
+            logger.debug("Received response from LLM")
+            
+            # Parse response into actions
+            success = self.decode_llm_response(llm_response)
+            if success:
+                logger.info(f"Successfully created {len(self.actions)} actions")
+            else:
+                logger.error("Failed to decode LLM response into actions")
+                
+            return success
+            
+        except Exception as e:
+            logger.error(f"Error in get_llm_response: {e}")
+            return False
+
+    def _load_prompt(self, filename: str) -> str:
+        """Load prompt from file"""
+        prompts_dir = Path(__file__).parent.parent / "prompts"
+        with open(prompts_dir / filename, 'r', encoding='utf-8') as f:
+            return f.read().strip()
+
+    def print_actions(self) -> None:
+        """
+        Print all pending actions in a readable format.
+        """
+        if not self.actions:
+            logger.info("No pending actions")
+            print("No pending actions")
+            return
+
+        print("\nPending Actions:")
+        print("---------------")
+        
+        for i, action in enumerate(self.actions, 1):
+            print(f"\n{i}. Type: {action.type.value}")
+            print("   Parameters:")
+            for key, value in action.parameters.items():
+                # Handle nested dictionaries (like in create_visualization)
+                if isinstance(value, dict):
+                    print(f"   - {key}:")
+                    for sub_key, sub_value in value.items():
+                        print(f"     * {sub_key}: {sub_value}")
+                else:
+                    print(f"   - {key}: {value}")
+        
+        print("\nTotal actions:", len(self.actions))
+

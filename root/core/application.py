@@ -1,5 +1,5 @@
 # core/application.py
-from core.context_manager import ContextManager
+from core.session_manager import SessionManager
 from core.intention import Intention, IntentionType
 from core.intention_executor import IntentionExecutor
 from utils.config import (
@@ -21,6 +21,7 @@ from core.query_manager import QueryManager
 from core.data_manager import DataManager
 from core.result_analyzer import ResultAnalyzer
 from core.visualizer import Visualizer
+from core.action_manager import ActionManager
 
 
 class Application:
@@ -38,8 +39,9 @@ class Application:
         self.cli = HealthcareCLI(self)
         self.result_analyzer = ResultAnalyzer()
         self.visualizer = Visualizer()
-        self.context_manager = ContextManager()
+        self.session_manager = SessionManager()
         self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
+        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager)
         
     def start(self):
         """Start the application and its interface."""
@@ -80,21 +82,21 @@ class Application:
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
-    async def process_user_query(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
+    async def process_user_input(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
-        Process and execute a user query.
+        Main method to process user input and execute actions.
         
         Args:
-            query: The user's query string
-            filter_current_cohort: Whether to filter current cohort or start new search
+            user_input: User's text input/question
         """
         try:
-            self.context_manager.add_user_message(user_input)
+            self.session_manager.add_user_message(user_input)
+            self.session_manager.increment_interaction()
             # Preprocessing and parsing (as before)
             preparse_result, needs_llm = self.preparser.preparse_user_input(user_input)
             
             if needs_llm:
-                message = self.context_manager.get_last_request()
+                message = self.session_manager.get_last_request()
                 # user_messages = self.context_manager.get_user_messages()
                 user_intention = self.parser.process_single_message(message)
                 # user_intention = self.parser.process_message_list(user_messages)
@@ -105,18 +107,18 @@ class Application:
             if user_intention.intention_type == IntentionType.HELP:
                 # Print help from \root\prompts\help_message.txt
                 self.text_file_output("root/prompts/help_message.txt")
+                return
                 
             elif user_intention.intention_type == IntentionType.UNKNOWN:
                 # Print help from root\prompts\unknown_intention_message.txt
                 self.text_file_output("root/prompts/unknown_intention_message.txt")
-                
+                return
+
+            # This needs rework: old intension object is really only a query.                
             self.intention_executer.execute(user_intention)
-            print("Cohort shape in application")
-            print(self.data_manager.get_current_cohort().shape)
-            # print(self.data_manager.get_readable_schema_current_cohort())
-            self.data_manager.save_current_cohort()
             
-            self.shutdown
+            self.action_manager.get_llm_response()
+            self.action_manager.print_actions()
             
         except Exception as e:
             logger.error(f"Error processing query: {e}")
@@ -263,3 +265,4 @@ class Application:
             self.text_output(f"File not found at {file_path}", "error")
         except Exception as e:
             self.text_output(f"Error reading file: {str(e)}", "error")
+
