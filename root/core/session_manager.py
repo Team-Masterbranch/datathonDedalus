@@ -1,4 +1,7 @@
 # core/context_manager.py
+import os
+import stat
+import shutil
 from typing import List, Dict
 from pathlib import Path
 import logging
@@ -18,6 +21,39 @@ class SessionManager:
         self.interactions_counter: int = 0
         self.base_session_dir = SESSION_BASE_DIR
         self.current_interaction_folder: Path = self._get_current_session_dir()
+    
+    def wipe_session_folder(self) -> None:
+        """
+        Deletes everything inside the session base directory.
+        Handles Windows permission errors.
+        """
+        
+        def handle_remove_readonly(func, path, exc):
+            """Handle permission error for read-only files"""
+            excvalue = exc[1]
+            if func in (os.rmdir, os.remove, os.unlink):
+                # Change file permissions
+                os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+                # Try again
+                func(path)
+            else:
+                raise
+        
+        try:
+            # Delete all contents inside SESSION_BASE_DIR
+            for item in SESSION_BASE_DIR.iterdir():
+                if item.is_file():
+                    item.unlink(missing_ok=True)  # Delete file
+                elif item.is_dir():
+                    shutil.rmtree(item, onerror=handle_remove_readonly)  # Delete directory and its contents
+                    
+            logger.debug(f"Wiped all contents from session directory: {SESSION_BASE_DIR}")
+            
+        except Exception as e:
+            logger.error(f"Error wiping session folder: {str(e)}")
+            raise
+
+
     
     def increment_interaction(self) -> str:
         """
@@ -117,7 +153,6 @@ class SessionManager:
             conversation.append(self._user_messages[-1])
         
         self._full_conversation = conversation
-
 
     @staticmethod
     def _validate_message(message: Dict[str, str], expected_role: str) -> bool:

@@ -79,6 +79,7 @@ class Application:
         """Cleanup and shutdown application."""
         self.visualizer.clear_output_directory()
         self.preparser.save_cache_to_file("root/data/cache.json")
+        self.session_manager.wipe_session_folder()
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
