@@ -392,34 +392,73 @@ class DataManager:
         self._update_current_schema()
         return self._current_cohort
 
-    def save_current_cohort(self, filepath: str, index: bool = False) -> bool:
+    def _save_current_data(self, path: str, name: str) -> None:
         """
-        Save the current cohort to a CSV file.
+        Helper method to save the current cohort data to a CSV file.
         
         Args:
-            filepath: Path where to save the CSV file
-            index: Whether to save the DataFrame index (default False)
-            
-        Returns:
-            bool: True if save was successful, False otherwise
+            path (str): Directory path where the file will be saved
+            name (str): Base name for the file (without extension)
         """
-        try:
-            if self._current_cohort is None:
-                logger.error("Cannot save: current cohort is None")
-                return False
-                
-            # Ensure directory exists
-            os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
+        if self._current_cohort is None:
+            raise ValueError("No cohort is currently loaded")
             
-            # Save to CSV
-            self._current_cohort.to_csv(filepath, index=index)
-            logger.info(f"Successfully saved cohort to {filepath}")
-            logger.info(f"Saved {len(self._current_cohort)} records")
-            return True
+        file_path = os.path.join(path, f"{name}.csv")
+        os.makedirs(path, exist_ok=True)
+        self._current_cohort.to_csv(file_path, index=False)
+
+    def _save_current_schema(self, path: str, name: str) -> None:
+        """
+        Helper method to save the current cohort schema to a text file.
+        
+        Args:
+            path (str): Directory path where the file will be saved
+            name (str): Base name for the file (without extension)
+        """
+        if self._current_cohort is None:
+            raise ValueError("No cohort is currently loaded")
             
-        except Exception as e:
-            logger.error(f"Error saving cohort to CSV: {str(e)}")
-            return False
+        schema_path = os.path.join(path, f"{name}_schema.txt")
+        os.makedirs(path, exist_ok=True)
+        
+        # Create a readable schema representation
+        schema_info = []
+        for column in self._current_cohort.columns:
+            dtype = str(self._current_cohort[column].dtype)
+            non_null_count = self._current_cohort[column].count()
+            total_count = len(self._current_cohort)
+            null_percentage = ((total_count - non_null_count) / total_count) * 100
+            
+            schema_info.append(
+                f"Column: {column}\n"
+                f"  Data Type: {dtype}\n"
+                f"  Non-null Count: {non_null_count}/{total_count}\n"
+                f"  Null Percentage: {null_percentage:.2f}%\n"
+            )
+        
+        # Write schema information to file
+        with open(schema_path, 'w', encoding='utf-8') as f:
+            f.write("\nCOHORT SCHEMA\n")
+            f.write("="*50 + "\n\n")
+            f.write("\n".join(schema_info))
+
+    def save_current_cohort(self, path: str = "root/data/temp/data_manager_output", 
+                        name: str = "test") -> None:
+        """
+        Save the current cohort data and its schema to separate files.
+        
+        Args:
+            path (str): Directory path where the files will be saved. 
+                    Defaults to "root/data/temp/data_manager_output"
+            name (str): Base name for the files (without extension). 
+                    Defaults to "test"
+        """
+        # Normalize path separators for cross-platform compatibility
+        path = os.path.normpath(path)
+        
+        # Save both data and schema
+        self._save_current_data(path, name)
+        self._save_current_schema(path, name)
 
     def validate_visualization_request(self, request: VisualizerRequest) -> bool:
         """
