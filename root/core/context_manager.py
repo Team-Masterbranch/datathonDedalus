@@ -114,6 +114,10 @@ class ContextManager:
         self._system_messages.clear()
         self.clear_context()
 
+    def get_user_messages(self) -> List[str]:
+        """Get all user messages in the conversation."""
+        return self._user_messages.copy()
+    
     def get_messages(self, include_system: bool = True) -> List[Dict[str, str]]:
         """
         Get all messages in format ready for LLM.

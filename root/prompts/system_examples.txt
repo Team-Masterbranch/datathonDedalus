@@ -1,8 +1,8 @@
-Example responses (note there is NO text before or after the JSON):
-For "show patients older than 50":
+Ejemplos de respuestas (nota que NO hay texto antes o después del JSON):
+Para "mostrar pacientes mayores de 50":
 {
     "intention_type": "COHORT_FILTER",
-    "description": "Filter patients over 50 years old",
+    "description": "Filtrar pacientes mayores de 50 años",
     "query": {
         "field": "age",
         "operation": "greater_than",
@@ -11,26 +11,26 @@ For "show patients older than 50":
     "filter_target": "FULL_DATASET"
 }
 
-For "create age distribution chart":
+Para "crear gráfico de distribución de edades":
 {
     "intention_type": "VISUALIZATION",
-    "description": "Show age distribution of patients",
+    "description": "Mostrar distribución de edades de los pacientes",
     "visualizer_request": {
         "chart_type": "histogram",
-        "title": "Age Distribution",
+        "title": "Distribución de Edades",
         "x_column": "age",
         "y_column": "count"
     }
 }
 
-For "what can you do?":
+Para "¿qué puedes hacer?":
 {
     "intention_type": "HELP",
 }
 
-For "make coffee":
+Para "haz un café":
 {
     "intention_type": "UNKNOWN",
 }
 
-REMEMBER: Return ONLY the JSON object, with no additional text.
+RECUERDA: Devuelve SOLO el objeto JSON, sin texto adicional.

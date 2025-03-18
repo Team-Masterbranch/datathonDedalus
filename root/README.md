@@ -13,6 +13,8 @@ root/
 ├── utils/             # Utility modules and configurations
 ├── data/              # Data storage
 │   ├── img/           # Generated visualizations
+│   ├── temp/          # Temporary files
+│   ├── cache.json     # Query cache
 │   └── cohort.csv     # Latest cohort data
 └── main.py            # Application entry point
 
@@ -21,25 +23,34 @@ Core Components
 1. Application Service (application.py)
    - Main orchestrator of the system
    - Manages component lifecycle and interactions
-   - Handles query processing pipeline
+   - Handles GUI initialization and event processing
+   - Manages cache persistence
 
 2. Data Management (data_manager.py)
    - Manages data loading and access
    - Handles cohort filtering and schema management
    - Provides data validation and access methods
+   - Formats schema for display
 
 3. Query Processing Pipeline:
-   - Preparser (preparser.py): Initial query processing and caching
+   - Preparser (preparser.py): Initial query processing and LRU caching
    - Parser (parser.py): Query structure analysis and LLM integration
    - Query Manager (query_manager.py): Query execution and cohort management
 
-4. Visualization System:
-   - Visualizer (visualizer.py): Chart generation and output management
-   - Result Analyzer (result_analyzer.py): Analysis and visualization suggestions
+4. Context Management:
+   - Context Manager (context_manager.py): Manages conversation history
+   - Handles message storage and retrieval
+   - Maintains conversation context for LLM
 
-5. LLM Integration (llm_handler.py):
+5. User Interface:
+   - GUI (gui.py): Graphical user interface implementation
+   - Provides visual representation of data and interactions
+   - Handles user input and displays results
+
+6. LLM Integration (llm_handler.py):
    - Manages LLM service interactions
    - Handles prompt formatting and response processing
+   - Supports multi-message context processing
 
 Module Documentation
 ------------------
@@ -54,8 +65,8 @@ Classes:
 
         Methods:
             __init__(): Initialize application components
-            start(): Start the application
-            process_user_query(query: str, filter_current_cohort: bool): Process user queries
+            start(): Start the application and initialize cache
+            process_user_query(query: str): Process user queries
             shutdown(): Clean shutdown of application
             run_tests(): Execute system tests
 
@@ -72,11 +83,11 @@ Classes:
             load_csv_files(): Load and combine CSV data
             apply_filter(query: Query): Apply filter to current cohort
             get_current_schema(): Get schema for current cohort
-            validate_visualization_request(): Validate visualization requests
+            format_schema_to_string(): Format schema for display
 
 core.preparser
 ------------
-First stage of query processing pipeline.
+First stage of query processing pipeline with LRU caching.
 
 Classes:
     Preparser:
@@ -84,8 +95,9 @@ Classes:
 
         Methods:
             process_query(): Process raw queries
-            update_cache(): Update query cache
-            _try_regex_match(): Attempt regex-based parsing
+            update_cache(): Update LRU cache
+            save_cache_to_file(): Persist cache to disk
+            load_cache_from_file(): Load cache from disk
 
 core.parser
 ---------
@@ -96,57 +108,36 @@ Classes:
         Converts preprocessed queries into structured format.
 
         Methods:
-            process_with_llm(): Process query through LLM
+            process_message(): Process single query through LLM
+            process_messages(): Process multiple messages with context
             validate_criteria(): Validate query criteria structure
 
-core.query_manager
----------------
-Query execution and cohort management component.
-
-Classes:
-    QueryManager:
-        Manages query execution and cohort filtering.
-
-        Methods:
-            execute_query(): Execute structured queries
-            update_cohort(): Update current cohort based on query
-
-core.visualizer
-------------
-Visualization generation component.
-
-Classes:
-    Visualizer:
-        Creates visual representations of cohort data.
-
-        Methods:
-            create_visualizations(): Generate visualizations
-            _create_visualization(): Create single visualization
-            _save_plot(): Save generated plots
-
-core.result_analyzer
+core.context_manager
 -----------------
-Results analysis and visualization suggestion component.
+Conversation context management component.
 
 Classes:
-    ResultAnalyzer:
-        Analyzes query results and suggests visualizations.
+    ContextManager:
+        Manages conversation history and context.
 
         Methods:
-            analyze_cohort(): Analyze cohort and suggest visualizations
-            _generate_visualization_requests(): Generate visualization suggestions
+            add_user_message(): Add message to context
+            get_user_messages(): Get all user messages
+            clear_context(): Clear conversation history
 
-core.llm_handler
--------------
-LLM service integration component.
+interface.gui
+-----------
+Graphical user interface component.
 
 Classes:
-    LLMHandler:
-        Manages interactions with LLM service.
+    GUI:
+        Manages visual interface and user interactions.
 
         Methods:
-            process_query(): Process queries through LLM
-            format_prompt(): Format prompts for LLM
+            run(): Start GUI event loop
+            display_message(): Show message in chat
+            update_cohort_info(): Update cohort statistics
+            add_history_entry(): Add to query history
 
 Configuration
 -----------
@@ -154,8 +145,9 @@ utils.config:
     System configuration parameters including:
     - Data paths
     - Logging settings
-    - Visualization parameters
-    - LLM configuration
+    - Cache configuration
+    - LLM settings
+    - GUI parameters
 
 Dependencies
 -----------
@@ -163,4 +155,6 @@ Dependencies
   - pandas
   - matplotlib
   - seaborn
+  - tkinter
   - pytest (for testing)
+  - asyncio
