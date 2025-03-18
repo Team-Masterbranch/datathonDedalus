@@ -7,9 +7,13 @@ load_dotenv()
 
 # Base paths
 PROJECT_ROOT = Path(__file__).parent.parent
+# DATA_DIR = PROJECT_ROOT / 'data' / 'newData'
 DATA_DIR = PROJECT_ROOT / 'data'
 LOGS_DIR = PROJECT_ROOT / 'logs'
 TESTS_DIR = PROJECT_ROOT / 'tests'
+
+PATIENT_ID_COLUMN = 'PacienteID'
+PATIENT_ID_ALTERNATIVES = ['Patient ID', 'pacientes.ID', 'paciente_id', 'ID']  # Fallback column names
 
 # Session directory
 SESSION_BASE_DIR = DATA_DIR / 'session'
@@ -38,7 +42,7 @@ CLI_INTRO = "Welcome to the Healthcare Data Analysis System. Type 'help' for com
 MAX_CACHE_SIZE = 1000  # Maximum number of cached queries
 
 # Schema configuration
-UNIQUE_VALUES_THRESHOLD = 15  # Show all possible values if number of unique values is below this
+UNIQUE_VALUES_THRESHOLD = 30  # Show all possible values if number of unique values is below this
 
 # Visualization settings
 CLI_CHART_WIDTH = 10
@@ -53,5 +57,4 @@ LLM_LOG_FILE = LLM_LOG_DIR / 'llm_interactions.log'
 LLM_LOG_SEPARATOR = "\n" + "="*80 + "\n"  # Separator between log entries
 
 # Patient ID Configuration
-PATIENT_ID_COLUMN = 'PacienteID'
-PATIENT_ID_ALTERNATIVES = ['pacientes.ID', 'paciente_id', 'ID']  # Fallback column names
+
