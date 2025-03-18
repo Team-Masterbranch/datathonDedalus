@@ -11,6 +11,9 @@ DATA_DIR = PROJECT_ROOT / 'data'
 LOGS_DIR = PROJECT_ROOT / 'logs'
 TESTS_DIR = PROJECT_ROOT / 'tests'
 
+# Session directory
+SESSION_BASE_DIR = DATA_DIR / 'session'
+
 # Ensure directories exist
 DATA_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)

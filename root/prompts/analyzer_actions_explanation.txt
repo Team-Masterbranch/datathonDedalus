@@ -1,0 +1,63 @@
+Available action types and their parameters:
+
+1. print_message:
+   Displays a text message to the user
+   {
+     "type": "print_message",
+     "parameters": {
+       "message": "string"
+     }
+   }
+
+2. create_visualization:
+   Creates a data visualization
+   {
+     "type": "create_visualization",
+     "parameters": {
+       "request": {
+         "chart_type": "pie|bar|histogram|line|scatter|box",
+         "title": "string",
+         "x_column": "string (full column name with prefix)",
+         "y_column": "string (optional)",
+         "labels": ["string"] (optional),
+         "values": [number] (optional)
+       }
+     }
+   }
+
+3. suggestion:
+   Offers a suggestion to user for further analysis. 
+   This action has two parameters:
+    - "message": text that will be shown to user;
+    - "prompt": command prompt that should be automatically executed if user will respond positevly.
+   {
+     "type": "suggestion",
+     "parameters": {
+       "message": "string",
+       "prompt": "string"
+     }
+   }
+
+4. name_cohort:
+   Names the current cohort. 
+   This action has two parameters:
+    - "name" used for human readable reference in history of cohorts;
+    - "filename" is used for naming of a cohort files; it should have no extention and should not contatin white spaces.
+   {
+     "type": "name_cohort",
+     "parameters": {
+       "name": "string"
+       "filename": "string"
+     }
+   }
+
+5. save_cohort:
+   Saves the current cohort files for user.
+   {
+     "type": "save_cohort",
+     "parameters": {
+       "name": "string"
+     }
+   }
+
+Each action must be properly formatted as a JSON object with these exact parameter names and structures.

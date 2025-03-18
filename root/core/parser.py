@@ -171,7 +171,6 @@ class Parser:
             logger.error(f"Validation error: {e}")
             return False
 
-
     def process_single_message(self, message: Dict[str, str]) -> Intention:
         """
         Process message through LLM and return structured Intention object.
@@ -193,15 +192,15 @@ class Parser:
             system_messages = [
                 {
                     "role": "system",
-                    "content": self._load_prompt("system_intentions.txt")
+                    "content": self._load_prompt("filter_parsing_prompt.txt")
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("filter_parsing_prompt_examples.txt")
                 },
                 {
                     "role": "system",
                     "content": f"{self._load_prompt('schema_description.txt')}\n{formatted_schema}"
-                },
-                {
-                    "role": "system",
-                    "content": self._load_prompt("system_examples.txt")
                 }
             ]
 
@@ -243,15 +242,15 @@ class Parser:
             system_messages = [
                 {
                     "role": "system",
-                    "content": self._load_prompt("system_intentions.txt")
+                    "content": self._load_prompt("filter_parsing_prompt.txt")
+                },
+                {
+                    "role": "system",
+                    "content": self._load_prompt("filter_parsing_prompt_examples.txt")
                 },
                 {
                     "role": "system",
                     "content": f"{self._load_prompt('schema_description.txt')}\n{formatted_schema}"
-                },
-                {
-                    "role": "system",
-                    "content": self._load_prompt("system_examples.txt")
                 }
             ]
 
@@ -270,7 +269,6 @@ class Parser:
         except Exception as e:
             logger.error(f"Error processing messages: {e}")
             raise
-
 
     
     def _load_prompt(self, filename: str) -> str:

@@ -1,0 +1,59 @@
+[
+    {
+        "type": "print_message",
+        "parameters": {
+            "message": "Analizando el grupo completo de pacientes"
+        }
+    },
+    {
+        "type": "create_visualization",
+        "parameters": {
+            "request": {
+                "chart_type": "histogram",
+                "title": "Distribución de Edad de Pacientes",
+                "x_column": "pacientes.Edad"
+            }
+        }
+    },
+    {
+        "type": "create_visualization",
+        "parameters": {
+            "request": {
+                "chart_type": "pie",
+                "title": "Distribución por Género",
+                "x_column": "pacientes.Genero"
+            }
+        }
+    },
+    {
+        "type": "create_visualization",
+        "parameters": {
+            "request": {
+                "chart_type": "scatter",
+                "title": "Edad vs Número de Condiciones",
+                "x_column": "pacientes.Edad",
+                "y_column": "condiciones.Total"
+            }
+        }
+    },
+    {
+        "type": "name_cohort",
+        "parameters": {
+            "name": "Grupo completo de pacientes",
+            "filename": "pacientes_completos"
+        }
+    },
+    {
+        "type": "save_cohort",
+        "parameters": {
+            "name": "pacientes_completos"
+        }
+    },
+    {
+        "type": "suggestion",
+        "parameters": {
+            "message": "¿Le gustaría ver un análisis detallado de las condiciones médicas más comunes?",
+            "prompt": "mostrar condiciones médicas frecuentes"
+        }
+    }
+]

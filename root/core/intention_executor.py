@@ -34,6 +34,11 @@ class IntentionExecutor:
             }
 
         try:
+            if intention.intention_type == IntentionType.NON_FILTER:
+                return {
+                    "success": True
+                }
+            
             if intention.intention_type == IntentionType.COHORT_FILTER:
                 query = intention.query
                 if intention.filter_target == FilterTarget.FULL_DATASET:
