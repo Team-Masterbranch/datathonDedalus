@@ -9,7 +9,7 @@ from utils.logger import logger
 from utils.logger import setup_logger
 from core.query import Query
 from core.visualizer_request import VisualizerRequest, ChartType
-from utils.config import UNIQUE_VALUES_THRESHOLD
+from utils.config import PATIENT_ID_COLUMN, PATIENT_ID_ALTERNATIVES, UNIQUE_VALUES_THRESHOLD
 
 logger = setup_logger(__name__)
 
@@ -78,12 +78,13 @@ class DataManager:
             logger.error(f"Error loading CSV files: {str(e)}")
             return False
 
+
     def _prefix_columns(self, df: pd.DataFrame, table_name: str) -> pd.DataFrame:
         """
         Add table name prefix to column names except join keys.
         """
         prefixed_columns = {}
-        join_keys = ['PacienteID', 'paciente_id', 'id']  # Case-sensitive join keys
+        join_keys = [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES
         
         for col in df.columns:
             if col not in join_keys:  # If not a join key
@@ -91,6 +92,7 @@ class DataManager:
                     prefixed_columns[col] = f"{table_name}.{col}"
         
         return df.rename(columns=prefixed_columns)
+
 
     def _merge_dataframes(self, dataframes: Dict[str, pd.DataFrame]) -> Optional[pd.DataFrame]:
         """
@@ -115,7 +117,7 @@ class DataManager:
         for table_name, df in remaining_dfs.items():
             # Look for join keys without considering prefixes
             join_key = None
-            possible_keys = ['patient_id', 'id', 'paciente_id', 'PacienteID']
+            possible_keys = [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES
             
             for key in possible_keys:
                 if key in result.columns and key in df.columns:
@@ -149,6 +151,7 @@ class DataManager:
         result = self._apply_query_to_dataframe(query, self._current_cohort)
         logger.debug(f"apply_query_on_current_cohort >> Result shape after applying query: {result.shape if result is not None else 'None'}")
         self._current_cohort = result
+        self._update_current_schema()
         logger.debug(f"New cohort shape: {self._current_cohort.shape if self._current_cohort is not None else 'None'}")
 
     def _apply_query_to_dataframe(self, query: Query, df: pd.DataFrame) -> pd.DataFrame:
@@ -325,54 +328,6 @@ class DataManager:
         if self._current_cohort is not None:
             self._current_schema = self._create_schema(self._current_cohort)
 
-    def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
-        """
-        Create schema for given DataFrame with enhanced value distribution information.
-        Adds percentage distribution for categorical columns with few unique values.
-        """
-        schema = {}
-        for column in df.columns:
-            column_info = {
-                'dtype': str(df[column].dtype),
-                'unique_values': df[column].nunique(),
-                'missing_values': df[column].isnull().sum(),
-                'total_rows': len(df)
-            }
-            
-            # Add numeric statistics for numeric columns
-            if np.issubdtype(df[column].dtype, np.number):
-                column_info.update({
-                    'min': float(df[column].min()),
-                    'max': float(df[column].max()),
-                    'mean': float(df[column].mean())
-                })
-            # Add value distribution for columns with few unique values
-            elif df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
-                # Calculate value counts and percentages
-                value_counts = df[column].value_counts()
-                total_non_null = value_counts.sum()
-                
-                # Create distribution information
-                distribution = []
-                for value, count in value_counts.items():
-                    percentage = (count / total_non_null) * 100
-                    # Convert numpy types to native Python types
-                    cleaned_value = value.item() if hasattr(value, 'item') else value
-                    distribution.append({
-                        'value': cleaned_value,
-                        'count': int(count),
-                        'percentage': round(float(percentage), 2)
-                    })
-                
-                column_info['value_distribution'] = distribution
-                
-                # Keep the possible_values list for backward compatibility
-                column_info['possible_values'] = [item['value'] for item in distribution]
-            
-            schema[column] = column_info
-        
-        return schema
-
     def get_full_schema(self) -> Dict[str, Dict]:
         """Get schema for the full dataset."""
         return self._full_schema
@@ -421,26 +376,15 @@ class DataManager:
         schema_path = os.path.join(path, f"{name}_schema.txt")
         os.makedirs(path, exist_ok=True)
         
-        # Create a readable schema representation
-        schema_info = []
-        for column in self._current_cohort.columns:
-            dtype = str(self._current_cohort[column].dtype)
-            non_null_count = self._current_cohort[column].count()
-            total_count = len(self._current_cohort)
-            null_percentage = ((total_count - non_null_count) / total_count) * 100
-            
-            schema_info.append(
-                f"Column: {column}\n"
-                f"  Data Type: {dtype}\n"
-                f"  Non-null Count: {non_null_count}/{total_count}\n"
-                f"  Null Percentage: {null_percentage:.2f}%\n"
-            )
-        
-        # Write schema information to file
+        # Get formatted schema using existing method
+        formatted_schema = self._format_schema_to_string(self._current_schema)
+               
+        # Write formatted schema to file
         with open(schema_path, 'w', encoding='utf-8') as f:
-            f.write("\nCOHORT SCHEMA\n")
-            f.write("="*50 + "\n\n")
-            f.write("\n".join(schema_info))
+            f.write(formatted_schema)
+            
+        logger.info(f"Saved current schema. It's shape is {self._current_schema.shape}")
+
 
     def save_current_cohort(self, path: str = "root/data/temp/data_manager_output", 
                         name: str = "test") -> None:
@@ -541,60 +485,6 @@ class DataManager:
             logger.error(f"Error validating visualization request: {e}")
             return False
 
-    def _format_schema_to_string(self, schema: Dict[str, Dict]) -> str:
-        """
-        Format schema into a readable string representation.
-        
-        Args:
-            schema: Dictionary containing column information
-            
-        Returns:
-            str: Formatted string representation of the schema
-        
-        Example output:
-            Column: pacientes.Edad
-            - Type: float64
-            - Unique Values: 50
-            - Missing Values: 2
-            - Min: 18.0
-            - Max: 95.0
-            - Mean: 45.6
-            
-            Column: pacientes.Genero
-            - Type: object
-            - Unique Values: 2
-            - Missing Values: 0
-            - Possible Values: ['F', 'M']
-        """
-        if not schema:
-            return "Empty schema"
-            
-        formatted_lines = []
-        
-        for column, info in sorted(schema.items()):
-            # Start with column name
-            formatted_lines.append(f"Column: {column}")
-            
-            # Add basic information
-            formatted_lines.append(f"- Type: {info['dtype']}")
-            formatted_lines.append(f"- Unique Values: {info['unique_values']}")
-            formatted_lines.append(f"- Missing Values: {info['missing_values']}")
-            
-            # Add numeric statistics if available
-            if 'min' in info:
-                formatted_lines.append(f"- Min: {info['min']}")
-                formatted_lines.append(f"- Max: {info['max']}")
-                formatted_lines.append(f"- Mean: {info['mean']}")
-                
-            # Add possible values if available
-            if 'possible_values' in info:
-                formatted_lines.append(f"- Possible Values: {info['possible_values']}")
-                
-            # Add blank line between columns
-            formatted_lines.append("")
-            
-        return "\n".join(formatted_lines)
-
     def get_readable_schema_current_cohort(self) -> str:
         """
         Get a human-readable string representation of the current cohort schema.
@@ -618,3 +508,138 @@ class DataManager:
             return "No full dataset available"
 
         return self._format_schema_to_string(self._full_schema)
+    
+    def _create_schema(self, df: pd.DataFrame) -> Dict[str, Dict]:
+        """
+        Create schema for given DataFrame with enhanced value distribution information.
+        """
+        # Get original source tables from column prefixes
+        source_tables = sorted(set(col.split('.')[0] for col in df.columns if '.' in col))
+        
+        # Look for patient ID column
+        patient_id_col = next((col for col in [PATIENT_ID_COLUMN] + PATIENT_ID_ALTERNATIVES 
+                             if col in df.columns), None)
+        
+        # Count unique patients if we found the ID column
+        unique_patients = df[patient_id_col].nunique() if patient_id_col else None
+        
+        schema = {
+            '_database_info': {
+                'total_rows': len(df),
+                'unique_patients': unique_patients,
+                'total_columns': len(df.columns),
+                'source_tables': source_tables,
+                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        }
+        
+        # Generate column-level information
+        for column in df.columns:
+            column_info = {
+                'dtype': str(df[column].dtype),
+                'unique_values': df[column].nunique(),
+                'missing_values': df[column].isnull().sum(),
+                'total_rows': len(df)
+            }
+            
+            # Add numeric statistics for numeric columns
+            if np.issubdtype(df[column].dtype, np.number):
+                column_info.update({
+                    'min': float(df[column].min()) if not df[column].isna().all() else None,
+                    'max': float(df[column].max()) if not df[column].isna().all() else None,
+                    'mean': float(df[column].mean()) if not df[column].isna().all() else None
+                })
+                
+            # Add value distribution for columns with few unique values
+            if 1 < df[column].nunique() <= UNIQUE_VALUES_THRESHOLD:
+                value_counts = df[column].value_counts()
+                total_non_null = value_counts.sum()
+                
+                distribution = []
+                for value, count in value_counts.items():
+                    percentage = (count / total_non_null) * 100
+                    # Handle different types of values (including numpy types)
+                    cleaned_value = str(value.item() if hasattr(value, 'item') else value)
+                    distribution.append({
+                        'value': cleaned_value,
+                        'count': int(count),
+                        'percentage': round(float(percentage), 2)
+                    })
+                
+                column_info['value_distribution'] = distribution
+            
+            schema[column] = column_info
+        
+        return schema
+
+    def _format_schema_to_string(self, schema: Dict[str, Dict]) -> str:
+        """
+        Format schema into a readable string representation.
+        
+        Args:
+            schema (Dict[str, Dict]): Schema dictionary to format
+            
+        Returns:
+            str: Formatted string representation of the schema
+        """
+        if not schema:
+            return "Empty schema"
+            
+        formatted_lines = []
+        
+        # Database-level information
+        if '_database_info' in schema:
+            db_info = schema['_database_info']
+            formatted_lines.extend([
+                "DATABASE INFORMATION",
+                "=" * 50,
+                f"Total Rows: {db_info['total_rows']}",
+                f"Unique Patients: {db_info['unique_patients']}",
+                f"Total Columns: {db_info['total_columns']}",
+                f"Original Source Tables: {', '.join(db_info['source_tables'])}",
+                f"Schema Generated: {db_info['timestamp']}",
+                "",
+                "COLUMN DETAILS",
+                "=" * 50,
+                ""
+            ])
+        
+        # Column-level information
+        for column, info in sorted(schema.items()):
+            if column == '_database_info':
+                continue
+                
+            # Basic column information
+            formatted_lines.append(f"Column: {column}")
+            formatted_lines.append(f"- Type: {info['dtype']}")
+            formatted_lines.append(f"- Unique Values: {info['unique_values']}")
+            
+            # Missing values information
+            missing_percentage = (info['missing_values'] / info['total_rows']) * 100
+            formatted_lines.append(
+                f"- Missing Values: {info['missing_values']} of {info['total_rows']} "
+                f"({missing_percentage:.2f}%)"
+            )
+            
+            # Numeric statistics if available
+            if all(key in info for key in ['min', 'max', 'mean']):
+                if info['min'] is not None:  # Check if numeric stats exist
+                    formatted_lines.extend([
+                        f"- Minimum: {info['min']}",
+                        f"- Maximum: {info['max']}",
+                        f"- Mean: {info['mean']:.2f}"
+                    ])
+                
+            # Value distribution if available
+            if 'value_distribution' in info:
+                formatted_lines.append("- Value Distribution:")
+                for dist in info['value_distribution']:
+                    formatted_lines.append(
+                        f"  • {dist['value']}: {dist['count']} occurrences "
+                        f"({dist['percentage']}%)"
+                    )
+            
+            # Add blank line between columns
+            formatted_lines.append("")
+        
+        return "\n".join(formatted_lines)

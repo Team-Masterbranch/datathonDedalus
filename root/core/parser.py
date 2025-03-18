@@ -187,8 +187,7 @@ class Parser:
         """
         try:
             # Get current schema
-            schema = self.data_manager.get_full_schema()
-            formatted_schema = self._format_schema(schema)
+            formatted_schema = self.data_manager.get_readable_schema_current_cohort()
             
             # Create system messages with prompts and schema
             system_messages = [
@@ -238,8 +237,7 @@ class Parser:
         """
         try:
             # Get current schema
-            schema = self.data_manager.get_full_schema()
-            formatted_schema = self._format_schema(schema)
+            formatted_schema = self.data_manager.get_readable_schema_current_cohort()
             
             # Create system messages with prompts and schema
             system_messages = [
@@ -274,9 +272,6 @@ class Parser:
             raise
 
 
-    def _format_schema(self, schema: dict) -> str:
-        """Format schema into a readable string"""
-        return '\n'.join([f"{col}: {dtype}" for col, dtype in schema.items()])
     
     def _load_prompt(self, filename: str) -> str:
         """Load prompt from file"""
