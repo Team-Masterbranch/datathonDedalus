@@ -17,7 +17,7 @@ class QueryManager:
         self.data_manager = data_manager
         self.last_query: Optional[Query] = None
 
-    async def execute_query(self, 
+    def execute_query(self, 
                         query: Query, 
                         filter_current_cohort: bool = False) -> Dict[str, Any]:
         """

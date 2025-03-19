@@ -10,6 +10,7 @@ from core.session_manager import SessionManager
 from core.llm_handler import LLMHandler
 from core.data_manager import DataManager
 from core.visualizer import Visualizer
+from interface.gui import GUI
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +28,14 @@ class Action:
     parameters: Dict[str, Any]
 
 class ActionManager:
-    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager, visualizer: Visualizer):
+    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager, visualizer: Visualizer, gui: GUI):
         self.actions: List[Action] = []
         self.llm_handler = llm_handler
         self.session_manager = session_manager
         self.data_manager = data_manager
         self.visualizer = visualizer
+        self.gui = gui
+        
         logger.debug("ActionManager initialized")
         
     def decode_llm_response_old(self, json_str: str) -> bool:
@@ -414,4 +417,5 @@ class ActionManager:
 
 
     def display_text(self, text: str) -> None:
+        self.gui.add_system_message(text)
         print(text)

@@ -2,6 +2,7 @@
 from core.session_manager import SessionManager
 from core.intention import Intention, IntentionType
 from core.intention_executor import IntentionExecutor
+from interface.gui import GUI
 from utils.config import (
     DATA_DIR,
     LOG_LEVEL,
@@ -41,13 +42,27 @@ class Application:
         self.visualizer = Visualizer()
         self.session_manager = SessionManager()
         self.intention_executer = IntentionExecutor(self.query_manager, self.visualizer, self.data_manager)
-        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager, self.visualizer)
         
     def start(self):
         """Start the application and its interface."""
+        """Start the application and its interface."""
+        self.gui = GUI()
+        self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager, self.visualizer, self.gui)
+
         logger.info("Starting application")
         self.visualizer.clear_output_directory()
         
+        # Set up the callback
+        def handle_message(user_input):
+            self.process_user_input(user_input)
+            
+        self.gui.set_submit_callback(handle_message)
+        
+        # Start the GUI main loop
+        self.gui.root.mainloop()
+
+
+            
         # Load existing or newly created cache to preparser
         cache_path = "root/data/cache.json"
         if not os.path.exists(cache_path):
@@ -83,7 +98,7 @@ class Application:
         logger.info("Shutting down application")
         # Add cleanup code here if needed
         
-    async def process_user_input(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
+    def process_user_input(self, user_input: str, filter_current_cohort: bool = False) -> Dict[str, Any]:
         """
         Main method to process user input and execute actions.
         
