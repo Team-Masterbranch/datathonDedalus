@@ -1,0 +1,19 @@
+[
+  {
+    "type": "print_message",
+    "parameters": {
+      "message": "Analyzing patient data..."
+    }
+  },
+  {
+    "type": "create_visualization",
+    "parameters": {
+      "request": {
+        "chart_type": "pie",
+        "title": "Patient Distribution",
+        "labels": ["Group A", "Group B"],
+        "values": [30, 70]
+      }
+    }
+  }
+]

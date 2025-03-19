@@ -3,13 +3,11 @@ import re
 from collections import OrderedDict
 from pathlib import Path
 from typing import Optional, Dict, Any, Tuple, Union
-
 from core.intention import FilterTarget, Intention, IntentionType
 from core.query import Query
 from utils.logger import logger, setup_logger
 
 logger = setup_logger(__name__)
-
 
 class Preparser:
     def __init__(self, max_cache_size: int = 1000):

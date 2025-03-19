@@ -1,0 +1,45 @@
+[
+  {
+    "type": "print_message",
+    "parameters": {
+      "message": "Analizando los pacientes con alergia a la leche en la cohorte actual."
+    }
+  },
+  {
+    "type": "print_message",
+    "parameters": {
+      "message": "En esta cohorte, todos los pacientes (8 en total) tienen alergia a la leche, según se indica en la columna 'alegias.Descripcion'."
+    }
+  },
+  {
+    "type": "create_visualization",
+    "parameters": {
+      "request": {
+        "chart_type": "pie",
+        "title": "Distribución de pacientes con alergia a la leche",
+        "labels": ["Con alergia a la leche"],
+        "values": [8]
+      }
+    }
+  },
+  {
+    "type": "print_message",
+    "parameters": {
+      "message": "La visualización muestra que el 100% de los pacientes en esta cohorte tienen alergia a la leche."
+    }
+  },
+  {
+    "type": "suggestion",
+    "parameters": {
+      "message": "¿Le gustaría analizar la distribución de edades de estos pacientes con alergia a la leche?",
+      "prompt": "Muestra la distribución de edades de los pacientes con alergia a la leche"
+    }
+  },
+  {
+    "type": "name_cohort",
+    "parameters": {
+      "name": "Pacientes con alergia a la leche",
+      "filename": "pacientes_alergia_leche"
+    }
+  }
+]

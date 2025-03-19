@@ -10,6 +10,7 @@ from core.session_manager import SessionManager
 from core.llm_handler import LLMHandler
 from core.data_manager import DataManager
 from core.visualizer import Visualizer
+from interface.gui import GUI
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +28,14 @@ class Action:
     parameters: Dict[str, Any]
 
 class ActionManager:
-    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager, visualizer: Visualizer):
+    def __init__(self, llm_handler: LLMHandler, session_manager: SessionManager, data_manager: DataManager, visualizer: Visualizer, gui: GUI):
         self.actions: List[Action] = []
         self.llm_handler = llm_handler
         self.session_manager = session_manager
         self.data_manager = data_manager
         self.visualizer = visualizer
+        self.gui = gui
+        
         logger.debug("ActionManager initialized")
         
     def decode_llm_response_old(self, json_str: str) -> bool:
@@ -390,14 +393,16 @@ class ActionManager:
             )
 
             if success:
-                self.display_text(f"Created visualization: {filename}")
                 self.send_image_to_gui(output_path)
             else:
-                self.display_text("Failed to create visualization")
+                logger.error("Failed to create visualization")
 
         except Exception as e:
-            logger.error(f"Error in visualization creation: {e}")
-            self.display_text(f"Visualization error: {str(e)}")
+            logger.error("Failed to create visualization")
+            # Save failed request
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            log_path = Path(__file__).parent.parent / "logs" / "bad_viz_requests" / f"failed_request_{timestamp}.txt"
+            request.save_to_file(log_path)
 
 
     def send_image_to_gui(self, image_path: Path) -> None:
@@ -409,9 +414,11 @@ class ActionManager:
             image_path: Path to the created visualization image
         """
         logger.info(f"[GUI-STUB] Would display image: {image_path}")
+        self.gui.add_image_to_chat(image_path)
         # This will be replaced with actual GUI integration code later
         print(f"[GUI Preview] Image would be displayed: {image_path}")
 
 
     def display_text(self, text: str) -> None:
+        self.gui.add_system_message(text)
         print(text)

@@ -1,0 +1,21 @@
+I want to add a simple GUI to this project. Use libraries and teqniques that will make this implementation as simple as possible.
+
+This GUI should have this layout:
+ - Main window, resizable, that have two parts:
+   - Left panel (30% of window width in the default state) that have two parts:
+     - Upper left panel, named history_panel
+     - Bottom left panel, named files_output_panel
+   - Right panel (70% of window width in the default state) that have two parts:
+     - Upper left panel, named chatbot_output_panel
+     - Bottom left panel, named chatbot_input_panel
+
+chatbot_input_panel should have input field that accepts text from user.
+chatbot_output_panel will be used to diaplay chatbot answers. We will need methods display_text(str) for displaying simple text and display_graphic(path_to_image_file). We need to ensure there is a scroll bar in this window.
+In history_panel we will need to display simple text strings, each separated from another with small margin gap. This displayed strings should have on_click handler methods, but for now make them do nothing.
+In files_output_panel we also will need to display simple text strings, each separated from another with small margin gap. This displayed strings should have on_click handler methods, but for now make them do nothing. The difference is that in history_panel strings will represent history of user inputs, and in files_output_panel they represent generated files.
+
+The overall flow logic of this gui shoud be as such:
+- in application module we create gui object and wait for user input. After user inputs something, we freeze gui (so do not use acync functions, we need simplicity over all other priorites) and application process the input. When doing it, it will call display_text() and display_graphic() methods to display text and graphic object in chatbot_output_panel.
+
+
+For now gui sends every letter I type. I want it to let user type a whole message and send it with a send button.  Do not add any methods that are not strictly necesary and make implementation as simple as possible.
