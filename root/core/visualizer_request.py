@@ -158,3 +158,33 @@ class VisualizerRequest:
         if self.aggregation:
             parts.append(f"Aggregation: {self.aggregation}")
         return " | ".join(parts)
+
+
+    def save_to_file(self, path: Path) -> None:
+        """
+        Save visualization request details to a file.
+        If file exists, generates new filename with incremented number.
+        
+        Args:
+            path: Path to save the request details
+        """
+        try:
+            # Ensure directory exists
+            path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # If file exists, generate new name with increment
+            base_path = path.parent / path.stem
+            suffix = path.suffix
+            counter = 1
+            while path.exists():
+                path = Path(f"{base_path}_{counter}{suffix}")
+                counter += 1
+                
+            # Save request details
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(str(self))
+                
+            logger.debug(f"Saved visualization request to {path}")
+                
+        except Exception as e:
+            logger.error(f"Error saving visualization request: {e}")
