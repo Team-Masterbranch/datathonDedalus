@@ -2,9 +2,10 @@ import csv
 import random
 import datetime
 from collections import defaultdict
+from config import TOTAL_PATIENTS
 
 # Configuration
-TOTAL_PATIENTS = 1_000_000
+#TOTAL_PATIENTS = 1_000_000
 CHRONIC_PROB = 0.60  # 60% of all patients
 ACUTE_PROB = 0.20    # 20% of all patients
 MULTI_COND_PROB = 0.15

@@ -1,0 +1,592 @@
+Patient ID,Tipo de condición,Nombre de la condición,Código SNOMED,Fecha inicio,Fecha fin
+223,crónica,Enfermedad cardiovascular,49601007,2023-01-06,
+223,aguda,Luxaciones,23974007,2021-02-21,2021-10-09
+423,aguda,Accidente cerebrovascular agudo,230690007,2016-01-05,2016-09-04
+256,crónica,Trastornos mentales,74732009,2010-08-02,
+208,aguda,Otitis media aguda,65363002,2017-08-15,2018-06-29
+208,aguda,Infección respiratoria aguda,54150009,2018-01-29,2018-09-18
+499,aguda,Infección respiratoria aguda,54150009,2022-02-23,2022-11-04
+934,aguda,Hepatitis aguda,235856003,2016-06-22,2018-04-28
+934,aguda,Accidente cerebrovascular agudo,230690007,2017-12-15,2019-04-22
+21,aguda,Infarto agudo de miocardio,57054005,2019-10-02,2021-06-06
+359,crónica,Enfermedad de Alzheimer,26929004,2013-03-28,
+859,crónica,Enfermedad de Alzheimer,26929004,2016-11-21,
+999,crónica,Enfermedad respiratoria crónica,31387002,2018-04-17,
+999,aguda,Celulitis aguda,128045006,2023-09-11,2024-09-26
+716,aguda,Pancreatitis aguda,235595009,2018-05-23,2019-07-01
+187,crónica,Enfermedad cardiovascular,49601007,2018-03-18,
+471,crónica,Enfermedad cardiovascular,49601007,2010-05-07,
+471,crónica,Enfermedad cardiovascular,49601007,2022-06-19,
+389,crónica,Enfermedad cardiovascular,49601007,2014-07-07,
+389,crónica,Neoplasmas,363346000,2012-08-09,
+389,crónica,Trastornos mentales,74732009,2014-06-28,
+497,crónica,Enfermedad cardiovascular,49601007,2015-01-18,
+497,crónica,Trastornos mentales,74732009,2010-02-17,
+356,crónica,Enfermedad cardiovascular,49601007,2018-12-19,
+356,aguda,Gastroenteritis aguda,445441000124101,2021-05-02,2022-11-14
+589,crónica,Enfermedad de Alzheimer,26929004,2021-08-28,
+464,aguda,Neumonía aguda,233604007,2016-02-10,2016-12-29
+902,aguda,Meningitis aguda,7180009,2023-05-17,2024-05-21
+686,aguda,Pancreatitis aguda,235595009,2022-03-23,2023-01-09
+680,aguda,Faringitis aguda,444814009,2017-02-18,2018-09-13
+853,aguda,Otitis media aguda,65363002,2020-02-27,2021-07-31
+765,aguda,Roturas de ligamentos y tendones,312646001,2016-02-01,2016-04-19
+884,aguda,Apendicitis aguda,74400008,2016-03-16,2016-04-10
+92,aguda,Celulitis aguda,128045006,2017-06-08,2018-07-29
+602,aguda,Cistitis aguda,19732008,2017-05-24,2018-04-16
+602,aguda,Fracturas,125605004,2020-06-04,2020-09-29
+702,crónica,Neoplasmas,363346000,2022-12-04,
+150,crónica,Enfermedad cardiovascular,49601007,2023-09-12,
+150,crónica,Trastornos mentales,74732009,2017-03-30,
+454,crónica,Enfermedad cardiovascular,49601007,2016-08-27,
+454,aguda,Meningitis aguda,7180009,2021-03-04,2022-08-28
+226,aguda,Neumonía aguda,233604007,2021-01-11,2022-07-07
+226,aguda,Gastroenteritis aguda,445441000124101,2022-03-02,2022-03-17
+462,crónica,Enfermedad cardiovascular,49601007,2019-03-27,
+462,crónica,Trastornos mentales,74732009,2015-11-04,
+174,crónica,Enfermedad respiratoria crónica,31387002,2010-03-07,
+861,crónica,Enfermedad respiratoria crónica,31387002,2014-04-06,
+861,crónica,Enfermedad cardiovascular,49601007,2023-11-05,
+679,aguda,Celulitis aguda,128045006,2019-07-19,2020-06-28
+880,aguda,Esguinces,23924001,2020-09-28,2022-08-14
+643,crónica,Enfermedad respiratoria crónica,31387002,2023-12-12,
+643,aguda,Pancreatitis aguda,235595009,2022-02-03,2023-06-24
+855,aguda,Pancreatitis aguda,235595009,2016-09-10,2018-03-14
+574,aguda,Meningitis aguda,7180009,2022-06-28,2024-01-20
+290,aguda,Pancreatitis aguda,235595009,2018-05-09,2018-07-15
+524,aguda,Cistitis aguda,19732008,2016-11-14,2018-03-23
+524,crónica,Enfermedad cardiovascular,49601007,2015-03-25,
+995,crónica,Enfermedad cardiovascular,49601007,2012-04-15,
+995,aguda,Cistitis aguda,19732008,2020-03-21,2022-03-04
+995,crónica,Enfermedad cardiovascular,49601007,2016-04-29,
+35,crónica,Enfermedad de Alzheimer,26929004,2020-06-15,
+35,aguda,Infarto agudo de miocardio,57054005,2019-06-07,2021-05-18
+358,aguda,Gastroenteritis aguda,445441000124101,2021-03-08,2021-07-06
+127,crónica,Enfermedad cardiovascular,49601007,2023-06-22,
+127,crónica,Neoplasmas,363346000,2011-09-12,
+890,aguda,Infarto agudo de miocardio,57054005,2021-10-24,2021-11-27
+937,crónica,Enfermedad cardiovascular,49601007,2012-06-09,
+937,crónica,Neoplasmas,363346000,2012-05-31,
+937,crónica,Trastornos mentales,74732009,2014-05-22,
+292,crónica,Enfermedad de Alzheimer,26929004,2012-11-22,
+33,aguda,Accidente cerebrovascular agudo,230690007,2023-09-14,2025-06-18
+496,crónica,Enfermedad cardiovascular,49601007,2022-05-03,
+314,aguda,Pancreatitis aguda,235595009,2017-06-19,2018-09-25
+494,crónica,Enfermedad respiratoria crónica,31387002,2012-09-20,
+553,crónica,Enfermedad de Alzheimer,26929004,2022-07-16,
+304,crónica,Enfermedad respiratoria crónica,31387002,2012-07-17,
+304,aguda,Gastroenteritis aguda,445441000124101,2016-07-02,2018-06-11
+304,aguda,Luxaciones,23974007,2019-05-08,2020-06-25
+75,crónica,Enfermedad de Alzheimer,26929004,2019-05-03,
+75,aguda,Contusiones,40917007,2021-04-17,2022-12-08
+514,crónica,Enfermedad cardiovascular,49601007,2014-07-06,
+369,aguda,Luxaciones,23974007,2022-06-04,2022-06-18
+472,crónica,Neoplasmas,363346000,2010-11-12,
+860,aguda,Cistitis aguda,19732008,2023-07-24,2024-12-23
+384,crónica,Enfermedad cardiovascular,49601007,2014-01-16,
+296,aguda,Faringitis aguda,444814009,2018-05-11,2019-08-24
+912,crónica,Neoplasmas,363346000,2018-08-12,
+919,crónica,Neoplasmas,363346000,2017-11-21,
+137,crónica,Enfermedad de Alzheimer,26929004,2016-06-27,
+222,crónica,Neoplasmas,363346000,2020-10-13,
+747,crónica,Enfermedad respiratoria crónica,31387002,2021-09-13,
+744,aguda,Faringitis aguda,444814009,2019-04-09,2019-08-24
+773,aguda,Pancreatitis aguda,235595009,2023-04-02,2025-01-15
+162,crónica,Neoplasmas,363346000,2010-12-06,
+447,aguda,Faringitis aguda,444814009,2020-01-05,2021-02-15
+645,aguda,Neumonía aguda,233604007,2020-07-06,2021-12-01
+989,aguda,Gastroenteritis aguda,445441000124101,2020-07-24,2022-06-11
+792,crónica,Enfermedad respiratoria crónica,31387002,2010-01-22,
+792,crónica,Enfermedad cardiovascular,49601007,2012-01-08,
+792,aguda,Cistitis aguda,19732008,2016-05-15,2017-04-24
+655,crónica,Enfermedad de Alzheimer,26929004,2019-10-12,
+820,crónica,Neoplasmas,363346000,2014-02-28,
+875,crónica,Enfermedad respiratoria crónica,31387002,2021-01-22,
+875,crónica,Enfermedad cardiovascular,49601007,2023-01-11,
+85,crónica,Enfermedad de Alzheimer,26929004,2015-09-02,
+766,crónica,Enfermedad de Alzheimer,26929004,2020-09-01,
+112,crónica,Enfermedad de Alzheimer,26929004,2019-07-07,
+58,aguda,Faringitis aguda,444814009,2017-08-29,2019-02-25
+58,aguda,Contusiones,40917007,2020-01-29,2021-11-27
+53,crónica,Enfermedad cardiovascular,49601007,2018-05-07,
+962,crónica,Enfermedad cardiovascular,49601007,2020-03-31,
+962,aguda,Cistitis aguda,19732008,2021-12-10,2023-05-17
+757,crónica,Enfermedad de Alzheimer,26929004,2014-10-12,
+268,crónica,Neoplasmas,363346000,2013-01-22,
+268,crónica,Enfermedad cardiovascular,49601007,2013-12-21,
+413,aguda,Infarto agudo de miocardio,57054005,2023-08-07,2024-09-28
+273,crónica,Enfermedad cardiovascular,49601007,2012-09-19,
+49,crónica,Enfermedad de Alzheimer,26929004,2012-01-24,
+49,aguda,Meningitis aguda,7180009,2020-07-27,2022-01-14
+927,aguda,Faringitis aguda,444814009,2021-12-22,2023-09-24
+111,crónica,Enfermedad de Alzheimer,26929004,2017-01-11,
+111,aguda,Hepatitis aguda,235856003,2016-04-22,2017-01-18
+718,crónica,Enfermedad cardiovascular,49601007,2014-04-29,
+61,crónica,Enfermedad de Alzheimer,26929004,2022-10-01,
+61,aguda,Fracturas,125605004,2020-04-17,2020-10-04
+282,aguda,Contusiones,40917007,2022-08-24,2024-02-18
+38,aguda,Roturas de ligamentos y tendones,312646001,2017-10-16,2019-04-27
+175,crónica,Enfermedad cardiovascular,49601007,2017-07-07,
+175,crónica,Neoplasmas,363346000,2023-01-29,
+175,crónica,Enfermedad cardiovascular,49601007,2011-02-25,
+566,aguda,Cistitis aguda,19732008,2016-12-17,2017-07-11
+437,crónica,Enfermedad cardiovascular,49601007,2020-11-04,
+238,crónica,Enfermedad cardiovascular,49601007,2019-04-30,
+238,crónica,Trastornos mentales,74732009,2010-04-02,
+687,aguda,Esguinces,23924001,2020-06-14,2020-12-15
+74,crónica,Enfermedad cardiovascular,49601007,2016-01-04,
+346,aguda,Fracturas,125605004,2019-09-18,2021-03-17
+453,crónica,Enfermedad de Alzheimer,26929004,2021-03-08,
+856,crónica,Enfermedad respiratoria crónica,31387002,2016-05-23,
+856,crónica,Enfermedad cardiovascular,49601007,2014-09-19,
+856,aguda,Esguinces,23924001,2019-09-21,2021-02-01
+856,aguda,Apendicitis aguda,74400008,2018-05-07,2018-05-18
+685,aguda,Otitis media aguda,65363002,2021-12-01,2023-04-01
+295,aguda,Apendicitis aguda,74400008,2017-10-20,2018-04-21
+533,crónica,Enfermedad de Alzheimer,26929004,2012-09-19,
+485,aguda,Apendicitis aguda,74400008,2023-10-21,2023-12-21
+55,crónica,Enfermedad cardiovascular,49601007,2013-09-11,
+251,aguda,Roturas de ligamentos y tendones,312646001,2018-09-30,2020-06-11
+476,aguda,Bronquitis aguda,32398004,2021-12-19,2022-09-21
+54,crónica,Enfermedad respiratoria crónica,31387002,2018-12-29,
+54,crónica,Enfermedad de Alzheimer,26929004,2022-04-23,
+931,aguda,Hepatitis aguda,235856003,2022-08-17,2024-06-04
+129,crónica,Enfermedad respiratoria crónica,31387002,2017-01-24,
+767,crónica,Enfermedad respiratoria crónica,31387002,2021-01-08,
+401,aguda,Infección respiratoria aguda,54150009,2021-08-14,2023-05-21
+558,crónica,Neoplasmas,363346000,2021-05-30,
+558,aguda,Infarto agudo de miocardio,57054005,2022-02-03,2023-07-13
+558,crónica,Enfermedad cardiovascular,49601007,2020-01-09,
+212,crónica,Enfermedad respiratoria crónica,31387002,2014-09-23,
+279,aguda,Neumonía aguda,233604007,2021-07-18,2023-02-05
+754,aguda,Luxaciones,23974007,2018-11-23,2019-12-21
+754,aguda,Celulitis aguda,128045006,2019-10-20,2020-08-13
+320,crónica,Enfermedad cardiovascular,49601007,2018-08-01,
+176,crónica,Enfermedad cardiovascular,49601007,2018-11-10,
+148,crónica,Enfermedad de Alzheimer,26929004,2010-08-18,
+678,crónica,Enfermedad cardiovascular,49601007,2021-09-11,
+394,crónica,Enfermedad de Alzheimer,26929004,2010-09-12,
+394,aguda,Hepatitis aguda,235856003,2022-12-18,2024-09-25
+26,crónica,Enfermedad respiratoria crónica,31387002,2010-07-15,
+26,aguda,Pancreatitis aguda,235595009,2023-09-13,2024-07-05
+339,crónica,Enfermedad de Alzheimer,26929004,2022-12-15,
+294,crónica,Enfermedad cardiovascular,49601007,2017-06-20,
+805,crónica,Neoplasmas,363346000,2013-01-11,
+805,aguda,Sinusitis aguda,444814009,2019-11-10,2020-09-22
+527,crónica,Enfermedad cardiovascular,49601007,2016-10-01,
+469,crónica,Enfermedad de Alzheimer,26929004,2013-06-30,
+469,aguda,Esguinces,23924001,2018-02-19,2019-07-13
+921,crónica,Neoplasmas,363346000,2016-08-07,
+921,crónica,Trastornos mentales,74732009,2023-03-03,
+688,crónica,Enfermedad de Alzheimer,26929004,2019-03-24,
+676,crónica,Enfermedad cardiovascular,49601007,2016-08-21,
+676,crónica,Trastornos mentales,74732009,2022-04-09,
+287,crónica,Enfermedad de Alzheimer,26929004,2014-01-28,
+130,crónica,Enfermedad cardiovascular,49601007,2013-02-23,
+130,aguda,Otitis media aguda,65363002,2021-04-04,2022-04-15
+406,crónica,Neoplasmas,363346000,2018-07-06,
+406,aguda,Pancreatitis aguda,235595009,2023-04-09,2024-01-27
+406,crónica,Enfermedad cardiovascular,49601007,2012-08-28,
+916,crónica,Enfermedad cardiovascular,49601007,2022-07-05,
+916,crónica,Neoplasmas,363346000,2019-04-08,
+748,crónica,Enfermedad de Alzheimer,26929004,2016-03-30,
+748,aguda,Bronquitis aguda,32398004,2020-05-15,2021-10-04
+965,crónica,Enfermedad de Alzheimer,26929004,2016-01-28,
+990,crónica,Neoplasmas,363346000,2019-08-01,
+990,crónica,Enfermedad cardiovascular,49601007,2012-09-04,
+431,aguda,Apendicitis aguda,74400008,2021-01-27,2021-07-06
+431,aguda,Infección respiratoria aguda,54150009,2018-03-02,2018-07-14
+29,aguda,Pancreatitis aguda,235595009,2016-01-15,2016-12-17
+80,aguda,Infarto agudo de miocardio,57054005,2022-10-04,2023-03-25
+874,crónica,Enfermedad de Alzheimer,26929004,2019-04-14,
+269,crónica,Enfermedad cardiovascular,49601007,2018-10-08,
+269,crónica,Neoplasmas,363346000,2016-04-02,
+395,aguda,Faringitis aguda,444814009,2021-08-05,2022-04-25
+331,crónica,Enfermedad respiratoria crónica,31387002,2010-01-13,
+10,crónica,Enfermedad de Alzheimer,26929004,2020-11-24,
+735,crónica,Enfermedad cardiovascular,49601007,2014-04-16,
+735,aguda,Bronquitis aguda,32398004,2021-01-28,2022-07-13
+86,crónica,Enfermedad respiratoria crónica,31387002,2022-06-17,
+86,crónica,Enfermedad de Alzheimer,26929004,2015-04-26,
+219,crónica,Enfermedad cardiovascular,49601007,2011-04-16,
+121,crónica,Enfermedad respiratoria crónica,31387002,2017-02-09,
+121,aguda,Contusiones,40917007,2018-07-14,2020-04-24
+760,crónica,Enfermedad respiratoria crónica,31387002,2014-03-30,
+760,crónica,Enfermedad respiratoria crónica,31387002,2019-02-25,
+760,crónica,Enfermedad cardiovascular,49601007,2018-07-16,
+760,crónica,Neoplasmas,363346000,2017-07-07,
+760,crónica,Enfermedad cardiovascular,49601007,2020-04-15,
+848,aguda,Gastroenteritis aguda,445441000124101,2018-02-03,2019-02-15
+612,crónica,Enfermedad de Alzheimer,26929004,2014-01-29,
+818,crónica,Enfermedad de Alzheimer,26929004,2023-02-26,
+164,aguda,Accidente cerebrovascular agudo,230690007,2022-04-15,2022-09-05
+271,aguda,Neumonía aguda,233604007,2022-09-03,2024-02-19
+964,crónica,Enfermedad cardiovascular,49601007,2023-05-01,
+964,crónica,Enfermedad cardiovascular,49601007,2021-03-17,
+922,crónica,Enfermedad de Alzheimer,26929004,2016-10-06,
+594,aguda,Sinusitis aguda,444814009,2023-01-08,2024-03-08
+4,crónica,Enfermedad cardiovascular,49601007,2020-03-08,
+4,crónica,Neoplasmas,363346000,2017-02-01,
+839,crónica,Enfermedad respiratoria crónica,31387002,2019-12-11,
+576,aguda,Cistitis aguda,19732008,2022-10-14,2024-05-04
+711,crónica,Enfermedad respiratoria crónica,31387002,2021-01-15,
+711,crónica,Enfermedad cardiovascular,49601007,2023-08-13,
+99,crónica,Enfermedad cardiovascular,49601007,2018-01-30,
+424,crónica,Enfermedad de Alzheimer,26929004,2023-08-21,
+567,crónica,Enfermedad respiratoria crónica,31387002,2017-05-16,
+567,aguda,Luxaciones,23974007,2021-08-13,2023-03-01
+257,crónica,Enfermedad de Alzheimer,26929004,2019-03-12,
+388,crónica,Enfermedad respiratoria crónica,31387002,2012-04-08,
+388,aguda,Otitis media aguda,65363002,2020-04-23,2020-12-05
+885,aguda,Meningitis aguda,7180009,2020-07-13,2020-07-19
+920,crónica,Trastornos mentales,74732009,2017-05-28,
+920,aguda,Apendicitis aguda,74400008,2020-01-18,2021-07-26
+933,crónica,Enfermedad cardiovascular,49601007,2014-02-28,
+933,crónica,Trastornos mentales,74732009,2010-12-23,
+933,aguda,Roturas de ligamentos y tendones,312646001,2017-01-06,2018-10-27
+933,crónica,Enfermedad cardiovascular,49601007,2015-02-01,
+432,crónica,Enfermedad cardiovascular,49601007,2012-08-30,
+867,aguda,Celulitis aguda,128045006,2016-03-22,2017-09-08
+714,crónica,Neoplasmas,363346000,2023-05-23,
+209,crónica,Enfermedad de Alzheimer,26929004,2023-12-15,
+62,aguda,Otitis media aguda,65363002,2018-07-31,2019-02-04
+104,aguda,Cistitis aguda,19732008,2021-08-10,2022-06-27
+104,crónica,Enfermedad cardiovascular,49601007,2011-08-29,
+486,crónica,Enfermedad respiratoria crónica,31387002,2010-08-10,
+996,aguda,Sinusitis aguda,444814009,2022-11-11,2024-02-15
+659,crónica,Enfermedad respiratoria crónica,31387002,2020-07-11,
+659,aguda,Neumonía aguda,233604007,2016-07-11,2017-12-25
+538,crónica,Enfermedad respiratoria crónica,31387002,2015-04-06,
+538,aguda,Roturas de ligamentos y tendones,312646001,2021-06-27,2023-06-17
+135,crónica,Enfermedad respiratoria crónica,31387002,2012-04-28,
+135,crónica,Enfermedad cardiovascular,49601007,2019-02-22,
+338,crónica,Enfermedad respiratoria crónica,31387002,2020-02-07,
+338,crónica,Enfermedad cardiovascular,49601007,2022-12-09,
+918,aguda,Fracturas,125605004,2021-03-04,2021-08-24
+918,aguda,Bronquitis aguda,32398004,2020-08-06,2022-01-04
+56,crónica,Enfermedad de Alzheimer,26929004,2011-02-07,
+978,crónica,Enfermedad de Alzheimer,26929004,2011-10-16,
+978,aguda,Roturas de ligamentos y tendones,312646001,2020-03-25,2020-12-11
+909,crónica,Enfermedad de Alzheimer,26929004,2013-06-06,
+909,aguda,Infección respiratoria aguda,54150009,2016-06-17,2017-07-21
+951,crónica,Enfermedad de Alzheimer,26929004,2015-06-09,
+951,aguda,Faringitis aguda,444814009,2022-07-19,2023-12-28
+267,crónica,Enfermedad de Alzheimer,26929004,2011-04-14,
+897,crónica,Enfermedad respiratoria crónica,31387002,2022-05-29,
+897,crónica,Enfermedad cardiovascular,49601007,2013-12-05,
+849,crónica,Enfermedad de Alzheimer,26929004,2023-02-15,
+849,aguda,Bronquitis aguda,32398004,2016-02-24,2017-08-25
+418,aguda,Infarto agudo de miocardio,57054005,2019-05-23,2019-06-26
+547,aguda,Gastroenteritis aguda,445441000124101,2023-08-18,2024-01-16
+240,aguda,Contusiones,40917007,2016-11-14,2018-01-23
+193,aguda,Cistitis aguda,19732008,2023-05-18,2024-06-10
+71,crónica,Neoplasmas,363346000,2019-01-11,
+531,crónica,Neoplasmas,363346000,2016-02-19,
+78,aguda,Apendicitis aguda,74400008,2017-06-22,2017-09-12
+578,crónica,Enfermedad de Alzheimer,26929004,2021-03-14,
+518,crónica,Enfermedad cardiovascular,49601007,2019-05-16,
+518,aguda,Meningitis aguda,7180009,2022-08-27,2023-12-29
+518,aguda,Accidente cerebrovascular agudo,230690007,2020-10-03,2022-06-06
+197,crónica,Enfermedad cardiovascular,49601007,2022-05-11,
+197,aguda,Hepatitis aguda,235856003,2019-09-11,2020-03-24
+119,crónica,Enfermedad de Alzheimer,26929004,2010-08-04,
+119,aguda,Meningitis aguda,7180009,2022-12-27,2023-04-29
+153,crónica,Enfermedad cardiovascular,49601007,2022-11-02,
+79,crónica,Enfermedad cardiovascular,49601007,2013-01-15,
+79,aguda,Otitis media aguda,65363002,2020-03-12,2021-04-02
+428,crónica,Enfermedad de Alzheimer,26929004,2011-11-14,
+312,aguda,Celulitis aguda,128045006,2022-04-14,2024-03-25
+843,crónica,Enfermedad respiratoria crónica,31387002,2019-04-02,
+843,crónica,Enfermedad cardiovascular,49601007,2023-10-24,
+221,crónica,Enfermedad cardiovascular,49601007,2019-07-22,
+785,crónica,Enfermedad de Alzheimer,26929004,2014-03-05,
+327,crónica,Enfermedad de Alzheimer,26929004,2015-05-22,
+103,crónica,Enfermedad de Alzheimer,26929004,2017-06-10,
+591,aguda,Cistitis aguda,19732008,2020-04-16,2020-07-14
+540,crónica,Enfermedad cardiovascular,49601007,2017-10-20,
+280,aguda,Otitis media aguda,65363002,2020-11-14,2021-01-28
+528,aguda,Neumonía aguda,233604007,2018-11-20,2019-06-30
+460,aguda,Neumonía aguda,233604007,2018-11-23,2020-10-07
+673,aguda,Bronquitis aguda,32398004,2018-05-03,2018-12-28
+710,crónica,Enfermedad de Alzheimer,26929004,2021-09-17,
+710,aguda,Meningitis aguda,7180009,2022-12-24,2023-06-01
+954,crónica,Enfermedad de Alzheimer,26929004,2014-02-22,
+14,crónica,Enfermedad cardiovascular,49601007,2022-05-11,
+50,aguda,Faringitis aguda,444814009,2022-10-05,2024-09-15
+83,aguda,Infección respiratoria aguda,54150009,2021-05-20,2022-11-17
+83,crónica,Enfermedad cardiovascular,49601007,2019-09-11,
+535,aguda,Infección respiratoria aguda,54150009,2017-10-29,2018-10-08
+629,crónica,Enfermedad cardiovascular,49601007,2013-09-06,
+629,aguda,Apendicitis aguda,74400008,2020-07-15,2021-01-13
+288,crónica,Enfermedad de Alzheimer,26929004,2022-08-24,
+656,crónica,Enfermedad cardiovascular,49601007,2018-12-03,
+95,crónica,Enfermedad respiratoria crónica,31387002,2018-12-09,
+95,aguda,Roturas de ligamentos y tendones,312646001,2017-10-03,2019-04-18
+366,crónica,Neoplasmas,363346000,2020-04-17,
+77,aguda,Faringitis aguda,444814009,2017-08-26,2018-12-17
+772,crónica,Neoplasmas,363346000,2018-01-17,
+22,crónica,Enfermedad de Alzheimer,26929004,2010-10-01,
+354,crónica,Enfermedad cardiovascular,49601007,2010-06-09,
+354,aguda,Contusiones,40917007,2022-01-27,2023-02-19
+893,crónica,Enfermedad cardiovascular,49601007,2012-01-21,
+253,crónica,Enfermedad cardiovascular,49601007,2013-01-11,
+253,crónica,Trastornos mentales,74732009,2022-10-04,
+771,aguda,Meningitis aguda,7180009,2016-01-15,2017-02-22
+691,crónica,Enfermedad de Alzheimer,26929004,2012-03-20,
+971,aguda,Infección respiratoria aguda,54150009,2020-10-10,2021-07-30
+732,crónica,Enfermedad de Alzheimer,26929004,2015-09-07,
+732,aguda,Apendicitis aguda,74400008,2016-08-24,2016-11-05
+463,crónica,Enfermedad de Alzheimer,26929004,2015-02-05,
+220,crónica,Trastornos mentales,74732009,2022-05-08,
+220,crónica,Enfermedad cardiovascular,49601007,2019-08-01,
+733,aguda,Otitis media aguda,65363002,2021-05-15,2022-04-11
+442,crónica,Enfermedad de Alzheimer,26929004,2021-12-25,
+791,crónica,Trastornos mentales,74732009,2014-10-25,
+380,crónica,Enfermedad cardiovascular,49601007,2021-10-12,
+16,aguda,Roturas de ligamentos y tendones,312646001,2020-04-19,2020-05-03
+725,crónica,Enfermedad cardiovascular,49601007,2011-09-02,
+725,crónica,Enfermedad cardiovascular,49601007,2023-10-27,
+630,crónica,Enfermedad de Alzheimer,26929004,2023-07-23,
+924,aguda,Accidente cerebrovascular agudo,230690007,2016-01-14,2017-12-26
+409,aguda,Otitis media aguda,65363002,2022-10-05,2023-06-16
+361,crónica,Enfermedad respiratoria crónica,31387002,2022-02-27,
+361,crónica,Enfermedad cardiovascular,49601007,2023-03-11,
+361,aguda,Roturas de ligamentos y tendones,312646001,2018-12-11,2019-06-02
+302,crónica,Enfermedad de Alzheimer,26929004,2014-02-10,
+302,aguda,Contusiones,40917007,2020-11-01,2021-08-16
+230,aguda,Hepatitis aguda,235856003,2019-10-30,2020-11-30
+498,aguda,Cistitis aguda,19732008,2018-07-22,2018-10-11
+379,aguda,Celulitis aguda,128045006,2018-08-16,2019-01-11
+232,crónica,Enfermedad respiratoria crónica,31387002,2011-10-23,
+232,crónica,Enfermedad cardiovascular,49601007,2011-01-01,
+297,aguda,Esguinces,23924001,2016-12-19,2017-01-26
+239,crónica,Trastornos mentales,74732009,2016-07-12,
+239,aguda,Gastroenteritis aguda,445441000124101,2020-04-19,2020-05-30
+239,crónica,Enfermedad cardiovascular,49601007,2011-05-27,
+84,aguda,Celulitis aguda,128045006,2020-10-01,2021-01-18
+728,crónica,Enfermedad de Alzheimer,26929004,2016-05-13,
+728,aguda,Meningitis aguda,7180009,2019-01-12,2020-06-05
+728,aguda,Sinusitis aguda,444814009,2016-04-05,2017-06-06
+606,aguda,Luxaciones,23974007,2016-05-19,2018-05-13
+606,aguda,Fracturas,125605004,2022-10-27,2024-10-07
+242,aguda,Meningitis aguda,7180009,2018-07-02,2018-10-05
+872,crónica,Enfermedad respiratoria crónica,31387002,2022-09-29,
+872,crónica,Trastornos mentales,74732009,2020-08-04,
+968,crónica,Enfermedad cardiovascular,49601007,2010-10-17,
+81,aguda,Bronquitis aguda,32398004,2017-04-28,2018-05-13
+81,aguda,Meningitis aguda,7180009,2016-01-25,2017-11-10
+677,aguda,Hepatitis aguda,235856003,2023-09-25,2025-04-21
+436,crónica,Enfermedad de Alzheimer,26929004,2015-11-21,
+436,aguda,Pancreatitis aguda,235595009,2018-08-02,2019-05-13
+752,crónica,Enfermedad de Alzheimer,26929004,2010-10-30,
+586,aguda,Hepatitis aguda,235856003,2016-03-28,2016-03-30
+36,crónica,Enfermedad de Alzheimer,26929004,2023-03-08,
+929,crónica,Enfermedad cardiovascular,49601007,2011-07-04,
+946,crónica,Enfermedad cardiovascular,49601007,2015-04-29,
+946,crónica,Trastornos mentales,74732009,2014-08-10,
+946,aguda,Accidente cerebrovascular agudo,230690007,2023-10-24,2025-05-10
+946,crónica,Enfermedad cardiovascular,49601007,2012-12-03,
+309,crónica,Enfermedad de Alzheimer,26929004,2017-11-11,
+451,crónica,Enfermedad cardiovascular,49601007,2016-10-19,
+332,crónica,Enfermedad de Alzheimer,26929004,2017-02-23,
+146,crónica,Trastornos mentales,74732009,2015-09-10,
+812,crónica,Enfermedad de Alzheimer,26929004,2015-04-11,
+522,crónica,Enfermedad respiratoria crónica,31387002,2022-08-31,
+522,crónica,Enfermedad cardiovascular,49601007,2016-06-16,
+522,crónica,Neoplasmas,363346000,2023-04-23,
+481,crónica,Enfermedad de Alzheimer,26929004,2021-04-04,
+42,aguda,Gastroenteritis aguda,445441000124101,2019-02-27,2020-04-06
+608,crónica,Enfermedad respiratoria crónica,31387002,2013-02-06,
+385,crónica,Enfermedad respiratoria crónica,31387002,2016-03-04,
+385,crónica,Enfermedad cardiovascular,49601007,2015-09-28,
+501,aguda,Infección respiratoria aguda,54150009,2017-03-08,2017-04-18
+501,aguda,Accidente cerebrovascular agudo,230690007,2021-01-30,2022-12-06
+120,crónica,Enfermedad respiratoria crónica,31387002,2021-09-22,
+120,crónica,Enfermedad cardiovascular,49601007,2011-03-21,
+120,crónica,Enfermedad cardiovascular,49601007,2014-04-22,
+468,crónica,Enfermedad de Alzheimer,26929004,2014-08-10,
+468,aguda,Faringitis aguda,444814009,2017-04-05,2017-06-16
+734,aguda,Pancreatitis aguda,235595009,2023-08-19,2024-08-02
+746,crónica,Enfermedad de Alzheimer,26929004,2018-01-24,
+746,aguda,Pancreatitis aguda,235595009,2019-01-19,2019-02-13
+262,crónica,Enfermedad respiratoria crónica,31387002,2016-09-18,
+664,crónica,Enfermedad respiratoria crónica,31387002,2020-06-04,
+664,crónica,Enfermedad cardiovascular,49601007,2014-11-19,
+171,crónica,Trastornos mentales,74732009,2016-06-04,
+595,aguda,Cistitis aguda,19732008,2017-07-31,2018-01-17
+969,aguda,Luxaciones,23974007,2020-08-30,2021-01-06
+185,crónica,Enfermedad cardiovascular,49601007,2015-11-26,
+185,aguda,Accidente cerebrovascular agudo,230690007,2021-05-09,2022-03-30
+774,crónica,Enfermedad de Alzheimer,26929004,2011-02-26,
+769,aguda,Contusiones,40917007,2017-12-02,2019-06-03
+803,crónica,Enfermedad cardiovascular,49601007,2022-06-15,
+737,aguda,Esguinces,23924001,2016-05-07,2017-11-19
+227,aguda,Sinusitis aguda,444814009,2019-09-19,2020-11-25
+245,crónica,Enfermedad cardiovascular,49601007,2018-07-04,
+245,aguda,Contusiones,40917007,2020-02-25,2021-11-14
+245,aguda,Infección respiratoria aguda,54150009,2017-09-01,2018-09-26
+947,crónica,Enfermedad de Alzheimer,26929004,2020-09-27,
+179,aguda,Accidente cerebrovascular agudo,230690007,2017-07-13,2017-09-27
+179,aguda,Esguinces,23924001,2016-02-25,2017-06-03
+689,aguda,Pancreatitis aguda,235595009,2018-10-06,2019-07-12
+507,crónica,Enfermedad de Alzheimer,26929004,2013-02-08,
+654,aguda,Hepatitis aguda,235856003,2016-06-04,2016-10-10
+638,crónica,Enfermedad respiratoria crónica,31387002,2020-07-05,
+638,crónica,Enfermedad cardiovascular,49601007,2011-04-10,
+638,aguda,Fracturas,125605004,2018-11-26,2018-12-25
+382,crónica,Enfermedad cardiovascular,49601007,2013-03-08,
+831,crónica,Enfermedad cardiovascular,49601007,2018-04-19,
+386,crónica,Enfermedad cardiovascular,49601007,2014-10-15,
+386,crónica,Neoplasmas,363346000,2022-09-23,
+473,crónica,Enfermedad cardiovascular,49601007,2016-08-28,
+465,crónica,Enfermedad cardiovascular,49601007,2019-12-17,
+465,crónica,Neoplasmas,363346000,2020-05-19,
+491,aguda,Fracturas,125605004,2018-08-11,2019-09-13
+483,aguda,Pancreatitis aguda,235595009,2023-06-09,2023-10-28
+199,crónica,Enfermedad respiratoria crónica,31387002,2022-08-17,
+199,crónica,Enfermedad cardiovascular,49601007,2021-01-16,
+199,crónica,Enfermedad cardiovascular,49601007,2012-01-23,
+452,crónica,Enfermedad de Alzheimer,26929004,2011-04-10,
+139,aguda,Otitis media aguda,65363002,2019-10-24,2020-10-08
+783,aguda,Pancreatitis aguda,235595009,2017-09-06,2019-05-15
+682,crónica,Enfermedad cardiovascular,49601007,2014-12-17,
+660,crónica,Enfermedad respiratoria crónica,31387002,2019-08-22,
+660,crónica,Enfermedad cardiovascular,49601007,2010-04-30,
+216,crónica,Enfermedad cardiovascular,49601007,2010-10-22,
+845,crónica,Enfermedad de Alzheimer,26929004,2014-04-28,
+845,aguda,Luxaciones,23974007,2017-06-21,2018-03-24
+835,crónica,Neoplasmas,363346000,2011-11-03,
+674,aguda,Infarto agudo de miocardio,57054005,2023-10-06,2024-02-19
+674,crónica,Enfermedad cardiovascular,49601007,2021-01-10,
+615,crónica,Trastornos mentales,74732009,2019-09-17,
+180,crónica,Enfermedad cardiovascular,49601007,2015-02-21,
+709,aguda,Pancreatitis aguda,235595009,2018-06-15,2018-11-24
+709,aguda,Contusiones,40917007,2023-08-28,2024-07-15
+247,aguda,Faringitis aguda,444814009,2018-11-09,2020-07-18
+871,crónica,Enfermedad respiratoria crónica,31387002,2011-01-16,
+642,aguda,Pancreatitis aguda,235595009,2016-01-04,2017-12-27
+980,aguda,Bronquitis aguda,32398004,2017-04-05,2017-04-16
+7,crónica,Neoplasmas,363346000,2015-01-10,
+475,aguda,Neumonía aguda,233604007,2023-10-27,2025-08-04
+433,aguda,Gastroenteritis aguda,445441000124101,2019-12-03,2020-12-25
+926,aguda,Bronquitis aguda,32398004,2022-04-24,2023-06-15
+705,crónica,Enfermedad de Alzheimer,26929004,2022-07-03,
+360,aguda,Cistitis aguda,19732008,2022-11-16,2023-06-09
+141,crónica,Enfermedad de Alzheimer,26929004,2020-02-02,
+647,crónica,Enfermedad respiratoria crónica,31387002,2021-11-30,
+758,aguda,Infarto agudo de miocardio,57054005,2017-03-17,2018-03-30
+827,crónica,Enfermedad cardiovascular,49601007,2019-04-24,
+827,crónica,Neoplasmas,363346000,2017-12-01,
+784,crónica,Enfermedad de Alzheimer,26929004,2011-06-17,
+158,crónica,Enfermedad cardiovascular,49601007,2020-01-24,
+158,aguda,Neumonía aguda,233604007,2016-07-07,2017-12-13
+158,crónica,Enfermedad cardiovascular,49601007,2019-12-07,
+597,crónica,Neoplasmas,363346000,2012-01-01,
+133,crónica,Neoplasmas,363346000,2017-10-31,
+133,crónica,Trastornos mentales,74732009,2019-06-25,
+133,crónica,Enfermedad cardiovascular,49601007,2015-01-20,
+614,crónica,Enfermedad respiratoria crónica,31387002,2011-04-17,
+614,crónica,Enfermedad cardiovascular,49601007,2018-01-13,
+614,aguda,Infarto agudo de miocardio,57054005,2020-03-31,2021-06-01
+275,crónica,Enfermedad cardiovascular,49601007,2019-05-10,
+275,aguda,Infarto agudo de miocardio,57054005,2021-04-24,2022-04-11
+258,crónica,Enfermedad respiratoria crónica,31387002,2016-06-16,
+258,aguda,Apendicitis aguda,74400008,2023-10-18,2025-06-03
+723,crónica,Enfermedad respiratoria crónica,31387002,2019-04-02,
+776,crónica,Enfermedad respiratoria crónica,31387002,2013-07-17,
+776,crónica,Neoplasmas,363346000,2013-07-22,
+529,crónica,Enfermedad de Alzheimer,26929004,2015-03-25,
+833,crónica,Enfermedad respiratoria crónica,31387002,2021-02-20,
+833,crónica,Enfermedad cardiovascular,49601007,2020-04-17,
+169,crónica,Enfermedad cardiovascular,49601007,2012-03-23,
+466,crónica,Enfermedad cardiovascular,49601007,2017-09-19,
+117,aguda,Faringitis aguda,444814009,2018-08-07,2018-10-20
+889,crónica,Enfermedad respiratoria crónica,31387002,2023-11-07,
+889,crónica,Enfermedad cardiovascular,49601007,2010-11-23,
+873,aguda,Meningitis aguda,7180009,2021-08-23,2022-05-14
+881,crónica,Enfermedad respiratoria crónica,31387002,2022-08-19,
+881,crónica,Trastornos mentales,74732009,2011-01-06,
+881,aguda,Fracturas,125605004,2021-04-28,2021-05-28
+749,crónica,Enfermedad cardiovascular,49601007,2020-04-02,
+749,crónica,Neoplasmas,363346000,2011-08-07,
+914,crónica,Enfermedad cardiovascular,49601007,2017-02-08,
+914,crónica,Neoplasmas,363346000,2016-11-25,
+914,aguda,Accidente cerebrovascular agudo,230690007,2021-12-31,2022-06-24
+879,crónica,Enfermedad cardiovascular,49601007,2018-09-02,
+114,aguda,Otitis media aguda,65363002,2020-07-05,2021-03-21
+577,crónica,Enfermedad cardiovascular,49601007,2015-05-23,
+403,crónica,Enfermedad de Alzheimer,26929004,2022-12-15,
+218,crónica,Enfermedad cardiovascular,49601007,2022-01-28,
+218,crónica,Neoplasmas,363346000,2010-06-01,
+149,aguda,Celulitis aguda,128045006,2016-09-15,2016-12-24
+272,crónica,Enfermedad de Alzheimer,26929004,2021-01-21,
+426,crónica,Enfermedad respiratoria crónica,31387002,2014-03-20,
+426,crónica,Enfermedad cardiovascular,49601007,2010-05-23,
+753,aguda,Fracturas,125605004,2021-10-17,2022-08-31
+573,crónica,Neoplasmas,363346000,2012-11-11,
+573,aguda,Apendicitis aguda,74400008,2018-12-01,2019-09-11
+573,crónica,Enfermedad cardiovascular,49601007,2022-09-08,
+467,crónica,Enfermedad de Alzheimer,26929004,2011-01-12,
+376,aguda,Gastroenteritis aguda,445441000124101,2020-11-01,2021-09-21
+284,crónica,Enfermedad respiratoria crónica,31387002,2010-12-15,
+373,crónica,Enfermedad de Alzheimer,26929004,2013-08-03,
+590,crónica,Neoplasmas,363346000,2021-02-13,
+330,crónica,Enfermedad respiratoria crónica,31387002,2019-08-12,
+330,crónica,Enfermedad cardiovascular,49601007,2019-12-17,
+330,crónica,Neoplasmas,363346000,2014-01-30,
+727,crónica,Enfermedad de Alzheimer,26929004,2010-11-16,
+727,aguda,Celulitis aguda,128045006,2016-03-17,2017-12-31
+727,aguda,Hepatitis aguda,235856003,2021-02-23,2021-04-06
+521,aguda,Infarto agudo de miocardio,57054005,2020-04-14,2021-01-13
+3,aguda,Roturas de ligamentos y tendones,312646001,2023-04-28,2025-03-26
+906,aguda,Pancreatitis aguda,235595009,2022-08-14,2022-12-04
+569,crónica,Enfermedad cardiovascular,49601007,2010-12-13,
+569,aguda,Infarto agudo de miocardio,57054005,2022-03-16,2022-04-23
+569,aguda,Sinusitis aguda,444814009,2016-08-26,2017-09-17
+455,aguda,Luxaciones,23974007,2019-05-16,2021-02-12
+335,crónica,Enfermedad cardiovascular,49601007,2018-02-26,
+669,crónica,Enfermedad respiratoria crónica,31387002,2020-01-02,
+52,crónica,Enfermedad de Alzheimer,26929004,2023-04-27,
+913,aguda,Bronquitis aguda,32398004,2019-07-25,2019-12-28
+829,crónica,Enfermedad de Alzheimer,26929004,2023-12-02,
+952,crónica,Enfermedad cardiovascular,49601007,2011-05-04,
+793,crónica,Enfermedad de Alzheimer,26929004,2023-03-30,
+793,aguda,Pancreatitis aguda,235595009,2019-11-17,2020-03-02
+739,crónica,Enfermedad respiratoria crónica,31387002,2013-08-12,
+739,crónica,Enfermedad cardiovascular,49601007,2016-04-20,
+684,aguda,Hepatitis aguda,235856003,2016-08-26,2018-06-25
+892,crónica,Enfermedad cardiovascular,49601007,2015-03-21,
+892,crónica,Trastornos mentales,74732009,2015-04-18,
+759,crónica,Enfermedad de Alzheimer,26929004,2022-07-02,
+854,crónica,Enfermedad de Alzheimer,26929004,2011-09-02,
+854,aguda,Otitis media aguda,65363002,2016-04-05,2016-07-11
+807,crónica,Enfermedad respiratoria crónica,31387002,2015-03-23,
+910,crónica,Enfermedad respiratoria crónica,31387002,2011-05-02,
+910,crónica,Neoplasmas,363346000,2014-02-17,
+565,crónica,Enfermedad cardiovascular,49601007,2022-07-04,
+565,aguda,Contusiones,40917007,2018-02-23,2020-01-23
+830,aguda,Hepatitis aguda,235856003,2016-07-01,2017-08-11
+841,crónica,Enfermedad respiratoria crónica,31387002,2023-08-20,
+841,crónica,Enfermedad cardiovascular,49601007,2014-06-06,
+517,crónica,Enfermedad respiratoria crónica,31387002,2019-01-10,
+517,crónica,Enfermedad cardiovascular,49601007,2020-11-27,
+670,aguda,Faringitis aguda,444814009,2017-05-20,2017-10-13
+587,crónica,Enfermedad de Alzheimer,26929004,2012-02-26,
+587,aguda,Accidente cerebrovascular agudo,230690007,2018-06-18,2018-10-30
+206,aguda,Celulitis aguda,128045006,2022-10-19,2023-11-23
+82,aguda,Roturas de ligamentos y tendones,312646001,2019-10-05,2020-01-26
+82,crónica,Enfermedad cardiovascular,49601007,2018-04-30,
+67,aguda,Esguinces,23924001,2017-01-02,2017-01-17
+625,aguda,Roturas de ligamentos y tendones,312646001,2019-08-05,2021-01-14
+572,crónica,Enfermedad respiratoria crónica,31387002,2014-02-02,
+572,crónica,Enfermedad de Alzheimer,26929004,2014-09-22,
+387,crónica,Trastornos mentales,74732009,2021-02-07,
+935,aguda,Accidente cerebrovascular agudo,230690007,2022-07-08,2022-10-30
+310,aguda,Cistitis aguda,19732008,2018-02-02,2018-09-17
+609,crónica,Enfermedad cardiovascular,49601007,2019-03-02,
+609,aguda,Faringitis aguda,444814009,2017-06-19,2018-10-05
+944,aguda,Luxaciones,23974007,2021-10-05,2022-08-19
+915,crónica,Enfermedad de Alzheimer,26929004,2010-04-19,
+478,aguda,Contusiones,40917007,2023-02-19,2024-01-15
+634,crónica,Enfermedad cardiovascular,49601007,2021-10-01,
+822,aguda,Celulitis aguda,128045006,2021-07-10,2022-11-27

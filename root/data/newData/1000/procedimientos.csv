@@ -1,0 +1,648 @@
+Patient ID,Nombre del procedimiento,Fecha
+223,Angiografía coronaria,2023-01-06
+223,Reducción (manual o quirúrgica),2021-02-21
+423,Trombectomía mecánica,2016-01-05
+423,Terapia trombolítica,2016-01-29
+256,Terapia electroconvulsiva (TEC),2010-08-02
+208,Manejo del dolor,2017-08-15
+208,Antibioticoterapia,2018-01-29
+499,Antibioticoterapia,2022-02-23
+934,Soporte nutricional,2016-06-22
+934,Cuidados de soporte,2017-01-22
+934,Trombectomía mecánica,2017-12-15
+21,Intervención coronaria percutánea (ICP),2019-10-02
+359,Manejo de medicación,2013-03-28
+859,Terapia de estimulación cognitiva,2016-11-21
+999,Terapia con broncodilatadores,2018-04-17
+999,Cuidado de heridas,2023-09-11
+716,Hidratación intravenosa,2018-05-23
+187,Intervención coronaria percutánea (ICP),2018-03-18
+471,Intervención coronaria percutánea (ICP),2010-05-07
+471,Ecocardiograma,2022-06-19
+389,Intervención coronaria percutánea (ICP),2014-07-07
+389,Biopsia,2012-08-09
+389,Manejo de medicación,2014-06-28
+497,Intervención coronaria percutánea (ICP),2015-01-18
+497,Psicoterapia,2010-02-17
+356,Ecocardiograma,2018-12-19
+356,Antibioticoterapia,2021-05-02
+356,Hidratación parenteral,2021-06-02
+589,Terapia ocupacional,2021-08-28
+464,Oxigenoterapia,2016-02-10
+902,Antibioticoterapia,2023-05-17
+686,Hidratación intravenosa,2022-03-23
+680,Antibioticoterapia,2017-02-18
+853,Antibioticoterapia,2020-02-27
+765,Fisioterapia,2016-02-01
+884,Antibioticoterapia,2016-03-16
+92,Antibioticoterapia,2017-06-08
+602,Hidratación intravenosa,2017-05-24
+602,Fisioterapia,2020-06-04
+702,Biopsia,2022-12-04
+150,Cirugía de bypass coronario,2023-09-12
+150,Manejo de medicación,2017-03-30
+454,Angiografía coronaria,2016-08-27
+454,Antibioticoterapia,2021-03-04
+454,Antibioticoterapia,2021-04-15
+226,Antibioticoterapia,2021-01-11
+226,Antibioticoterapia,2021-08-19
+226,Terapia antiemética,2022-03-02
+462,Ecocardiograma,2019-03-27
+462,Psicoterapia,2015-11-04
+174,Terapia con broncodilatadores,2010-03-07
+861,Pruebas de función pulmonar,2014-04-06
+861,Ecocardiograma,2023-11-05
+679,Manejo del dolor,2019-07-19
+880,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2020-09-28
+880,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2020-12-10
+643,Rehabilitación pulmonar,2023-12-12
+643,Manejo del dolor,2022-02-03
+855,Hidratación intravenosa,2016-09-10
+574,Antibioticoterapia,2022-06-28
+290,Hidratación intravenosa,2018-05-09
+524,Manejo del dolor,2016-11-14
+524,Ecocardiograma,2015-03-25
+995,Intervención coronaria percutánea (ICP),2012-04-15
+995,Hidratación intravenosa,2020-03-21
+995,Ecocardiograma,2016-04-29
+35,Manejo de medicación,2020-06-15
+35,Intervención coronaria percutánea (ICP),2019-06-07
+35,Cirugía de bypass coronario,2019-07-14
+358,Hidratación parenteral,2021-03-08
+358,Hidratación parenteral,2021-10-06
+127,Intervención coronaria percutánea (ICP),2023-06-22
+127,Quimioterapia,2011-09-12
+890,Terapia trombolítica,2021-10-24
+937,Cirugía de bypass coronario,2012-06-09
+937,Biopsia,2012-05-31
+937,Intervención coronaria percutánea (ICP),2012-06-30
+937,Terapia electroconvulsiva (TEC),2014-05-22
+292,Manejo de medicación,2012-11-22
+33,Trombectomía mecánica,2023-09-14
+496,Angiografía coronaria,2022-05-03
+314,Hidratación intravenosa,2017-06-19
+494,Pruebas de función pulmonar,2012-09-20
+553,Manejo de medicación,2022-07-16
+304,Terapia con broncodilatadores,2012-07-17
+304,Hidratación parenteral,2016-07-02
+304,Reducción (manual o quirúrgica),2019-05-08
+75,Manejo de medicación,2019-05-03
+75,Fisioterapia,2021-04-17
+514,Intervención coronaria percutánea (ICP),2014-07-06
+514,Ecocardiograma,2015-01-03
+369,Reducción (manual o quirúrgica),2022-06-04
+472,Radioterapia,2010-11-12
+860,Hidratación intravenosa,2023-07-24
+384,Ecocardiograma,2014-01-16
+296,Pastillas para la garganta,2018-05-11
+912,Resección quirúrgica,2018-08-12
+919,Radioterapia,2017-11-21
+137,Manejo de medicación,2016-06-27
+222,Resección quirúrgica,2020-10-13
+747,Pruebas de función pulmonar,2021-09-13
+744,Antibioticoterapia,2019-04-09
+773,Hidratación intravenosa,2023-04-02
+773,Soporte nutricional,2023-06-04
+162,Biopsia,2010-12-06
+447,Manejo del dolor,2020-01-05
+645,Antibioticoterapia,2020-07-06
+989,Hidratación parenteral,2020-07-24
+792,Pruebas de función pulmonar,2010-01-22
+792,Ecocardiograma,2012-01-08
+792,Antibioticoterapia,2016-05-15
+655,Manejo de medicación,2019-10-12
+820,Biopsia,2014-02-28
+875,Terapia con broncodilatadores,2021-01-22
+875,Ecocardiograma,2023-01-11
+85,Clínicas de memoria,2015-09-02
+766,Manejo de medicación,2020-09-01
+112,Terapia ocupacional,2019-07-07
+58,Pastillas para la garganta,2017-08-29
+58,Manejo del dolor,2020-01-29
+53,Angiografía coronaria,2018-05-07
+962,Cirugía de bypass coronario,2020-03-31
+962,Antibioticoterapia,2021-12-10
+757,Manejo de medicación,2014-10-12
+268,Quimioterapia,2013-01-22
+268,Cirugía de bypass coronario,2013-12-21
+413,Intervención coronaria percutánea (ICP),2023-08-07
+273,Angiografía coronaria,2012-09-19
+49,Terapia ocupacional,2012-01-24
+49,Antibioticoterapia,2020-07-27
+927,Antibioticoterapia,2021-12-22
+111,Terapia de estimulación cognitiva,2017-01-11
+111,Manejo de medicación,2017-08-13
+111,Cuidados de soporte,2016-04-22
+718,Angiografía coronaria,2014-04-29
+61,Clínicas de memoria,2022-10-01
+61,Manejo de medicación,2022-11-13
+61,Fisioterapia,2020-04-17
+282,Manejo del dolor,2022-08-24
+282,Manejo del dolor,2023-06-10
+38,Ortesis o férula,2017-10-16
+175,Cirugía de bypass coronario,2017-07-07
+175,Resección quirúrgica,2023-01-29
+175,Angiografía coronaria,2011-02-25
+566,Hidratación intravenosa,2016-12-17
+437,Angiografía coronaria,2020-11-04
+238,Angiografía coronaria,2019-04-30
+238,Terapia cognitivo-conductual (TCC),2010-04-02
+687,Fisioterapia,2020-06-14
+74,Angiografía coronaria,2016-01-04
+346,Yeso o férula,2019-09-18
+453,Manejo de medicación,2021-03-08
+856,Pruebas de función pulmonar,2016-05-23
+856,Ecocardiograma,2014-09-19
+856,Fisioterapia,2019-09-21
+856,Apendicectomía,2018-05-07
+685,Antibioticoterapia,2021-12-01
+685,Antibioticoterapia,2021-12-21
+295,Apendicectomía,2017-10-20
+533,Terapia de estimulación cognitiva,2012-09-19
+485,Apendicectomía,2023-10-21
+55,Ecocardiograma,2013-09-11
+251,Reparación quirúrgica,2018-09-30
+476,Antibioticoterapia,2021-12-19
+54,Terapia con broncodilatadores,2018-12-29
+54,Terapia de estimulación cognitiva,2022-04-23
+931,Soporte nutricional,2022-08-17
+129,Terapia con broncodilatadores,2017-01-24
+767,Terapia con broncodilatadores,2021-01-08
+401,Terapia con broncodilatadores,2021-08-14
+558,Biopsia,2021-05-30
+558,Intervención coronaria percutánea (ICP),2022-02-03
+558,Angiografía coronaria,2020-01-09
+212,Rehabilitación pulmonar,2014-09-23
+279,Terapia con broncodilatadores,2021-07-18
+754,Fisioterapia,2018-11-23
+754,Antibioticoterapia,2019-10-20
+320,Cirugía de bypass coronario,2018-08-01
+176,Intervención coronaria percutánea (ICP),2018-11-10
+148,Clínicas de memoria,2010-08-18
+678,Angiografía coronaria,2021-09-11
+394,Terapia de estimulación cognitiva,2010-09-12
+394,Cuidados de soporte,2022-12-18
+26,Terapia con broncodilatadores,2010-07-15
+26,Manejo del dolor,2023-09-13
+339,Manejo de medicación,2022-12-15
+294,Angiografía coronaria,2017-06-20
+805,Quimioterapia,2013-01-11
+805,Antibioticoterapia,2019-11-10
+527,Intervención coronaria percutánea (ICP),2016-10-01
+469,Terapia ocupacional,2013-06-30
+469,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2018-02-19
+469,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2018-08-16
+921,Biopsia,2016-08-07
+921,Psicoterapia,2023-03-03
+921,Manejo de medicación,2023-09-29
+688,Terapia de estimulación cognitiva,2019-03-24
+688,Clínicas de memoria,2020-03-20
+676,Angiografía coronaria,2016-08-21
+676,Psicoterapia,2022-04-09
+287,Manejo de medicación,2014-01-28
+130,Ecocardiograma,2013-02-23
+130,Antibioticoterapia,2021-04-04
+406,Quimioterapia,2018-07-06
+406,Soporte nutricional,2023-04-09
+406,Ecocardiograma,2012-08-28
+916,Ecocardiograma,2022-07-05
+916,Radioterapia,2019-04-08
+748,Manejo de medicación,2016-03-30
+748,Antibioticoterapia,2020-05-15
+965,Manejo de medicación,2016-01-28
+965,Manejo de medicación,2016-12-31
+990,Radioterapia,2019-08-01
+990,Quimioterapia,2019-09-24
+990,Cirugía de bypass coronario,2012-09-04
+431,Apendicectomía,2021-01-27
+431,Antibioticoterapia,2018-03-02
+29,Hidratación intravenosa,2016-01-15
+80,Intervención coronaria percutánea (ICP),2022-10-04
+874,Terapia ocupacional,2019-04-14
+269,Ecocardiograma,2018-10-08
+269,Biopsia,2016-04-02
+395,Manejo del dolor,2021-08-05
+331,Terapia con broncodilatadores,2010-01-13
+10,Manejo de medicación,2020-11-24
+10,Manejo de medicación,2021-08-10
+735,Intervención coronaria percutánea (ICP),2014-04-16
+735,Terapia con broncodilatadores,2021-01-28
+86,Pruebas de función pulmonar,2022-06-17
+86,Terapia ocupacional,2015-04-26
+219,Angiografía coronaria,2011-04-16
+121,Terapia con broncodilatadores,2017-02-09
+121,Reposo y crioterapia,2018-07-14
+760,Oxigenoterapia,2014-03-30
+760,Pruebas de función pulmonar,2019-02-25
+760,Ecocardiograma,2018-07-16
+760,Radioterapia,2017-07-07
+760,Ecocardiograma,2020-04-15
+848,Hidratación parenteral,2018-02-03
+612,Manejo de medicación,2014-01-29
+818,Terapia de estimulación cognitiva,2023-02-26
+164,Terapia trombolítica,2022-04-15
+271,Terapia con broncodilatadores,2022-09-03
+964,Ecocardiograma,2023-05-01
+964,Angiografía coronaria,2021-03-17
+922,Manejo de medicación,2016-10-06
+594,Irrigación nasal,2023-01-08
+4,Angiografía coronaria,2020-03-08
+4,Quimioterapia,2017-02-01
+839,Terapia con broncodilatadores,2019-12-11
+576,Antibioticoterapia,2022-10-14
+711,Terapia con broncodilatadores,2021-01-15
+711,Ecocardiograma,2023-08-13
+99,Intervención coronaria percutánea (ICP),2018-01-30
+424,Terapia de estimulación cognitiva,2023-08-21
+424,Terapia de estimulación cognitiva,2023-12-06
+567,Oxigenoterapia,2017-05-16
+567,Inmovilización,2021-08-13
+257,Manejo de medicación,2019-03-12
+388,Terapia con broncodilatadores,2012-04-08
+388,Manejo del dolor,2020-04-23
+885,Antibioticoterapia,2020-07-13
+920,Psicoterapia,2017-05-28
+920,Apendicectomía,2020-01-18
+933,Cirugía de bypass coronario,2014-02-28
+933,Psicoterapia,2010-12-23
+933,Fisioterapia,2017-01-06
+933,Ecocardiograma,2015-02-01
+432,Cirugía de bypass coronario,2012-08-30
+867,Manejo del dolor,2016-03-22
+714,Quimioterapia,2023-05-23
+209,Clínicas de memoria,2023-12-15
+62,Antibioticoterapia,2018-07-31
+62,Manejo del dolor,2019-01-16
+104,Antibioticoterapia,2021-08-10
+104,Cirugía de bypass coronario,2011-08-29
+486,Oxigenoterapia,2010-08-10
+996,Antibioticoterapia,2022-11-11
+659,Rehabilitación pulmonar,2020-07-11
+659,Rehabilitación pulmonar,2021-01-28
+659,Terapia con broncodilatadores,2016-07-11
+538,Pruebas de función pulmonar,2015-04-06
+538,Fisioterapia,2021-06-27
+135,Oxigenoterapia,2012-04-28
+135,Angiografía coronaria,2019-02-22
+338,Oxigenoterapia,2020-02-07
+338,Oxigenoterapia,2020-07-10
+338,Ecocardiograma,2022-12-09
+918,Fisioterapia,2021-03-04
+918,Antibioticoterapia,2020-08-06
+56,Manejo de medicación,2011-02-07
+978,Manejo de medicación,2011-10-16
+978,Reparación quirúrgica,2020-03-25
+909,Terapia de estimulación cognitiva,2013-06-06
+909,Terapia con broncodilatadores,2016-06-17
+951,Clínicas de memoria,2015-06-09
+951,Pastillas para la garganta,2022-07-19
+267,Clínicas de memoria,2011-04-14
+897,Pruebas de función pulmonar,2022-05-29
+897,Ecocardiograma,2013-12-05
+849,Terapia de estimulación cognitiva,2023-02-15
+849,Antibioticoterapia,2016-02-24
+418,Intervención coronaria percutánea (ICP),2019-05-23
+547,Antibioticoterapia,2023-08-18
+240,Reposo y crioterapia,2016-11-14
+193,Manejo del dolor,2023-05-18
+71,Biopsia,2019-01-11
+531,Radioterapia,2016-02-19
+78,Apendicectomía,2017-06-22
+78,Apendicectomía,2018-02-12
+578,Terapia de estimulación cognitiva,2021-03-14
+518,Angiografía coronaria,2019-05-16
+518,Terapia antiviral,2022-08-27
+518,Trombectomía mecánica,2020-10-03
+197,Ecocardiograma,2022-05-11
+197,Cuidados de soporte,2019-09-11
+119,Terapia de estimulación cognitiva,2010-08-04
+119,Corticosteroides,2022-12-27
+153,Ecocardiograma,2022-11-02
+79,Angiografía coronaria,2013-01-15
+79,Antibioticoterapia,2020-03-12
+428,Terapia de estimulación cognitiva,2011-11-14
+312,Antibioticoterapia,2022-04-14
+843,Pruebas de función pulmonar,2019-04-02
+843,Angiografía coronaria,2023-10-24
+221,Ecocardiograma,2019-07-22
+785,Manejo de medicación,2014-03-05
+327,Manejo de medicación,2015-05-22
+103,Terapia ocupacional,2017-06-10
+591,Antibioticoterapia,2020-04-16
+540,Ecocardiograma,2017-10-20
+280,Antibioticoterapia,2020-11-14
+528,Oxigenoterapia,2018-11-20
+460,Oxigenoterapia,2018-11-23
+673,Terapia con broncodilatadores,2018-05-03
+710,Terapia ocupacional,2021-09-17
+710,Corticosteroides,2022-12-24
+954,Terapia ocupacional,2014-02-22
+14,Ecocardiograma,2022-05-11
+50,Antibioticoterapia,2022-10-05
+83,Terapia con broncodilatadores,2021-05-20
+83,Antibioticoterapia,2022-04-06
+83,Cirugía de bypass coronario,2019-09-11
+535,Oxigenoterapia,2017-10-29
+629,Ecocardiograma,2013-09-06
+629,Antibioticoterapia,2020-07-15
+288,Manejo de medicación,2022-08-24
+656,Cirugía de bypass coronario,2018-12-03
+656,Intervención coronaria percutánea (ICP),2019-07-18
+95,Terapia con broncodilatadores,2018-12-09
+95,Reparación quirúrgica,2017-10-03
+366,Quimioterapia,2020-04-17
+366,Radioterapia,2021-04-06
+77,Antibioticoterapia,2017-08-26
+772,Biopsia,2018-01-17
+772,Quimioterapia,2018-08-26
+22,Clínicas de memoria,2010-10-01
+354,Ecocardiograma,2010-06-09
+354,Manejo del dolor,2022-01-27
+893,Cirugía de bypass coronario,2012-01-21
+253,Angiografía coronaria,2013-01-11
+253,Terapia cognitivo-conductual (TCC),2022-10-04
+771,Antibioticoterapia,2016-01-15
+691,Manejo de medicación,2012-03-20
+971,Terapia con broncodilatadores,2020-10-10
+732,Manejo de medicación,2015-09-07
+732,Antibioticoterapia,2016-08-24
+463,Terapia de estimulación cognitiva,2015-02-05
+220,Manejo de medicación,2022-05-08
+220,Ecocardiograma,2019-08-01
+733,Manejo del dolor,2021-05-15
+442,Terapia ocupacional,2021-12-25
+791,Manejo de medicación,2014-10-25
+380,Ecocardiograma,2021-10-12
+16,Fisioterapia,2020-04-19
+725,Ecocardiograma,2011-09-02
+725,Ecocardiograma,2023-10-27
+725,Cirugía de bypass coronario,2024-03-04
+630,Terapia ocupacional,2023-07-23
+924,Terapia trombolítica,2016-01-14
+409,Antibioticoterapia,2022-10-05
+361,Pruebas de función pulmonar,2022-02-27
+361,Terapia con broncodilatadores,2022-10-11
+361,Ecocardiograma,2023-03-11
+361,Reparación quirúrgica,2018-12-11
+302,Manejo de medicación,2014-02-10
+302,Terapia de estimulación cognitiva,2014-03-31
+302,Reposo y crioterapia,2020-11-01
+230,Soporte nutricional,2019-10-30
+498,Manejo del dolor,2018-07-22
+379,Manejo del dolor,2018-08-16
+232,Rehabilitación pulmonar,2011-10-23
+232,Rehabilitación pulmonar,2012-10-18
+232,Angiografía coronaria,2011-01-01
+297,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2016-12-19
+239,Manejo de medicación,2016-07-12
+239,Antibioticoterapia,2020-04-19
+239,Intervención coronaria percutánea (ICP),2011-05-27
+84,Antibioticoterapia,2020-10-01
+728,Manejo de medicación,2016-05-13
+728,Terapia ocupacional,2016-10-15
+728,Antibioticoterapia,2019-01-12
+728,Antibioticoterapia,2016-04-05
+606,Inmovilización,2016-05-19
+606,Yeso o férula,2022-10-27
+242,Antibioticoterapia,2018-07-02
+872,Rehabilitación pulmonar,2022-09-29
+872,Terapia cognitivo-conductual (TCC),2020-08-04
+968,Intervención coronaria percutánea (ICP),2010-10-17
+81,Antitusígenos,2017-04-28
+81,Terapia antiviral,2016-01-25
+677,Terapia antiviral,2023-09-25
+436,Clínicas de memoria,2015-11-21
+436,Hidratación intravenosa,2018-08-02
+752,Manejo de medicación,2010-10-30
+586,Cuidados de soporte,2016-03-28
+36,Terapia ocupacional,2023-03-08
+929,Ecocardiograma,2011-07-04
+946,Intervención coronaria percutánea (ICP),2015-04-29
+946,Manejo de medicación,2014-08-10
+946,Rehabilitación,2023-10-24
+946,Intervención coronaria percutánea (ICP),2012-12-03
+309,Terapia de estimulación cognitiva,2017-11-11
+451,Angiografía coronaria,2016-10-19
+332,Terapia de estimulación cognitiva,2017-02-23
+332,Clínicas de memoria,2017-04-09
+146,Psicoterapia,2015-09-10
+812,Manejo de medicación,2015-04-11
+812,Terapia de estimulación cognitiva,2015-10-27
+522,Terapia con broncodilatadores,2022-08-31
+522,Angiografía coronaria,2016-06-16
+522,Biopsia,2023-04-23
+522,Biopsia,2023-12-04
+481,Clínicas de memoria,2021-04-04
+42,Terapia antiemética,2019-02-27
+608,Rehabilitación pulmonar,2013-02-06
+385,Oxigenoterapia,2016-03-04
+385,Intervención coronaria percutánea (ICP),2015-09-28
+501,Terapia con broncodilatadores,2017-03-08
+501,Rehabilitación,2021-01-30
+120,Oxigenoterapia,2021-09-22
+120,Angiografía coronaria,2011-03-21
+120,Ecocardiograma,2014-04-22
+468,Manejo de medicación,2014-08-10
+468,Pastillas para la garganta,2017-04-05
+734,Manejo del dolor,2023-08-19
+746,Terapia de estimulación cognitiva,2018-01-24
+746,Soporte nutricional,2019-01-19
+746,Manejo del dolor,2019-02-13
+262,Pruebas de función pulmonar,2016-09-18
+664,Oxigenoterapia,2020-06-04
+664,Ecocardiograma,2014-11-19
+171,Psicoterapia,2016-06-04
+171,Manejo de medicación,2016-09-24
+595,Hidratación intravenosa,2017-07-31
+969,Reducción (manual o quirúrgica),2020-08-30
+185,Intervención coronaria percutánea (ICP),2015-11-26
+185,Rehabilitación,2021-05-09
+774,Manejo de medicación,2011-02-26
+769,Fisioterapia,2017-12-02
+803,Ecocardiograma,2022-06-15
+737,"Protocolo RICE (Reposo, Hielo, Compresión, Elevación)",2016-05-07
+227,Antibioticoterapia,2019-09-19
+245,Ecocardiograma,2018-07-04
+245,Manejo del dolor,2020-02-25
+245,Antibioticoterapia,2017-09-01
+245,Antibioticoterapia,2017-10-05
+947,Manejo de medicación,2020-09-27
+179,Rehabilitación,2017-07-13
+179,Fisioterapia,2016-02-25
+689,Hidratación intravenosa,2018-10-06
+507,Terapia ocupacional,2013-02-08
+654,Soporte nutricional,2016-06-04
+638,Oxigenoterapia,2020-07-05
+638,Ecocardiograma,2011-04-10
+638,Fijación quirúrgica,2018-11-26
+382,Angiografía coronaria,2013-03-08
+831,Angiografía coronaria,2018-04-19
+386,Angiografía coronaria,2014-10-15
+386,Quimioterapia,2022-09-23
+473,Intervención coronaria percutánea (ICP),2016-08-28
+473,Ecocardiograma,2017-03-27
+465,Ecocardiograma,2019-12-17
+465,Quimioterapia,2020-05-19
+491,Fijación quirúrgica,2018-08-11
+483,Hidratación intravenosa,2023-06-09
+199,Pruebas de función pulmonar,2022-08-17
+199,Angiografía coronaria,2021-01-16
+199,Intervención coronaria percutánea (ICP),2012-01-23
+452,Terapia de estimulación cognitiva,2011-04-10
+139,Antibioticoterapia,2019-10-24
+783,Manejo del dolor,2017-09-06
+682,Cirugía de bypass coronario,2014-12-17
+660,Terapia con broncodilatadores,2019-08-22
+660,Pruebas de función pulmonar,2020-02-28
+660,Cirugía de bypass coronario,2010-04-30
+216,Ecocardiograma,2010-10-22
+845,Manejo de medicación,2014-04-28
+845,Inmovilización,2017-06-21
+835,Resección quirúrgica,2011-11-03
+674,Terapia trombolítica,2023-10-06
+674,Intervención coronaria percutánea (ICP),2021-01-10
+615,Terapia cognitivo-conductual (TCC),2019-09-17
+180,Cirugía de bypass coronario,2015-02-21
+709,Hidratación intravenosa,2018-06-15
+709,Hidratación intravenosa,2019-03-06
+709,Manejo del dolor,2023-08-28
+247,Pastillas para la garganta,2018-11-09
+871,Terapia con broncodilatadores,2011-01-16
+642,Manejo del dolor,2016-01-04
+980,Antitusígenos,2017-04-05
+7,Resección quirúrgica,2015-01-10
+475,Terapia con broncodilatadores,2023-10-27
+433,Antibioticoterapia,2019-12-03
+433,Hidratación parenteral,2019-12-30
+926,Antitusígenos,2022-04-24
+705,Clínicas de memoria,2022-07-03
+360,Antibioticoterapia,2022-11-16
+360,Hidratación intravenosa,2023-03-19
+141,Clínicas de memoria,2020-02-02
+647,Terapia con broncodilatadores,2021-11-30
+758,Intervención coronaria percutánea (ICP),2017-03-17
+827,Intervención coronaria percutánea (ICP),2019-04-24
+827,Quimioterapia,2017-12-01
+784,Clínicas de memoria,2011-06-17
+158,Intervención coronaria percutánea (ICP),2020-01-24
+158,Terapia con broncodilatadores,2016-07-07
+158,Terapia con broncodilatadores,2017-05-07
+158,Angiografía coronaria,2019-12-07
+597,Quimioterapia,2012-01-01
+133,Resección quirúrgica,2017-10-31
+133,Psicoterapia,2019-06-25
+133,Ecocardiograma,2015-01-20
+614,Pruebas de función pulmonar,2011-04-17
+614,Ecocardiograma,2018-01-13
+614,Cirugía de bypass coronario,2020-03-31
+275,Angiografía coronaria,2019-05-10
+275,Terapia trombolítica,2021-04-24
+275,Terapia trombolítica,2022-04-23
+258,Oxigenoterapia,2016-06-16
+258,Antibioticoterapia,2023-10-18
+723,Pruebas de función pulmonar,2019-04-02
+776,Terapia con broncodilatadores,2013-07-17
+776,Biopsia,2013-07-22
+529,Manejo de medicación,2015-03-25
+833,Pruebas de función pulmonar,2021-02-20
+833,Ecocardiograma,2020-04-17
+169,Angiografía coronaria,2012-03-23
+466,Ecocardiograma,2017-09-19
+117,Pastillas para la garganta,2018-08-07
+889,Pruebas de función pulmonar,2023-11-07
+889,Ecocardiograma,2010-11-23
+873,Antibioticoterapia,2021-08-23
+881,Oxigenoterapia,2022-08-19
+881,Terapia cognitivo-conductual (TCC),2011-01-06
+881,Yeso o férula,2021-04-28
+749,Ecocardiograma,2020-04-02
+749,Biopsia,2011-08-07
+914,Angiografía coronaria,2017-02-08
+914,Biopsia,2016-11-25
+914,Terapia trombolítica,2021-12-31
+879,Ecocardiograma,2018-09-02
+114,Antibioticoterapia,2020-07-05
+577,Intervención coronaria percutánea (ICP),2015-05-23
+403,Terapia de estimulación cognitiva,2022-12-15
+218,Ecocardiograma,2022-01-28
+218,Resección quirúrgica,2010-06-01
+218,Resección quirúrgica,2010-07-29
+149,Cuidado de heridas,2016-09-15
+149,Antibioticoterapia,2016-12-22
+272,Terapia de estimulación cognitiva,2021-01-21
+426,Oxigenoterapia,2014-03-20
+426,Cirugía de bypass coronario,2010-05-23
+753,Yeso o férula,2021-10-17
+573,Biopsia,2012-11-11
+573,Apendicectomía,2018-12-01
+573,Intervención coronaria percutánea (ICP),2022-09-08
+467,Manejo de medicación,2011-01-12
+467,Terapia ocupacional,2011-04-05
+376,Terapia antiemética,2020-11-01
+284,Terapia con broncodilatadores,2010-12-15
+373,Terapia de estimulación cognitiva,2013-08-03
+590,Quimioterapia,2021-02-13
+330,Rehabilitación pulmonar,2019-08-12
+330,Angiografía coronaria,2019-12-17
+330,Angiografía coronaria,2020-03-09
+330,Quimioterapia,2014-01-30
+727,Terapia de estimulación cognitiva,2010-11-16
+727,Manejo del dolor,2016-03-17
+727,Soporte nutricional,2021-02-23
+521,Intervención coronaria percutánea (ICP),2020-04-14
+3,Ortesis o férula,2023-04-28
+906,Hidratación intravenosa,2022-08-14
+569,Intervención coronaria percutánea (ICP),2010-12-13
+569,Cirugía de bypass coronario,2022-03-16
+569,Antibioticoterapia,2016-08-26
+455,Reducción (manual o quirúrgica),2019-05-16
+335,Ecocardiograma,2018-02-26
+669,Pruebas de función pulmonar,2020-01-02
+52,Terapia de estimulación cognitiva,2023-04-27
+913,Antibioticoterapia,2019-07-25
+829,Terapia de estimulación cognitiva,2023-12-02
+952,Ecocardiograma,2011-05-04
+793,Terapia de estimulación cognitiva,2023-03-30
+793,Manejo del dolor,2019-11-17
+739,Rehabilitación pulmonar,2013-08-12
+739,Ecocardiograma,2016-04-20
+684,Terapia antiviral,2016-08-26
+892,Intervención coronaria percutánea (ICP),2015-03-21
+892,Manejo de medicación,2015-12-12
+892,Terapia cognitivo-conductual (TCC),2015-04-18
+759,Manejo de medicación,2022-07-02
+854,Terapia de estimulación cognitiva,2011-09-02
+854,Manejo del dolor,2016-04-05
+854,Manejo del dolor,2017-01-22
+807,Terapia con broncodilatadores,2015-03-23
+910,Pruebas de función pulmonar,2011-05-02
+910,Resección quirúrgica,2014-02-17
+565,Ecocardiograma,2022-07-04
+565,Ecocardiograma,2022-08-09
+565,Fisioterapia,2018-02-23
+830,Cuidados de soporte,2016-07-01
+841,Pruebas de función pulmonar,2023-08-20
+841,Ecocardiograma,2014-06-06
+517,Pruebas de función pulmonar,2019-01-10
+517,Angiografía coronaria,2020-11-27
+670,Manejo del dolor,2017-05-20
+587,Terapia de estimulación cognitiva,2012-02-26
+587,Terapia trombolítica,2018-06-18
+206,Manejo del dolor,2022-10-19
+82,Reparación quirúrgica,2019-10-05
+82,Angiografía coronaria,2018-04-30
+67,Fisioterapia,2017-01-02
+625,Fisioterapia,2019-08-05
+572,Oxigenoterapia,2014-02-02
+572,Terapia ocupacional,2014-09-22
+387,Manejo de medicación,2021-02-07
+935,Terapia trombolítica,2022-07-08
+310,Manejo del dolor,2018-02-02
+609,Angiografía coronaria,2019-03-02
+609,Manejo del dolor,2017-06-19
+609,Pastillas para la garganta,2018-06-06
+944,Reducción (manual o quirúrgica),2021-10-05
+915,Manejo de medicación,2010-04-19
+478,Reposo y crioterapia,2023-02-19
+634,Cirugía de bypass coronario,2021-10-01
+822,Antibioticoterapia,2021-07-10

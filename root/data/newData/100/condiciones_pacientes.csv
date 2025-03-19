@@ -1,0 +1,53 @@
+Patient ID,Tipo de condición,Nombre de la condición,Código SNOMED,Fecha inicio,Fecha fin
+74,aguda,Accidente cerebrovascular agudo,230690007,2020-07-05,2021-12-28
+77,crónica,Enfermedad de Alzheimer,26929004,2018-10-13,
+78,aguda,Sinusitis aguda,444814009,2021-05-16,2022-05-19
+23,crónica,Enfermedad cardiovascular,49601007,2016-03-24,
+23,crónica,Trastornos mentales,74732009,2016-09-22,
+23,aguda,Meningitis aguda,7180009,2016-04-21,2018-04-14
+25,crónica,Enfermedad respiratoria crónica,31387002,2017-06-25,
+25,aguda,Neumonía aguda,233604007,2020-10-01,2021-12-14
+91,aguda,Gastroenteritis aguda,445441000124101,2018-06-03,2019-11-05
+91,aguda,Celulitis aguda,128045006,2022-08-23,2024-07-16
+12,crónica,Enfermedad de Alzheimer,26929004,2021-12-12,
+12,aguda,Infección respiratoria aguda,54150009,2022-09-25,2024-05-21
+35,crónica,Enfermedad respiratoria crónica,31387002,2010-08-15,
+58,crónica,Enfermedad de Alzheimer,26929004,2012-03-03,
+4,crónica,Enfermedad de Alzheimer,26929004,2019-07-26,
+49,crónica,Enfermedad de Alzheimer,26929004,2023-06-27,
+49,aguda,Luxaciones,23974007,2018-06-21,2019-01-23
+60,crónica,Enfermedad de Alzheimer,26929004,2014-06-02,
+16,aguda,Esguinces,23924001,2016-12-14,2017-07-01
+79,aguda,Infarto agudo de miocardio,57054005,2019-06-08,2019-10-22
+79,aguda,Sinusitis aguda,444814009,2016-05-21,2017-12-17
+66,crónica,Enfermedad cardiovascular,49601007,2015-07-24,
+66,crónica,Neoplasmas,363346000,2020-10-03,
+36,crónica,Enfermedad cardiovascular,49601007,2013-09-30,
+45,aguda,Sinusitis aguda,444814009,2020-03-12,2021-12-13
+5,crónica,Enfermedad cardiovascular,49601007,2015-07-09,
+20,crónica,Enfermedad cardiovascular,49601007,2019-05-02,
+13,crónica,Enfermedad cardiovascular,49601007,2017-04-06,
+65,aguda,Apendicitis aguda,74400008,2018-12-05,2020-10-28
+62,crónica,Enfermedad de Alzheimer,26929004,2013-03-05,
+62,aguda,Luxaciones,23974007,2020-08-17,2021-10-25
+53,crónica,Enfermedad cardiovascular,49601007,2021-04-25,
+53,aguda,Esguinces,23924001,2020-03-28,2020-11-22
+84,aguda,Bronquitis aguda,32398004,2016-04-06,2017-04-11
+27,crónica,Enfermedad de Alzheimer,26929004,2021-05-04,
+32,crónica,Enfermedad cardiovascular,49601007,2017-07-14,
+32,aguda,Pancreatitis aguda,235595009,2018-01-27,2018-07-18
+8,aguda,Celulitis aguda,128045006,2022-03-24,2023-10-20
+70,aguda,Otitis media aguda,65363002,2016-03-05,2017-11-30
+43,crónica,Enfermedad respiratoria crónica,31387002,2021-03-11,
+43,crónica,Neoplasmas,363346000,2021-09-24,
+52,crónica,Enfermedad de Alzheimer,26929004,2023-03-30,
+52,aguda,Celulitis aguda,128045006,2022-04-16,2023-10-28
+2,crónica,Enfermedad cardiovascular,49601007,2010-06-14,
+29,crónica,Enfermedad respiratoria crónica,31387002,2023-08-15,
+29,crónica,Trastornos mentales,74732009,2018-07-26,
+90,aguda,Fracturas,125605004,2018-09-10,2020-02-11
+98,crónica,Enfermedad respiratoria crónica,31387002,2013-05-22,
+98,crónica,Enfermedad de Alzheimer,26929004,2013-07-07,
+7,crónica,Enfermedad de Alzheimer,26929004,2020-01-04,
+56,crónica,Enfermedad de Alzheimer,26929004,2014-10-17,
+56,aguda,Infarto agudo de miocardio,57054005,2018-07-27,2019-08-24

@@ -1,8 +1,9 @@
 import csv
 import random
+from config import TOTAL_PATIENTS as num_patients
 
 # Define the number of patients
-num_patients = 1_000_000
+#num_patients = 1_000_000
 
 # Define gender probabilities
 gender_probabilities = {'M': 0.49, 'F': 0.51}

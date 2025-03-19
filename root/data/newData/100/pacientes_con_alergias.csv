@@ -1,0 +1,61 @@
+Patient ID,Tipo de Alergia,Código SNOMED,Fecha de Diagnóstico
+1,Alergia a los ácaros del polvo,232347008,2019-10-20
+1,Alergia a las picaduras de insectos,91936005,2020-02-06
+4,Alergia a los alimentos,91934008,2021-01-31
+8,Alergia a los ácaros del polvo,232347008,2016-05-14
+9,Alergia a las picaduras de insectos,91936005,2020-03-07
+10,Alergia al polen,418689005,2022-04-07
+13,Alergia al polen,418689005,2023-07-26
+14,Alergia a los ácaros del polvo,232347008,2017-10-28
+16,Alergia a los ácaros del polvo,232347008,2022-09-14
+17,Alergia al polen,418689005,2023-10-30
+19,Alergia a la caspa de animales,232350009,2022-09-08
+23,Alergia a los ácaros del polvo,232347008,2020-12-05
+25,Alergia al polen,418689005,2021-10-09
+29,Alergia al polen,418689005,2023-09-12
+31,Alergia a la caspa de animales,232350009,2024-07-11
+32,Alergia a los ácaros del polvo,232347008,2022-06-21
+33,Alergia a los alimentos,91934008,2019-10-21
+35,Alergia al polen,418689005,2016-02-19
+36,Alergia al polen,418689005,2018-03-04
+36,Alergia a los ácaros del polvo,232347008,2020-10-21
+37,Alergia al polen,418689005,2019-05-02
+37,Alergia al moho,232349003,2022-11-23
+40,Alergia al moho,232349003,2024-12-02
+41,Alergia a los ácaros del polvo,232347008,2023-09-19
+42,Alergia a los alimentos,91934008,2023-05-20
+43,Alergia a los ácaros del polvo,232347008,2021-03-19
+51,Alergia al polen,418689005,2022-08-27
+53,Alergia a los alimentos,91934008,2016-03-03
+55,Alergia al polen,418689005,2020-02-02
+57,Alergia al polen,418689005,2019-10-18
+59,Alergia al polen,418689005,2022-02-10
+60,Alergia al polen,418689005,2023-12-03
+61,Alergia al polen,418689005,2021-01-26
+61,Alergia al moho,232349003,2024-03-23
+63,Alergia al polen,418689005,2018-06-21
+65,Alergia a la caspa de animales,232350009,2020-10-30
+67,Alergia al polen,418689005,2018-12-26
+67,Alergia a los ácaros del polvo,232347008,2023-08-23
+68,Alergia a la caspa de animales,232350009,2021-01-04
+69,Alergia al polen,418689005,2016-01-01
+70,Alergia al polen,418689005,2023-10-04
+79,Alergia a la caspa de animales,232350009,2018-05-10
+80,Alergia a la caspa de animales,232350009,2020-10-17
+80,Alergia a las picaduras de insectos,91936005,2016-10-08
+81,Alergia al polen,418689005,2016-12-08
+81,Alergia al moho,232349003,2022-04-03
+83,Alergia a los alimentos,91934008,2024-05-24
+83,Alergia a los ácaros del polvo,232347008,2024-01-14
+84,Alergia a los alimentos,91934008,2017-09-16
+84,Alergia al moho,232349003,2019-08-04
+88,Alergia al polen,418689005,2024-12-02
+89,Alergia al polen,418689005,2019-09-21
+89,Alergia a los alimentos,91934008,2024-05-05
+91,Alergia al moho,232349003,2023-10-25
+93,Alergia al polen,418689005,2021-09-11
+93,Alergia a los ácaros del polvo,232347008,2020-02-19
+96,Alergia al polen,418689005,2022-05-20
+97,Alergia a los alimentos,91934008,2024-01-28
+98,Alergia al polen,418689005,2017-02-07
+98,Alergia al moho,232349003,2018-05-12

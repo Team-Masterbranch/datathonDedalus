@@ -1,0 +1,648 @@
+Patient ID,Tipo de encuentro,Fecha inicio,Fecha fin
+223,Consultas Especializadas,2023-01-06,2023-01-06
+223,Consultas Especializadas,2021-02-21,2021-02-21
+423,Hospitalización,2016-01-05,2016-01-08
+423,Hospitalización,2016-01-29,2016-01-29
+256,Atención Primaria,2010-08-02,2010-08-02
+208,Hospitalización,2017-08-15,2017-08-19
+208,Atención Primaria,2018-01-29,2018-01-29
+499,Atención Primaria,2022-02-23,2022-02-23
+934,Atención Primaria,2016-06-22,2016-06-22
+934,Atención Primaria,2017-01-22,2017-01-22
+934,Urgencias,2017-12-15,2017-12-15
+21,Hospitalización,2019-10-02,2019-10-03
+359,Urgencias,2013-03-28,2013-03-28
+859,Urgencias,2016-11-21,2016-11-21
+999,Consultas Especializadas,2018-04-17,2018-04-17
+999,Hospitalización,2023-09-11,2023-09-15
+716,Consultas Especializadas,2018-05-23,2018-05-23
+187,Consultas Especializadas,2018-03-18,2018-03-18
+471,Atención Primaria,2010-05-07,2010-05-07
+471,Consultas Especializadas,2022-06-19,2022-06-19
+389,Hospitalización,2014-07-07,2014-07-09
+389,Urgencias,2012-08-09,2012-08-09
+389,Urgencias,2014-06-28,2014-06-28
+497,Consultas Especializadas,2015-01-18,2015-01-18
+497,Urgencias,2010-02-17,2010-02-17
+356,Consultas Especializadas,2018-12-19,2018-12-19
+356,Atención Primaria,2021-05-02,2021-05-02
+356,Atención Primaria,2021-06-02,2021-06-02
+589,Atención Primaria,2021-08-28,2021-08-28
+464,Atención Primaria,2016-02-10,2016-02-10
+902,Hospitalización,2023-05-17,2023-05-19
+686,Consultas Especializadas,2022-03-23,2022-03-23
+680,Cirugía Ambulatoria,2017-02-18,2017-02-18
+853,Urgencias,2020-02-27,2020-02-27
+765,Urgencias,2016-02-01,2016-02-01
+884,Cirugía Ambulatoria,2016-03-16,2016-03-16
+92,Hospitalización,2017-06-08,2017-06-11
+602,Hospitalización,2017-05-24,2017-05-26
+602,Cirugía Ambulatoria,2020-06-04,2020-06-04
+702,Consultas Especializadas,2022-12-04,2022-12-04
+150,Hospitalización,2023-09-12,2023-09-17
+150,Urgencias,2017-03-30,2017-03-30
+454,Consultas Especializadas,2016-08-27,2016-08-27
+454,Urgencias,2021-03-04,2021-03-04
+454,Urgencias,2021-04-15,2021-04-15
+226,Atención Primaria,2021-01-11,2021-01-11
+226,Atención Primaria,2021-08-19,2021-08-19
+226,Atención Primaria,2022-03-02,2022-03-02
+462,Atención Primaria,2019-03-27,2019-03-27
+462,Atención Primaria,2015-11-04,2015-11-04
+174,Urgencias,2010-03-07,2010-03-07
+861,Consultas Especializadas,2014-04-06,2014-04-06
+861,Atención Primaria,2023-11-05,2023-11-05
+679,Atención Primaria,2019-07-19,2019-07-19
+880,Urgencias,2020-09-28,2020-09-28
+880,Urgencias,2020-12-10,2020-12-10
+643,Consultas Especializadas,2023-12-12,2023-12-12
+643,Consultas Especializadas,2022-02-03,2022-02-03
+855,Consultas Especializadas,2016-09-10,2016-09-10
+574,Hospitalización,2022-06-28,2022-07-05
+290,Hospitalización,2018-05-09,2018-05-12
+524,Atención Primaria,2016-11-14,2016-11-14
+524,Consultas Especializadas,2015-03-25,2015-03-25
+995,Urgencias,2012-04-15,2012-04-15
+995,Atención Primaria,2020-03-21,2020-03-21
+995,Atención Primaria,2016-04-29,2016-04-29
+35,Hospitalización,2020-06-15,2020-06-21
+35,Hospitalización,2019-06-07,2019-06-13
+35,Hospitalización,2019-07-14,2019-07-14
+358,Atención Primaria,2021-03-08,2021-03-08
+358,Atención Primaria,2021-10-06,2021-10-06
+127,Hospitalización,2023-06-22,2023-06-28
+127,Consultas Especializadas,2011-09-12,2011-09-12
+890,Hospitalización,2021-10-24,2021-10-25
+937,Consultas Especializadas,2012-06-09,2012-06-09
+937,Consultas Especializadas,2012-05-31,2012-05-31
+937,Consultas Especializadas,2012-06-30,2012-06-30
+937,Consultas Especializadas,2014-05-22,2014-05-22
+292,Atención Primaria,2012-11-22,2012-11-22
+33,Hospitalización,2023-09-14,2023-09-18
+496,Consultas Especializadas,2022-05-03,2022-05-03
+314,Consultas Especializadas,2017-06-19,2017-06-19
+494,Atención Primaria,2012-09-20,2012-09-20
+553,Hospitalización,2022-07-16,2022-07-20
+304,Hospitalización,2012-07-17,2012-07-21
+304,Urgencias,2016-07-02,2016-07-02
+304,Cirugía Ambulatoria,2019-05-08,2019-05-08
+75,Consultas Especializadas,2019-05-03,2019-05-03
+75,Urgencias,2021-04-17,2021-04-17
+514,Hospitalización,2014-07-06,2014-07-08
+514,Hospitalización,2015-01-03,2015-01-03
+369,Hospitalización,2022-06-04,2022-06-06
+472,Consultas Especializadas,2010-11-12,2010-11-12
+860,Consultas Especializadas,2023-07-24,2023-07-24
+384,Urgencias,2014-01-16,2014-01-16
+296,Cirugía Ambulatoria,2018-05-11,2018-05-11
+912,Atención Primaria,2018-08-12,2018-08-12
+919,Hospitalización,2017-11-21,2017-11-25
+137,Urgencias,2016-06-27,2016-06-27
+222,Consultas Especializadas,2020-10-13,2020-10-13
+747,Consultas Especializadas,2021-09-13,2021-09-13
+744,Cirugía Ambulatoria,2019-04-09,2019-04-09
+773,Consultas Especializadas,2023-04-02,2023-04-02
+773,Consultas Especializadas,2023-06-04,2023-06-04
+162,Consultas Especializadas,2010-12-06,2010-12-06
+447,Cirugía Ambulatoria,2020-01-05,2020-01-05
+645,Urgencias,2020-07-06,2020-07-06
+989,Urgencias,2020-07-24,2020-07-24
+792,Urgencias,2010-01-22,2010-01-22
+792,Consultas Especializadas,2012-01-08,2012-01-08
+792,Consultas Especializadas,2016-05-15,2016-05-15
+655,Atención Primaria,2019-10-12,2019-10-12
+820,Atención Primaria,2014-02-28,2014-02-28
+875,Atención Primaria,2021-01-22,2021-01-22
+875,Atención Primaria,2023-01-11,2023-01-11
+85,Atención Primaria,2015-09-02,2015-09-02
+766,Hospitalización,2020-09-01,2020-09-05
+112,Atención Primaria,2019-07-07,2019-07-07
+58,Urgencias,2017-08-29,2017-08-29
+58,Consultas Especializadas,2020-01-29,2020-01-29
+53,Consultas Especializadas,2018-05-07,2018-05-07
+962,Consultas Especializadas,2020-03-31,2020-03-31
+962,Atención Primaria,2021-12-10,2021-12-10
+757,Urgencias,2014-10-12,2014-10-12
+268,Consultas Especializadas,2013-01-22,2013-01-22
+268,Consultas Especializadas,2013-12-21,2013-12-21
+413,Hospitalización,2023-08-07,2023-08-08
+273,Hospitalización,2012-09-19,2012-09-20
+49,Atención Primaria,2012-01-24,2012-01-24
+49,Urgencias,2020-07-27,2020-07-27
+927,Cirugía Ambulatoria,2021-12-22,2021-12-22
+111,Consultas Especializadas,2017-01-11,2017-01-11
+111,Consultas Especializadas,2017-08-13,2017-08-13
+111,Atención Primaria,2016-04-22,2016-04-22
+718,Hospitalización,2014-04-29,2014-05-05
+61,Atención Primaria,2022-10-01,2022-10-01
+61,Atención Primaria,2022-11-13,2022-11-13
+61,Cirugía Ambulatoria,2020-04-17,2020-04-17
+282,Hospitalización,2022-08-24,2022-08-25
+282,Hospitalización,2023-06-10,2023-06-10
+38,Cirugía Ambulatoria,2017-10-16,2017-10-16
+175,Hospitalización,2017-07-07,2017-07-11
+175,Urgencias,2023-01-29,2023-01-29
+175,Atención Primaria,2011-02-25,2011-02-25
+566,Consultas Especializadas,2016-12-17,2016-12-17
+437,Consultas Especializadas,2020-11-04,2020-11-04
+238,Hospitalización,2019-04-30,2019-05-02
+238,Consultas Especializadas,2010-04-02,2010-04-02
+687,Hospitalización,2020-06-14,2020-06-17
+74,Consultas Especializadas,2016-01-04,2016-01-04
+346,Consultas Especializadas,2019-09-18,2019-09-18
+453,Consultas Especializadas,2021-03-08,2021-03-08
+856,Consultas Especializadas,2016-05-23,2016-05-23
+856,Consultas Especializadas,2014-09-19,2014-09-19
+856,Urgencias,2019-09-21,2019-09-21
+856,Cirugía Ambulatoria,2018-05-07,2018-05-07
+685,Cirugía Ambulatoria,2021-12-01,2021-12-01
+685,Cirugía Ambulatoria,2021-12-21,2021-12-21
+295,Urgencias,2017-10-20,2017-10-20
+533,Atención Primaria,2012-09-19,2012-09-19
+485,Cirugía Ambulatoria,2023-10-21,2023-10-21
+55,Hospitalización,2013-09-11,2013-09-14
+251,Cirugía Ambulatoria,2018-09-30,2018-09-30
+476,Atención Primaria,2021-12-19,2021-12-19
+54,Atención Primaria,2018-12-29,2018-12-29
+54,Atención Primaria,2022-04-23,2022-04-23
+931,Urgencias,2022-08-17,2022-08-17
+129,Atención Primaria,2017-01-24,2017-01-24
+767,Hospitalización,2021-01-08,2021-01-13
+401,Atención Primaria,2021-08-14,2021-08-14
+558,Consultas Especializadas,2021-05-30,2021-05-30
+558,Urgencias,2022-02-03,2022-02-03
+558,Urgencias,2020-01-09,2020-01-09
+212,Atención Primaria,2014-09-23,2014-09-23
+279,Atención Primaria,2021-07-18,2021-07-18
+754,Cirugía Ambulatoria,2018-11-23,2018-11-23
+754,Hospitalización,2019-10-20,2019-10-23
+320,Consultas Especializadas,2018-08-01,2018-08-01
+176,Urgencias,2018-11-10,2018-11-10
+148,Urgencias,2010-08-18,2010-08-18
+678,Atención Primaria,2021-09-11,2021-09-11
+394,Atención Primaria,2010-09-12,2010-09-12
+394,Hospitalización,2022-12-18,2022-12-21
+26,Atención Primaria,2010-07-15,2010-07-15
+26,Urgencias,2023-09-13,2023-09-13
+339,Atención Primaria,2022-12-15,2022-12-15
+294,Hospitalización,2017-06-20,2017-06-22
+805,Consultas Especializadas,2013-01-11,2013-01-11
+805,Consultas Especializadas,2019-11-10,2019-11-10
+527,Hospitalización,2016-10-01,2016-10-02
+469,Consultas Especializadas,2013-06-30,2013-06-30
+469,Consultas Especializadas,2018-02-19,2018-02-19
+469,Consultas Especializadas,2018-08-16,2018-08-16
+921,Hospitalización,2016-08-07,2016-08-14
+921,Urgencias,2023-03-03,2023-03-03
+921,Urgencias,2023-09-29,2023-09-29
+688,Hospitalización,2019-03-24,2019-03-27
+688,Hospitalización,2020-03-20,2020-03-20
+676,Consultas Especializadas,2016-08-21,2016-08-21
+676,Urgencias,2022-04-09,2022-04-09
+287,Atención Primaria,2014-01-28,2014-01-28
+130,Hospitalización,2013-02-23,2013-02-28
+130,Atención Primaria,2021-04-04,2021-04-04
+406,Urgencias,2018-07-06,2018-07-06
+406,Consultas Especializadas,2023-04-09,2023-04-09
+406,Consultas Especializadas,2012-08-28,2012-08-28
+916,Urgencias,2022-07-05,2022-07-05
+916,Hospitalización,2019-04-08,2019-04-09
+748,Urgencias,2016-03-30,2016-03-30
+748,Atención Primaria,2020-05-15,2020-05-15
+965,Hospitalización,2016-01-28,2016-02-02
+965,Hospitalización,2016-12-31,2016-12-31
+990,Urgencias,2019-08-01,2019-08-01
+990,Urgencias,2019-09-24,2019-09-24
+990,Urgencias,2012-09-04,2012-09-04
+431,Cirugía Ambulatoria,2021-01-27,2021-01-27
+431,Atención Primaria,2018-03-02,2018-03-02
+29,Consultas Especializadas,2016-01-15,2016-01-15
+80,Hospitalización,2022-10-04,2022-10-10
+874,Consultas Especializadas,2019-04-14,2019-04-14
+269,Consultas Especializadas,2018-10-08,2018-10-08
+269,Consultas Especializadas,2016-04-02,2016-04-02
+395,Urgencias,2021-08-05,2021-08-05
+331,Consultas Especializadas,2010-01-13,2010-01-13
+10,Urgencias,2020-11-24,2020-11-24
+10,Urgencias,2021-08-10,2021-08-10
+735,Urgencias,2014-04-16,2014-04-16
+735,Hospitalización,2021-01-28,2021-02-04
+86,Urgencias,2022-06-17,2022-06-17
+86,Atención Primaria,2015-04-26,2015-04-26
+219,Hospitalización,2011-04-16,2011-04-17
+121,Hospitalización,2017-02-09,2017-02-16
+121,Hospitalización,2018-07-14,2018-07-15
+760,Atención Primaria,2014-03-30,2014-03-30
+760,Atención Primaria,2019-02-25,2019-02-25
+760,Urgencias,2018-07-16,2018-07-16
+760,Hospitalización,2017-07-07,2017-07-12
+760,Hospitalización,2020-04-15,2020-04-20
+848,Atención Primaria,2018-02-03,2018-02-03
+612,Consultas Especializadas,2014-01-29,2014-01-29
+818,Hospitalización,2023-02-26,2023-02-28
+164,Hospitalización,2022-04-15,2022-04-18
+271,Urgencias,2022-09-03,2022-09-03
+964,Consultas Especializadas,2023-05-01,2023-05-01
+964,Hospitalización,2021-03-17,2021-03-18
+922,Hospitalización,2016-10-06,2016-10-10
+594,Consultas Especializadas,2023-01-08,2023-01-08
+4,Hospitalización,2020-03-08,2020-03-14
+4,Hospitalización,2017-02-01,2017-02-05
+839,Urgencias,2019-12-11,2019-12-11
+576,Atención Primaria,2022-10-14,2022-10-14
+711,Atención Primaria,2021-01-15,2021-01-15
+711,Atención Primaria,2023-08-13,2023-08-13
+99,Consultas Especializadas,2018-01-30,2018-01-30
+424,Consultas Especializadas,2023-08-21,2023-08-21
+424,Consultas Especializadas,2023-12-06,2023-12-06
+567,Urgencias,2017-05-16,2017-05-16
+567,Cirugía Ambulatoria,2021-08-13,2021-08-13
+257,Urgencias,2019-03-12,2019-03-12
+388,Consultas Especializadas,2012-04-08,2012-04-08
+388,Cirugía Ambulatoria,2020-04-23,2020-04-23
+885,Hospitalización,2020-07-13,2020-07-20
+920,Hospitalización,2017-05-28,2017-06-04
+920,Cirugía Ambulatoria,2020-01-18,2020-01-18
+933,Hospitalización,2014-02-28,2014-03-05
+933,Atención Primaria,2010-12-23,2010-12-23
+933,Consultas Especializadas,2017-01-06,2017-01-06
+933,Urgencias,2015-02-01,2015-02-01
+432,Hospitalización,2012-08-30,2012-09-02
+867,Atención Primaria,2016-03-22,2016-03-22
+714,Atención Primaria,2023-05-23,2023-05-23
+209,Hospitalización,2023-12-15,2023-12-19
+62,Atención Primaria,2018-07-31,2018-07-31
+62,Atención Primaria,2019-01-16,2019-01-16
+104,Consultas Especializadas,2021-08-10,2021-08-10
+104,Urgencias,2011-08-29,2011-08-29
+486,Urgencias,2010-08-10,2010-08-10
+996,Urgencias,2022-11-11,2022-11-11
+659,Urgencias,2020-07-11,2020-07-11
+659,Urgencias,2021-01-28,2021-01-28
+659,Hospitalización,2016-07-11,2016-07-12
+538,Consultas Especializadas,2015-04-06,2015-04-06
+538,Urgencias,2021-06-27,2021-06-27
+135,Urgencias,2012-04-28,2012-04-28
+135,Consultas Especializadas,2019-02-22,2019-02-22
+338,Atención Primaria,2020-02-07,2020-02-07
+338,Atención Primaria,2020-07-10,2020-07-10
+338,Atención Primaria,2022-12-09,2022-12-09
+918,Urgencias,2021-03-04,2021-03-04
+918,Atención Primaria,2020-08-06,2020-08-06
+56,Consultas Especializadas,2011-02-07,2011-02-07
+978,Consultas Especializadas,2011-10-16,2011-10-16
+978,Hospitalización,2020-03-25,2020-03-27
+909,Hospitalización,2013-06-06,2013-06-07
+909,Hospitalización,2016-06-17,2016-06-20
+951,Urgencias,2015-06-09,2015-06-09
+951,Consultas Especializadas,2022-07-19,2022-07-19
+267,Consultas Especializadas,2011-04-14,2011-04-14
+897,Atención Primaria,2022-05-29,2022-05-29
+897,Consultas Especializadas,2013-12-05,2013-12-05
+849,Atención Primaria,2023-02-15,2023-02-15
+849,Urgencias,2016-02-24,2016-02-24
+418,Hospitalización,2019-05-23,2019-05-25
+547,Urgencias,2023-08-18,2023-08-18
+240,Urgencias,2016-11-14,2016-11-14
+193,Atención Primaria,2023-05-18,2023-05-18
+71,Consultas Especializadas,2019-01-11,2019-01-11
+531,Atención Primaria,2016-02-19,2016-02-19
+78,Cirugía Ambulatoria,2017-06-22,2017-06-22
+78,Cirugía Ambulatoria,2018-02-12,2018-02-12
+578,Consultas Especializadas,2021-03-14,2021-03-14
+518,Urgencias,2019-05-16,2019-05-16
+518,Hospitalización,2022-08-27,2022-09-03
+518,Urgencias,2020-10-03,2020-10-03
+197,Atención Primaria,2022-05-11,2022-05-11
+197,Hospitalización,2019-09-11,2019-09-18
+119,Consultas Especializadas,2010-08-04,2010-08-04
+119,Hospitalización,2022-12-27,2023-01-01
+153,Urgencias,2022-11-02,2022-11-02
+79,Hospitalización,2013-01-15,2013-01-20
+79,Cirugía Ambulatoria,2020-03-12,2020-03-12
+428,Atención Primaria,2011-11-14,2011-11-14
+312,Consultas Especializadas,2022-04-14,2022-04-14
+843,Atención Primaria,2019-04-02,2019-04-02
+843,Hospitalización,2023-10-24,2023-10-30
+221,Hospitalización,2019-07-22,2019-07-23
+785,Urgencias,2014-03-05,2014-03-05
+327,Consultas Especializadas,2015-05-22,2015-05-22
+103,Hospitalización,2017-06-10,2017-06-13
+591,Consultas Especializadas,2020-04-16,2020-04-16
+540,Hospitalización,2017-10-20,2017-10-26
+280,Cirugía Ambulatoria,2020-11-14,2020-11-14
+528,Hospitalización,2018-11-20,2018-11-22
+460,Urgencias,2018-11-23,2018-11-23
+673,Atención Primaria,2018-05-03,2018-05-03
+710,Urgencias,2021-09-17,2021-09-17
+710,Urgencias,2022-12-24,2022-12-24
+954,Consultas Especializadas,2014-02-22,2014-02-22
+14,Hospitalización,2022-05-11,2022-05-15
+50,Atención Primaria,2022-10-05,2022-10-05
+83,Hospitalización,2021-05-20,2021-05-21
+83,Hospitalización,2022-04-06,2022-04-06
+83,Atención Primaria,2019-09-11,2019-09-11
+535,Atención Primaria,2017-10-29,2017-10-29
+629,Urgencias,2013-09-06,2013-09-06
+629,Cirugía Ambulatoria,2020-07-15,2020-07-15
+288,Atención Primaria,2022-08-24,2022-08-24
+656,Urgencias,2018-12-03,2018-12-03
+656,Urgencias,2019-07-18,2019-07-18
+95,Consultas Especializadas,2018-12-09,2018-12-09
+95,Urgencias,2017-10-03,2017-10-03
+366,Hospitalización,2020-04-17,2020-04-24
+366,Hospitalización,2021-04-06,2021-04-06
+77,Atención Primaria,2017-08-26,2017-08-26
+772,Hospitalización,2018-01-17,2018-01-24
+772,Hospitalización,2018-08-26,2018-08-26
+22,Urgencias,2010-10-01,2010-10-01
+354,Atención Primaria,2010-06-09,2010-06-09
+354,Urgencias,2022-01-27,2022-01-27
+893,Hospitalización,2012-01-21,2012-01-28
+253,Urgencias,2013-01-11,2013-01-11
+253,Urgencias,2022-10-04,2022-10-04
+771,Urgencias,2016-01-15,2016-01-15
+691,Urgencias,2012-03-20,2012-03-20
+971,Atención Primaria,2020-10-10,2020-10-10
+732,Atención Primaria,2015-09-07,2015-09-07
+732,Cirugía Ambulatoria,2016-08-24,2016-08-24
+463,Urgencias,2015-02-05,2015-02-05
+220,Atención Primaria,2022-05-08,2022-05-08
+220,Consultas Especializadas,2019-08-01,2019-08-01
+733,Cirugía Ambulatoria,2021-05-15,2021-05-15
+442,Atención Primaria,2021-12-25,2021-12-25
+791,Atención Primaria,2014-10-25,2014-10-25
+380,Consultas Especializadas,2021-10-12,2021-10-12
+16,Urgencias,2020-04-19,2020-04-19
+725,Hospitalización,2011-09-02,2011-09-07
+725,Urgencias,2023-10-27,2023-10-27
+725,Urgencias,2024-03-04,2024-03-04
+630,Consultas Especializadas,2023-07-23,2023-07-23
+924,Hospitalización,2016-01-14,2016-01-15
+409,Consultas Especializadas,2022-10-05,2022-10-05
+361,Atención Primaria,2022-02-27,2022-02-27
+361,Atención Primaria,2022-10-11,2022-10-11
+361,Urgencias,2023-03-11,2023-03-11
+361,Atención Primaria,2018-12-11,2018-12-11
+302,Atención Primaria,2014-02-10,2014-02-10
+302,Atención Primaria,2014-03-31,2014-03-31
+302,Atención Primaria,2020-11-01,2020-11-01
+230,Consultas Especializadas,2019-10-30,2019-10-30
+498,Urgencias,2018-07-22,2018-07-22
+379,Urgencias,2018-08-16,2018-08-16
+232,Urgencias,2011-10-23,2011-10-23
+232,Urgencias,2012-10-18,2012-10-18
+232,Atención Primaria,2011-01-01,2011-01-01
+297,Cirugía Ambulatoria,2016-12-19,2016-12-19
+239,Atención Primaria,2016-07-12,2016-07-12
+239,Hospitalización,2020-04-19,2020-04-24
+239,Consultas Especializadas,2011-05-27,2011-05-27
+84,Atención Primaria,2020-10-01,2020-10-01
+728,Consultas Especializadas,2016-05-13,2016-05-13
+728,Consultas Especializadas,2016-10-15,2016-10-15
+728,Hospitalización,2019-01-12,2019-01-13
+728,Atención Primaria,2016-04-05,2016-04-05
+606,Urgencias,2016-05-19,2016-05-19
+606,Cirugía Ambulatoria,2022-10-27,2022-10-27
+242,Hospitalización,2018-07-02,2018-07-09
+872,Consultas Especializadas,2022-09-29,2022-09-29
+872,Consultas Especializadas,2020-08-04,2020-08-04
+968,Hospitalización,2010-10-17,2010-10-22
+81,Hospitalización,2017-04-28,2017-05-02
+81,Hospitalización,2016-01-25,2016-01-28
+677,Hospitalización,2023-09-25,2023-09-30
+436,Hospitalización,2015-11-21,2015-11-27
+436,Urgencias,2018-08-02,2018-08-02
+752,Hospitalización,2010-10-30,2010-11-06
+586,Atención Primaria,2016-03-28,2016-03-28
+36,Hospitalización,2023-03-08,2023-03-13
+929,Atención Primaria,2011-07-04,2011-07-04
+946,Consultas Especializadas,2015-04-29,2015-04-29
+946,Hospitalización,2014-08-10,2014-08-14
+946,Hospitalización,2023-10-24,2023-10-28
+946,Atención Primaria,2012-12-03,2012-12-03
+309,Hospitalización,2017-11-11,2017-11-13
+451,Atención Primaria,2016-10-19,2016-10-19
+332,Consultas Especializadas,2017-02-23,2017-02-23
+332,Consultas Especializadas,2017-04-09,2017-04-09
+146,Atención Primaria,2015-09-10,2015-09-10
+812,Consultas Especializadas,2015-04-11,2015-04-11
+812,Consultas Especializadas,2015-10-27,2015-10-27
+522,Atención Primaria,2022-08-31,2022-08-31
+522,Hospitalización,2016-06-16,2016-06-23
+522,Consultas Especializadas,2023-04-23,2023-04-23
+522,Consultas Especializadas,2023-12-04,2023-12-04
+481,Hospitalización,2021-04-04,2021-04-11
+42,Atención Primaria,2019-02-27,2019-02-27
+608,Urgencias,2013-02-06,2013-02-06
+385,Atención Primaria,2016-03-04,2016-03-04
+385,Consultas Especializadas,2015-09-28,2015-09-28
+501,Hospitalización,2017-03-08,2017-03-14
+501,Urgencias,2021-01-30,2021-01-30
+120,Urgencias,2021-09-22,2021-09-22
+120,Atención Primaria,2011-03-21,2011-03-21
+120,Urgencias,2014-04-22,2014-04-22
+468,Urgencias,2014-08-10,2014-08-10
+468,Atención Primaria,2017-04-05,2017-04-05
+734,Urgencias,2023-08-19,2023-08-19
+746,Hospitalización,2018-01-24,2018-01-31
+746,Urgencias,2019-01-19,2019-01-19
+746,Urgencias,2019-02-13,2019-02-13
+262,Atención Primaria,2016-09-18,2016-09-18
+664,Hospitalización,2020-06-04,2020-06-07
+664,Consultas Especializadas,2014-11-19,2014-11-19
+171,Consultas Especializadas,2016-06-04,2016-06-04
+171,Consultas Especializadas,2016-09-24,2016-09-24
+595,Consultas Especializadas,2017-07-31,2017-07-31
+969,Cirugía Ambulatoria,2020-08-30,2020-08-30
+185,Atención Primaria,2015-11-26,2015-11-26
+185,Urgencias,2021-05-09,2021-05-09
+774,Hospitalización,2011-02-26,2011-02-28
+769,Atención Primaria,2017-12-02,2017-12-02
+803,Consultas Especializadas,2022-06-15,2022-06-15
+737,Cirugía Ambulatoria,2016-05-07,2016-05-07
+227,Urgencias,2019-09-19,2019-09-19
+245,Hospitalización,2018-07-04,2018-07-08
+245,Consultas Especializadas,2020-02-25,2020-02-25
+245,Atención Primaria,2017-09-01,2017-09-01
+245,Atención Primaria,2017-10-05,2017-10-05
+947,Consultas Especializadas,2020-09-27,2020-09-27
+179,Hospitalización,2017-07-13,2017-07-16
+179,Atención Primaria,2016-02-25,2016-02-25
+689,Hospitalización,2018-10-06,2018-10-09
+507,Hospitalización,2013-02-08,2013-02-12
+654,Consultas Especializadas,2016-06-04,2016-06-04
+638,Hospitalización,2020-07-05,2020-07-08
+638,Hospitalización,2011-04-10,2011-04-13
+638,Cirugía Ambulatoria,2018-11-26,2018-11-26
+382,Hospitalización,2013-03-08,2013-03-12
+831,Consultas Especializadas,2018-04-19,2018-04-19
+386,Consultas Especializadas,2014-10-15,2014-10-15
+386,Urgencias,2022-09-23,2022-09-23
+473,Hospitalización,2016-08-28,2016-08-29
+473,Hospitalización,2017-03-27,2017-03-27
+465,Atención Primaria,2019-12-17,2019-12-17
+465,Consultas Especializadas,2020-05-19,2020-05-19
+491,Cirugía Ambulatoria,2018-08-11,2018-08-11
+483,Consultas Especializadas,2023-06-09,2023-06-09
+199,Consultas Especializadas,2022-08-17,2022-08-17
+199,Hospitalización,2021-01-16,2021-01-20
+199,Urgencias,2012-01-23,2012-01-23
+452,Consultas Especializadas,2011-04-10,2011-04-10
+139,Atención Primaria,2019-10-24,2019-10-24
+783,Consultas Especializadas,2017-09-06,2017-09-06
+682,Hospitalización,2014-12-17,2014-12-20
+660,Consultas Especializadas,2019-08-22,2019-08-22
+660,Consultas Especializadas,2020-02-28,2020-02-28
+660,Urgencias,2010-04-30,2010-04-30
+216,Urgencias,2010-10-22,2010-10-22
+845,Hospitalización,2014-04-28,2014-05-03
+845,Cirugía Ambulatoria,2017-06-21,2017-06-21
+835,Consultas Especializadas,2011-11-03,2011-11-03
+674,Hospitalización,2023-10-06,2023-10-08
+674,Consultas Especializadas,2021-01-10,2021-01-10
+615,Consultas Especializadas,2019-09-17,2019-09-17
+180,Hospitalización,2015-02-21,2015-02-24
+709,Consultas Especializadas,2018-06-15,2018-06-15
+709,Consultas Especializadas,2019-03-06,2019-03-06
+709,Urgencias,2023-08-28,2023-08-28
+247,Atención Primaria,2018-11-09,2018-11-09
+871,Urgencias,2011-01-16,2011-01-16
+642,Consultas Especializadas,2016-01-04,2016-01-04
+980,Atención Primaria,2017-04-05,2017-04-05
+7,Consultas Especializadas,2015-01-10,2015-01-10
+475,Consultas Especializadas,2023-10-27,2023-10-27
+433,Urgencias,2019-12-03,2019-12-03
+433,Urgencias,2019-12-30,2019-12-30
+926,Urgencias,2022-04-24,2022-04-24
+705,Hospitalización,2022-07-03,2022-07-09
+360,Atención Primaria,2022-11-16,2022-11-16
+360,Atención Primaria,2023-03-19,2023-03-19
+141,Urgencias,2020-02-02,2020-02-02
+647,Consultas Especializadas,2021-11-30,2021-11-30
+758,Urgencias,2017-03-17,2017-03-17
+827,Hospitalización,2019-04-24,2019-04-30
+827,Hospitalización,2017-12-01,2017-12-07
+784,Hospitalización,2011-06-17,2011-06-21
+158,Urgencias,2020-01-24,2020-01-24
+158,Atención Primaria,2016-07-07,2016-07-07
+158,Atención Primaria,2017-05-07,2017-05-07
+158,Hospitalización,2019-12-07,2019-12-08
+597,Consultas Especializadas,2012-01-01,2012-01-01
+133,Consultas Especializadas,2017-10-31,2017-10-31
+133,Consultas Especializadas,2019-06-25,2019-06-25
+133,Hospitalización,2015-01-20,2015-01-24
+614,Hospitalización,2011-04-17,2011-04-20
+614,Hospitalización,2018-01-13,2018-01-18
+614,Urgencias,2020-03-31,2020-03-31
+275,Hospitalización,2019-05-10,2019-05-16
+275,Hospitalización,2021-04-24,2021-04-28
+275,Hospitalización,2022-04-23,2022-04-23
+258,Atención Primaria,2016-06-16,2016-06-16
+258,Urgencias,2023-10-18,2023-10-18
+723,Urgencias,2019-04-02,2019-04-02
+776,Atención Primaria,2013-07-17,2013-07-17
+776,Consultas Especializadas,2013-07-22,2013-07-22
+529,Consultas Especializadas,2015-03-25,2015-03-25
+833,Hospitalización,2021-02-20,2021-02-26
+833,Consultas Especializadas,2020-04-17,2020-04-17
+169,Consultas Especializadas,2012-03-23,2012-03-23
+466,Consultas Especializadas,2017-09-19,2017-09-19
+117,Cirugía Ambulatoria,2018-08-07,2018-08-07
+889,Atención Primaria,2023-11-07,2023-11-07
+889,Urgencias,2010-11-23,2010-11-23
+873,Urgencias,2021-08-23,2021-08-23
+881,Atención Primaria,2022-08-19,2022-08-19
+881,Atención Primaria,2011-01-06,2011-01-06
+881,Urgencias,2021-04-28,2021-04-28
+749,Urgencias,2020-04-02,2020-04-02
+749,Consultas Especializadas,2011-08-07,2011-08-07
+914,Atención Primaria,2017-02-08,2017-02-08
+914,Hospitalización,2016-11-25,2016-11-27
+914,Urgencias,2021-12-31,2021-12-31
+879,Consultas Especializadas,2018-09-02,2018-09-02
+114,Atención Primaria,2020-07-05,2020-07-05
+577,Atención Primaria,2015-05-23,2015-05-23
+403,Atención Primaria,2022-12-15,2022-12-15
+218,Consultas Especializadas,2022-01-28,2022-01-28
+218,Hospitalización,2010-06-01,2010-06-07
+218,Hospitalización,2010-07-29,2010-07-29
+149,Consultas Especializadas,2016-09-15,2016-09-15
+149,Consultas Especializadas,2016-12-22,2016-12-22
+272,Hospitalización,2021-01-21,2021-01-23
+426,Hospitalización,2014-03-20,2014-03-22
+426,Atención Primaria,2010-05-23,2010-05-23
+753,Urgencias,2021-10-17,2021-10-17
+573,Hospitalización,2012-11-11,2012-11-13
+573,Urgencias,2018-12-01,2018-12-01
+573,Atención Primaria,2022-09-08,2022-09-08
+467,Atención Primaria,2011-01-12,2011-01-12
+467,Atención Primaria,2011-04-05,2011-04-05
+376,Atención Primaria,2020-11-01,2020-11-01
+284,Urgencias,2010-12-15,2010-12-15
+373,Consultas Especializadas,2013-08-03,2013-08-03
+590,Urgencias,2021-02-13,2021-02-13
+330,Consultas Especializadas,2019-08-12,2019-08-12
+330,Hospitalización,2019-12-17,2019-12-24
+330,Hospitalización,2020-03-09,2020-03-09
+330,Atención Primaria,2014-01-30,2014-01-30
+727,Consultas Especializadas,2010-11-16,2010-11-16
+727,Atención Primaria,2016-03-17,2016-03-17
+727,Atención Primaria,2021-02-23,2021-02-23
+521,Hospitalización,2020-04-14,2020-04-19
+3,Cirugía Ambulatoria,2023-04-28,2023-04-28
+906,Consultas Especializadas,2022-08-14,2022-08-14
+569,Consultas Especializadas,2010-12-13,2010-12-13
+569,Urgencias,2022-03-16,2022-03-16
+569,Atención Primaria,2016-08-26,2016-08-26
+455,Cirugía Ambulatoria,2019-05-16,2019-05-16
+335,Hospitalización,2018-02-26,2018-03-03
+669,Atención Primaria,2020-01-02,2020-01-02
+52,Hospitalización,2023-04-27,2023-04-30
+913,Hospitalización,2019-07-25,2019-07-27
+829,Atención Primaria,2023-12-02,2023-12-02
+952,Atención Primaria,2011-05-04,2011-05-04
+793,Hospitalización,2023-03-30,2023-04-01
+793,Hospitalización,2019-11-17,2019-11-18
+739,Consultas Especializadas,2013-08-12,2013-08-12
+739,Hospitalización,2016-04-20,2016-04-27
+684,Atención Primaria,2016-08-26,2016-08-26
+892,Consultas Especializadas,2015-03-21,2015-03-21
+892,Consultas Especializadas,2015-12-12,2015-12-12
+892,Atención Primaria,2015-04-18,2015-04-18
+759,Consultas Especializadas,2022-07-02,2022-07-02
+854,Hospitalización,2011-09-02,2011-09-05
+854,Urgencias,2016-04-05,2016-04-05
+854,Urgencias,2017-01-22,2017-01-22
+807,Urgencias,2015-03-23,2015-03-23
+910,Consultas Especializadas,2011-05-02,2011-05-02
+910,Hospitalización,2014-02-17,2014-02-20
+565,Urgencias,2022-07-04,2022-07-04
+565,Urgencias,2022-08-09,2022-08-09
+565,Hospitalización,2018-02-23,2018-02-28
+830,Hospitalización,2016-07-01,2016-07-05
+841,Atención Primaria,2023-08-20,2023-08-20
+841,Urgencias,2014-06-06,2014-06-06
+517,Atención Primaria,2019-01-10,2019-01-10
+517,Consultas Especializadas,2020-11-27,2020-11-27
+670,Hospitalización,2017-05-20,2017-05-23
+587,Urgencias,2012-02-26,2012-02-26
+587,Hospitalización,2018-06-18,2018-06-22
+206,Hospitalización,2022-10-19,2022-10-21
+82,Urgencias,2019-10-05,2019-10-05
+82,Urgencias,2018-04-30,2018-04-30
+67,Urgencias,2017-01-02,2017-01-02
+625,Cirugía Ambulatoria,2019-08-05,2019-08-05
+572,Hospitalización,2014-02-02,2014-02-08
+572,Consultas Especializadas,2014-09-22,2014-09-22
+387,Atención Primaria,2021-02-07,2021-02-07
+935,Urgencias,2022-07-08,2022-07-08
+310,Consultas Especializadas,2018-02-02,2018-02-02
+609,Consultas Especializadas,2019-03-02,2019-03-02
+609,Cirugía Ambulatoria,2017-06-19,2017-06-19
+609,Cirugía Ambulatoria,2018-06-06,2018-06-06
+944,Cirugía Ambulatoria,2021-10-05,2021-10-05
+915,Hospitalización,2010-04-19,2010-04-20
+478,Hospitalización,2023-02-19,2023-02-25
+634,Atención Primaria,2021-10-01,2021-10-01
+822,Consultas Especializadas,2021-07-10,2021-07-10
