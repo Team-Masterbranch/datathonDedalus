@@ -7,8 +7,8 @@ load_dotenv()
 
 # Base paths
 PROJECT_ROOT = Path(__file__).parent.parent
-# DATA_DIR = PROJECT_ROOT / 'data' / 'newData'
-DATA_DIR = PROJECT_ROOT / 'data'
+DATA_DIR = PROJECT_ROOT / 'data' / 'newData' / '100'
+# DATA_DIR = PROJECT_ROOT / 'data'
 LOGS_DIR = PROJECT_ROOT / 'logs'
 TESTS_DIR = PROJECT_ROOT / 'tests'
 

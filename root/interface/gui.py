@@ -1,3 +1,4 @@
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
@@ -76,7 +77,8 @@ class GUI:
         """Set the callback function for when a message is submitted"""
         self.callback = callback
 
-    def _setup_left_panel(self):
+    # To remove later
+    def _setup_left_panel_old(self):
         """Setup left panel with visualization area"""
         self.left_panel = ttk.Frame(self.main_container)
         self.main_container.add(self.left_panel, weight=60)
@@ -84,6 +86,82 @@ class GUI:
         # Create visualization frame
         files_frame = ttk.LabelFrame(self.left_panel, text="Ficheros")
         files_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+    def _setup_left_panel(self):
+        """Setup left panel with files area"""
+        self.left_panel = ttk.Frame(self.main_container)
+        self.main_container.add(self.left_panel, weight=60)
+        
+        # Create files frame
+        self.files_frame = ttk.LabelFrame(self.left_panel, text="Ficheros")
+        self.files_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Create container for file links
+        self.files_container = ttk.Frame(self.files_frame)
+        self.files_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+    def add_file_to_panel(self, filepath: str, icon_type: str = 'questhead'):
+        """
+        Add a file link to the files panel
+        
+        Args:
+            filepath: Path to the file
+            icon_type: Type of icon ('questhead' for documents, 'photo' for images)
+        """
+        try:
+            # Create container for this file link
+            filename = Path(filepath).name
+            link_container = ttk.Frame(self.files_frame)
+            link_container.pack(
+                fill=tk.X,      # Fill horizontally
+                pady=2,         # Vertical padding between items
+                side=tk.TOP,    # Explicitly pack from top
+                anchor=tk.N     # Anchor to the north/top
+            )
+            
+            # Add icon
+            icon_label = tk.Label(link_container, bitmap=icon_type)
+            icon_label.pack(side=tk.LEFT, padx=5)
+            
+            # Add filename label that acts as a link
+            file_label = tk.Label(
+                link_container, 
+                text=filename,
+                cursor="hand2",
+                font=('Arial', 12)
+            )
+            file_label.pack(side=tk.LEFT, padx=5)
+
+            
+            # Bind click event to open file
+            def open_file(event):
+                try:
+                    import os
+                    import platform
+                    if platform.system() == 'Darwin':  # macOS
+                        os.system(f'open "{filepath}"')
+                    elif platform.system() == 'Windows':
+                        os.system(f'start "" "{filepath}"')
+                    else:  # Linux
+                        os.system(f'xdg-open "{filepath}"')
+                except Exception as e:
+                    print(f"Error opening file: {e}")
+            
+            file_label.bind('<Button-1>', open_file)
+            
+            # Optional: Add hover effect
+            def on_enter(event):
+                file_label.configure(foreground="blue")
+            
+            def on_leave(event):
+                file_label.configure(foreground="black")
+            
+            file_label.bind('<Enter>', on_enter)
+            file_label.bind('<Leave>', on_leave)
+            
+        except Exception as e:
+            print(f"Error adding file to panel: {e}")
+
 
     def _setup_right_panel(self):
         """Setup right panel with chat history and input"""
@@ -95,7 +173,7 @@ class GUI:
 
     def _setup_chatbot_output_frame(self):
         """Setup chat history panel"""
-        chatbot_output_frame = ttk.LabelFrame(self.right_panel, text="Assistant Responses")
+        chatbot_output_frame = ttk.LabelFrame(self.right_panel, text="Respuestas del Asistente")
         
         # Create container frame for chat history with padding
         history_container = ttk.Frame(chatbot_output_frame)
@@ -139,9 +217,9 @@ class GUI:
         input_frame.grid_columnconfigure(0, weight=1)
         input_frame.grid_rowconfigure(0, weight=1)
         
-        # Add input field using grid
-        self.input_field = ttk.Entry(input_frame)
-        self.input_field.grid(row=0, column=0, sticky='new', padx=5)  # Using padx instead of padding
+        # Add input field using grid with larger font
+        self.input_field = ttk.Entry(input_frame, font=('Arial', 32))  # Increased font size to 16
+        self.input_field.grid(row=0, column=0, sticky='new', padx=5)
         
         # Add send button using grid
         send_button = ttk.Button(input_frame, text="Send", command=self._handle_submit)
@@ -152,6 +230,7 @@ class GUI:
         
         # Add frame to right panel with weight for proper expansion
         self.right_panel.add(user_input_frame, weight=2)
+
 
 
     def _handle_submit(self):

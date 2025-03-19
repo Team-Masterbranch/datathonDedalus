@@ -1,4 +1,5 @@
 # core/visualizer_request.py
+from pathlib import Path
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 from enum import Enum
