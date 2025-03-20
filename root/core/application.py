@@ -47,7 +47,6 @@ class Application:
     def start(self):
         """Start the application and its interface."""
         self.gui = GUI()
-        self.add_test_files() 
         self.action_manager = ActionManager(self.llm_handler, self.session_manager, self.data_manager, self.visualizer, self.gui)
 
         logger.info("Starting application")
@@ -89,26 +88,6 @@ class Application:
             raise
         finally:
             self.shutdown()
-
-
-    def add_test_files(self):
-        """Add existing prompt files to GUI panel"""
-        # Get absolute path to project root
-        root_path = Path(__file__).parent.parent
-        
-        # Add prompt files
-        prompt_files = [
-            root_path / "prompts" / "analyzer_actions_explanation.txt",
-            root_path / "prompts" / "analyzer_introduction.txt"
-        ]
-        
-        for file_path in prompt_files:
-            if file_path.exists():  # Check if file exists
-                self.gui.add_file_to_panel(str(file_path), "questhead")  # Changed from "document" to "questhead"
-            else:
-                print(f"File not found: {file_path}")
-
-
 
 
 

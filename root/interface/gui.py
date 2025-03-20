@@ -8,7 +8,7 @@ class GUI:
     def __init__(self):
         """Initialize the GUI component"""
         self.root = tk.Tk()
-        self.root.title("Healthcare Data Analysis System")
+        self.root.title("MasterBranch Bot")
         self.callback = None
         self.image_references = []  # Add this to keep image references
         
@@ -100,28 +100,50 @@ class GUI:
         self.files_container = ttk.Frame(self.files_frame)
         self.files_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-    def add_file_to_panel(self, filepath: str, icon_type: str = 'questhead'):
+    def add_file_to_panel(self, filepath: str, type = "database"):
         """
         Add a file link to the files panel
         
         Args:
             filepath: Path to the file
-            icon_type: Type of icon ('questhead' for documents, 'photo' for images)
+            icon_path: Path to icon file (.ico, .png, etc). If None, uses default 'questhead' bitmap
         """
+        
+        root_path = Path(__file__).parent.parent
+        
+        if type == "database":
+            icon_path: str = root_path / "data" / "img" / "database_icon.png"
+        else:
+            icon_path: str = root_path / "data" / "img" / "diagramm_icon.png"
+        
         try:
             # Create container for this file link
             filename = Path(filepath).name
-            link_container = ttk.Frame(self.files_frame)
+            link_container = ttk.Frame(self.files_container)
             link_container.pack(
-                fill=tk.X,      # Fill horizontally
-                pady=2,         # Vertical padding between items
-                side=tk.TOP,    # Explicitly pack from top
-                anchor=tk.N     # Anchor to the north/top
+                fill=tk.X,
+                pady=2,
+                side=tk.TOP,
+                anchor=tk.N
             )
             
             # Add icon
-            icon_label = tk.Label(link_container, bitmap=icon_type)
+            if icon_path and Path(icon_path).exists():
+                # Load and resize custom icon
+                pil_image = Image.open(icon_path)
+                # Resize to exact dimensions (e.g. 16x16 or 24x24 pixels)
+                pil_image = pil_image.resize((24, 24), Image.Resampling.LANCZOS)
+                icon_image = ImageTk.PhotoImage(pil_image)
+                # Store reference to prevent garbage collection
+                link_container.icon_image = icon_image
+                icon_label = tk.Label(link_container, image=icon_image)
+            else:
+                # Fallback to default bitmap
+                icon_label = tk.Label(link_container, bitmap='questhead')
+
+                
             icon_label.pack(side=tk.LEFT, padx=5)
+
             
             # Add filename label that acts as a link
             file_label = tk.Label(
@@ -131,7 +153,6 @@ class GUI:
                 font=('Arial', 12)
             )
             file_label.pack(side=tk.LEFT, padx=5)
-
             
             # Bind click event to open file
             def open_file(event):
@@ -161,6 +182,8 @@ class GUI:
             
         except Exception as e:
             print(f"Error adding file to panel: {e}")
+
+
 
 
     def _setup_right_panel(self):

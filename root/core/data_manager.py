@@ -381,7 +381,7 @@ class DataManager:
         with open(schema_path, 'w', encoding='utf-8') as f:
             f.write(formatted_schema)
             
-        logger.info(f"Saved current schema. It's shape is {self._current_schema.shape}")
+        logger.info(f"Saved current schema with {len(self._current_schema)} columns")
 
 
     def save_current_cohort(self, path: str = "root/data/temp/data_manager_output", 

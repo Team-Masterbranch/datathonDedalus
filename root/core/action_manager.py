@@ -343,10 +343,28 @@ class ActionManager:
                         self.display_text(message)
                     else:
                         self.display_text("Found empty message action")
+                
+                elif action.type == ActionType.SAVE_COHORT:
+                    path = self.session_manager.get_current_session_path()
+                    name = action.parameters.get("name", "test")
+                    self.data_manager.save_current_cohort(path, name)
+                    full_path = path / name / ".csv"
+                    self.gui.add_file_to_panel(full_path, type="database")
+                    self.display_text("Saved current cohort")
+                    
 
                 elif action.type == ActionType.CREATE_VISUALIZATION:
                     viz_counter += 1
                     self._handle_visualization_action(action, viz_counter)
+                    
+                elif action.type == ActionType.SUGGESTION:
+                    suggestion_message = action.parameters.get("message")
+                    if suggestion_message is None:
+                        logger.error("Suggestion message is missing")
+                        continue
+                    else:
+                        self.display_text(suggestion_message)
+                        self.session_manager.add_llm_response(suggestion_message)
 
             except Exception as e:
                 logger.error(f"Error executing action {action.type}: {e}")
@@ -415,6 +433,7 @@ class ActionManager:
         """
         logger.info(f"[GUI-STUB] Would display image: {image_path}")
         self.gui.add_image_to_chat(image_path)
+        self.gui.add_file_to_panel(image_path, "diagramm")
         # This will be replaced with actual GUI integration code later
         print(f"[GUI Preview] Image would be displayed: {image_path}")
 

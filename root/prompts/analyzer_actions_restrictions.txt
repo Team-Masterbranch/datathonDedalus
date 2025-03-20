@@ -3,9 +3,10 @@ Action Sequence Rules and Restrictions:
 1. Obligatory actions
    - Each response must contain exactly one name_cohort action
    - Each response must contain at least one print_message action explaining what will be shown
+   - Each response must contain exactly one suggestion action. This action should always be last one.
 
 2. General Rules:
-   - Maximum of 8 actions per response
+   - Maximum of 12 actions per response
    - Maximum of 1 visualizations per response
 
 3. Visualization Rules:
@@ -18,8 +19,7 @@ Action Sequence Rules and Restrictions:
      * Use box for distributions
 
 4. Suggestion Rules:
-   - Maximum of 1 suggestion per response
-   - Inclusing a suggestion action is highly recommended, but not absolutely mandatory
+   - Always include a suggestion per response
    - Suggestions should be relevant to current analysis
    - You must try to predict what user might want, like making additional visualizations or performing relevant database searches
    - Include clear prompt for next action
